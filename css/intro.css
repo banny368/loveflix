@@ -1,0 +1,166 @@
+/* ============================================
+   LOVEFLIX — Intro Page Styles
+   Netflix-style cinematic reveal
+   ============================================ */
+
+.intro-page {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: var(--lf-z-loader);
+}
+
+/* ---- Ambient Background ---- */
+.intro-bg-glow {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(229, 9, 20, 0.15) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: pulse 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ---- Logo ---- */
+.intro-logo-wrap {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.intro-logo {
+  font-family: var(--lf-font-display);
+  font-size: clamp(3.5rem, 10vw, 7rem);
+  color: var(--lf-red);
+  letter-spacing: 0.5em;
+  opacity: 0;
+  animation: logoSweep 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  text-shadow: 0 0 40px var(--lf-red-glow);
+  user-select: none;
+  filter: brightness(1.1);
+}
+
+.intro-logo.glow {
+  animation: logoSweep 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
+             logoGlow 3s ease-in-out 2s infinite;
+}
+
+/* ---- Tagline ---- */
+.intro-tagline {
+  font-family: var(--lf-font-romantic);
+  font-size: clamp(1rem, 3vw, 1.8rem);
+  color: var(--lf-blush);
+  opacity: 0;
+  margin-top: 16px;
+  animation: fadeInUp 1s ease 1.8s forwards;
+  text-shadow: 0 0 20px rgba(255, 77, 109, 0.3);
+}
+
+/* ---- Sparkle Particles ---- */
+.intro-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.intro-particle {
+  position: absolute;
+  font-size: 12px;
+  opacity: 0;
+  animation: confettiFall 4s linear infinite;
+}
+
+/* ---- Progress Bar ---- */
+.intro-progress-wrap {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(300px, 60vw);
+  z-index: 3;
+  opacity: 0;
+  animation: fadeIn 0.5s ease 1s forwards;
+}
+
+.intro-progress-track {
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--lf-radius-full);
+  overflow: hidden;
+}
+
+.intro-progress-bar {
+  height: 100%;
+  background: var(--lf-gradient-romantic);
+  border-radius: var(--lf-radius-full);
+  width: 0%;
+  transition: width 0.1s linear;
+  box-shadow: 0 0 10px var(--lf-red-glow);
+}
+
+.intro-progress-text {
+  font-family: var(--lf-font-body);
+  font-size: 11px;
+  color: var(--lf-text-muted);
+  text-align: center;
+  margin-top: 8px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ---- Skip Button ---- */
+.intro-skip {
+  position: absolute;
+  bottom: 120px;
+  right: var(--lf-page-padding);
+  z-index: 5;
+  font-family: var(--lf-font-body);
+  font-size: 13px;
+  color: var(--lf-text-secondary);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 8px 20px;
+  border-radius: var(--lf-radius-full);
+  cursor: pointer;
+  opacity: 0;
+  animation: fadeIn 0.5s ease 2s forwards;
+  transition: all var(--lf-transition-base);
+  backdrop-filter: blur(10px);
+}
+
+.intro-skip:hover {
+  background: var(--lf-red);
+  color: #fff;
+  border-color: var(--lf-red);
+  box-shadow: var(--lf-shadow-glow);
+}
+
+/* ---- Sound Toggle ---- */
+.intro-sound {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 5;
+  font-size: 20px;
+  color: var(--lf-text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+  animation: fadeIn 0.5s ease 2.5s forwards;
+  transition: color var(--lf-transition-fast);
+}
+
+.intro-sound:hover {
+  color: var(--lf-text-primary);
+}

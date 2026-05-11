@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="LoveFlix Admin — Secure login">
+  <meta name="theme-color" content="#141414">
+  <title>Admin Login — LoveFlix</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>">
+</head>
+<body>
+  <main class="admin-login-page" role="main">
+    <div class="login-card">
+      <h1 class="login-logo">LOVEFLIX</h1>
+      <p class="login-subtitle">Admin Panel — Sign In</p>
+
+      <form class="login-form" id="login-form" novalidate>
+        <div class="login-field">
+          <label class="login-label" for="login-email">Email</label>
+          <input class="login-input" type="email" id="login-email" placeholder="admin@loveflix.com" required autocomplete="email">
+        </div>
+        <div class="login-field">
+          <label class="login-label" for="login-password">Password</label>
+          <input class="login-input" type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        <p class="login-error" id="login-error" aria-live="polite"></p>
+        <button class="login-submit" type="submit" id="login-submit">Sign In</button>
+      </form>
+
+      <a href="profiles.html" class="login-back">← Back to LoveFlix</a>
+    </div>
+  </main>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script src="js/config.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/notifications.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('login-form');
+      const emailInput = document.getElementById('login-email');
+      const passInput = document.getElementById('login-password');
+      const errorEl = document.getElementById('login-error');
+      const submitBtn = document.getElementById('login-submit');
+
+      // Redirect if already logged in
+      LoveFlixAuth.redirectIfAuth('admin.html');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorEl.textContent = '';
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Signing in...';
+
+        try {
+          await LoveFlixAuth.login(emailInput.value.trim(), passInput.value);
+          LoveFlixNotify?.success('Welcome back! ❤️');
+          setTimeout(() => window.location.href = 'admin.html', 800);
+        } catch (err) {
+          const messages = {
+            'auth/invalid-email': 'Invalid email address.',
+            'auth/user-not-found': 'No account found.',
+            'auth/wrong-password': 'Incorrect password.',
+            'auth/too-many-requests': 'Too many attempts. Try later.',
+            'auth/invalid-credential': 'Invalid credentials.'
+          };
+          errorEl.textContent = messages[err.code] || err.message || 'Login failed.';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Sign In';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

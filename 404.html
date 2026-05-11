@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#141414">
+  <title>Lost Your Way? — LoveFlix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Great+Vibes&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💔</text></svg>">
+  <style>
+    .error-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .error-page::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(229,9,20,0.06) 0%, transparent 60%);
+    }
+    .error-code {
+      font-family: var(--lf-font-display);
+      font-size: clamp(6rem, 20vw, 12rem);
+      color: var(--lf-red);
+      letter-spacing: 0.1em;
+      text-shadow: 0 0 60px var(--lf-red-glow);
+      line-height: 1;
+      margin-bottom: 8px;
+      position: relative;
+    }
+    .error-title {
+      font-family: var(--lf-font-elegant, 'Playfair Display', serif);
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      color: var(--lf-text-primary);
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .error-desc {
+      font-family: var(--lf-font-body);
+      font-size: var(--lf-fs-body);
+      color: var(--lf-text-muted);
+      max-width: 500px;
+      margin-bottom: 32px;
+      line-height: 1.6;
+      position: relative;
+    }
+    .error-heart {
+      font-size: 3rem;
+      margin-bottom: 24px;
+      animation: heartbeat 1.5s ease-in-out infinite;
+      position: relative;
+    }
+    .error-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      background: var(--lf-gradient-red);
+      color: #fff;
+      font-family: var(--lf-font-body);
+      font-size: var(--lf-fs-body);
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(229,9,20,0.3);
+      position: relative;
+    }
+    .error-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 30px rgba(229,9,20,0.4);
+    }
+    .error-logo {
+      position: absolute;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--lf-font-display);
+      font-size: 1.5rem;
+      color: var(--lf-red);
+      letter-spacing: 0.12em;
+      text-shadow: 0 0 15px var(--lf-red-glow);
+    }
+  </style>
+</head>
+<body>
+  <div class="error-page">
+    <div class="error-logo">LOVEFLIX</div>
+    <div class="error-heart">💔</div>
+    <div class="error-code">404</div>
+    <h1 class="error-title">Lost Your Way?</h1>
+    <p class="error-desc">
+      Looks like this page wandered off, just like our hearts before we found each other.
+      Let's get you back to our love story.
+    </p>
+    <a href="index.html" class="error-btn">❤️ Go Home</a>
+  </div>
+</body>
+</html>

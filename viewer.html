@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="LoveFlix — View your memories in full-screen cinematic glory.">
+  <meta name="theme-color" content="#000000">
+  <title>Viewer — LoveFlix</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/viewer.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>">
+</head>
+<body>
+  <div class="viewer-page" id="viewer-page">
+    <!-- Slideshow Progress -->
+    <div class="viewer-slideshow-bar" id="slideshow-bar"></div>
+
+    <!-- Top Bar -->
+    <div class="viewer-topbar">
+      <button class="viewer-back" id="back-btn" aria-label="Go back">← Back</button>
+      <span class="viewer-title" id="viewer-title"></span>
+      <span class="viewer-counter" id="viewer-counter"></span>
+    </div>
+
+    <!-- Media Display -->
+    <div class="viewer-media-wrap" id="viewer-media" role="img" aria-label="Memory viewer">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- Navigation -->
+    <button class="viewer-nav viewer-nav-prev" id="prev-btn" aria-label="Previous">‹</button>
+    <button class="viewer-nav viewer-nav-next" id="next-btn" aria-label="Next">›</button>
+
+    <!-- Caption -->
+    <div class="viewer-caption" id="viewer-caption">
+      <div class="viewer-caption-title" id="caption-title"></div>
+      <div class="viewer-caption-desc" id="caption-desc"></div>
+    </div>
+
+    <!-- Bottom Actions -->
+    <div class="viewer-bottombar">
+      <button class="viewer-action" id="like-btn" aria-label="Like">
+        <span class="viewer-action-icon">♡</span>
+        <span class="viewer-action-label">Like</span>
+      </button>
+      <button class="viewer-action" id="slideshow-btn" aria-label="Slideshow">
+        <span class="viewer-action-icon">▶</span>
+        <span class="viewer-action-label">Slideshow</span>
+      </button>
+      <button class="viewer-action" id="download-btn" aria-label="Download">
+        <span class="viewer-action-icon">⬇</span>
+        <span class="viewer-action-label">Download</span>
+      </button>
+      <button class="viewer-action" id="share-btn" aria-label="Share">
+        <span class="viewer-action-icon">↗</span>
+        <span class="viewer-action-label">Share</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+  <script src="js/config.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/viewer.js"></script>
+</body>
+</html>

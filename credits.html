@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="LoveFlix Credits — The cast and crew of our love story.">
+  <meta name="theme-color" content="#000000">
+  <title>Credits — LoveFlix</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Great+Vibes&family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/credits.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>">
+</head>
+<body>
+  <div class="credits-page">
+    <!-- Starry Background -->
+    <div class="credits-stars" aria-hidden="true"></div>
+    <div class="credits-particles" aria-hidden="true"></div>
+
+    <!-- Controls -->
+    <button class="credits-back" id="credits-back" aria-label="Back to home">← Back</button>
+    <button class="credits-music" id="credits-music" aria-label="Toggle music">🔇</button>
+
+    <!-- Scrolling Credits -->
+    <div class="credits-scroll-area">
+      <div class="credits-scroll-inner">
+        <!-- Title Card -->
+        <div class="credits-title-card">
+          <div class="credits-presents">LoveFlix Presents</div>
+          <h1 class="credits-logo">LOVEFLIX</h1>
+          <div class="credits-film-title">Our Love Story</div>
+        </div>
+
+        <div class="credits-divider"></div>
+
+        <!-- Dynamic Credit Items -->
+        <div id="credits-items">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Ending -->
+        <div class="credits-ending">
+          <div class="credits-divider"></div>
+          <div class="credits-ending-text">To Be Continued... Forever</div>
+          <div class="credits-ending-heart">❤️</div>
+          <div class="credits-ending-date">Made with love — LoveFlix</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pause Hint -->
+    <div class="credits-pause-hint">Click to pause</div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+  <script src="js/config.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/credits.js"></script>
+</body>
+</html>

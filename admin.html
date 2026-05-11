@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="LoveFlix Admin Dashboard — Manage your love story content.">
+  <meta name="theme-color" content="#141414">
+  <title>Admin Dashboard — LoveFlix</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/lovecode.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+</head>
+<body>
+  <div class="admin-page">
+    <!-- Mobile Sidebar Overlay -->
+    <div class="admin-sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" role="navigation" aria-label="Admin navigation">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">LOVEFLIX</div>
+        <div class="sidebar-label">Admin Panel</div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a class="sidebar-link active" data-section="section-dashboard" href="#section-dashboard">
+          <span class="sidebar-link-icon">📊</span> Dashboard
+        </a>
+        <a class="sidebar-link" data-section="section-upload" href="#section-upload">
+          <span class="sidebar-link-icon">📤</span> Upload Media
+        </a>
+        <a class="sidebar-link" data-section="section-media" href="#section-media">
+          <span class="sidebar-link-icon">🖼️</span> Manage Media
+        </a>
+        <a class="sidebar-link" data-section="section-profiles" href="#section-profiles">
+          <span class="sidebar-link-icon">👤</span> Profiles
+        </a>
+        <a class="sidebar-link" data-section="section-hero" href="#section-hero">
+          <span class="sidebar-link-icon">🎬</span> Hero Banner
+        </a>
+        <a class="sidebar-link" data-section="section-credits" href="#section-credits">
+          <span class="sidebar-link-icon">🎭</span> Credits
+        </a>
+        <a class="sidebar-link" data-section="section-settings" href="#section-settings">
+          <span class="sidebar-link-icon">⚙️</span> Settings
+        </a>
+        <a class="sidebar-link" data-section="section-backup" href="#section-backup">
+          <span class="sidebar-link-icon">💾</span> Backup
+        </a>
+        <a class="sidebar-link" data-section="section-lovecode" href="#section-lovecode">
+          <span class="sidebar-link-icon">🔐</span> Love Code
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="home.html" class="sidebar-link" style="border:none;padding:8px 0;">
+          <span class="sidebar-link-icon">🏠</span> View Site
+        </a>
+        <button class="sidebar-logout" id="logout-btn">
+          <span>🚪</span> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main" role="main">
+      <!-- Top Bar -->
+      <div class="admin-topbar">
+        <button class="admin-mobile-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">☰</button>
+        <h1 class="admin-topbar-title" id="admin-topbar-title">Dashboard</h1>
+        <div></div>
+      </div>
+
+      <!-- INLINE NAV SCRIPT — bypasses file caching, runs before external JS -->
+      <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        function showAdminSection(targetId) {
+          document.querySelectorAll('.admin-section').forEach(function(s) {
+            s.style.display = (s.id === targetId) ? 'block' : 'none';
+          });
+          document.querySelectorAll('.sidebar-link[data-section]').forEach(function(link) {
+            link.classList.toggle('active', link.dataset.section === targetId);
+          });
+          var titleEl = document.getElementById('admin-topbar-title');
+          var activeLink = document.querySelector('.sidebar-link[data-section="' + targetId + '"]');
+          if (titleEl && activeLink) {
+            var icon = activeLink.querySelector('.sidebar-link-icon');
+            titleEl.textContent = icon
+              ? activeLink.textContent.replace(icon.textContent, '').trim()
+              : activeLink.textContent.trim();
+          }
+        }
+
+        document.querySelectorAll('.sidebar-link[data-section]').forEach(function(link) {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            showAdminSection(link.dataset.section);
+          });
+        });
+
+        // Default: show Dashboard
+        showAdminSection('section-dashboard');
+        window.__showAdminSection = showAdminSection;
+      });
+      </script>
+
+      <!-- ===== DASHBOARD ===== -->
+      <section class="admin-section active" id="section-dashboard">
+        <div class="admin-stats">
+          <div class="stat-card">
+            <div class="stat-card-icon">📸</div>
+            <div class="stat-card-value" id="stat-total">0</div>
+            <div class="stat-card-label">Total Memories</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon">🖼️</div>
+            <div class="stat-card-value" id="stat-photos">0</div>
+            <div class="stat-card-label">Photos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon">🎬</div>
+            <div class="stat-card-value" id="stat-videos">0</div>
+            <div class="stat-card-label">Videos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon">👤</div>
+            <div class="stat-card-value" id="stat-profiles">0</div>
+            <div class="stat-card-label">Profiles</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon">❤️</div>
+            <div class="stat-card-value" id="stat-days">0</div>
+            <div class="stat-card-label">Days Together</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== UPLOAD MEDIA ===== -->
+      <section class="admin-section" id="section-upload">
+        <h2 class="admin-section-title">Upload Media</h2>
+
+        <div class="admin-form-group">
+          <label class="admin-form-label" for="upload-title">Title</label>
+          <input class="admin-form-input" id="upload-title" placeholder="e.g. Our First Date">
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-form-label" for="upload-desc">Description</label>
+          <input class="admin-form-input" id="upload-desc" placeholder="Optional description">
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-form-label" for="upload-category">Category</label>
+          <select class="admin-form-select" id="upload-category">
+            <option>Popular on LoveFlix</option>
+            <option selected>Our Best Memories</option>
+            <option>Special Moments</option>
+            <option>Timeline Highlights</option>
+            <option>Surprises</option>
+          </select>
+        </div>
+
+        <div class="upload-zone" id="upload-zone">
+          <div class="upload-zone-icon">📁</div>
+          <div class="upload-zone-text">Drop files here or click to browse</div>
+          <div class="upload-zone-hint">JPG, PNG, WEBP, MP4, MOV, WEBM — Max 50MB</div>
+          <input type="file" id="upload-input" multiple accept="image/*,video/*" style="display:none;">
+        </div>
+
+        <div class="upload-progress" id="upload-progress">
+          <div class="upload-progress-bar-wrap">
+            <div class="upload-progress-bar" id="upload-bar"></div>
+          </div>
+          <div class="upload-progress-text" id="upload-text">Uploading...</div>
+        </div>
+      </section>
+
+      <!-- ===== MANAGE MEDIA ===== -->
+      <section class="admin-section" id="section-media">
+        <h2 class="admin-section-title">Manage Media</h2>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Thumb</th>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Category</th>
+                <th>Featured</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="media-tbody">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== PROFILES ===== -->
+      <section class="admin-section" id="section-profiles">
+        <h2 class="admin-section-title">Manage Profiles</h2>
+        <div id="profiles-list">
+          <p style="color:var(--lf-text-muted);text-align:center;padding:24px;">Loading profiles... 💕</p>
+        </div>
+        <button class="admin-btn admin-btn-secondary" id="profile-add-btn"
+          style="margin-top:16px;width:100%;"
+          onclick="if(window.openProfileModal) openProfileModal(null); else alert('Admin JS is still loading, please wait a moment and try again.');">
+          + Add Profile
+        </button>
+      </section>
+
+      <!-- ===== HERO BANNER ===== -->
+      <section class="admin-section" id="section-hero">
+        <h2 class="admin-section-title">Hero Banner</h2>
+
+        <!-- Current Hero Preview -->
+        <div id="hero-preview-wrap" style="margin-bottom:20px;display:none;">
+          <label class="admin-form-label">Current Background</label>
+          <div id="hero-preview" style="width:100%;max-width:480px;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:var(--lf-bg-tertiary);position:relative;">
+            <img id="hero-preview-img" src="" alt="Hero preview" style="width:100%;height:100%;object-fit:cover;display:none;">
+            <video id="hero-preview-vid" src="" muted loop autoplay playsinline style="width:100%;height:100%;object-fit:cover;display:none;"></video>
+            <div id="hero-preview-empty" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--lf-text-muted);font-size:13px;">No background set</div>
+          </div>
+        </div>
+
+        <!-- Upload Zone for Hero Media -->
+        <div class="admin-form-group">
+          <label class="admin-form-label">Upload Hero Background</label>
+          <div class="upload-zone" id="hero-upload-zone" style="padding:28px 24px;">
+            <div class="upload-zone-icon" style="font-size:2rem;">🖼️</div>
+            <div class="upload-zone-text">Drop an image or video here, or click to browse</div>
+            <div class="upload-zone-hint">JPG, PNG, WEBP, MP4, MOV — Max 50MB</div>
+            <input type="file" id="hero-upload-input" accept="image/*,video/*" style="display:none;">
+          </div>
+          <div class="upload-progress" id="hero-upload-progress" style="margin-top:10px;">
+            <div class="upload-progress-bar-wrap">
+              <div class="upload-progress-bar" id="hero-upload-bar"></div>
+            </div>
+            <div class="upload-progress-text" id="hero-upload-text">Uploading...</div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+          <div style="flex:1;height:1px;background:rgba(255,255,255,0.06);"></div>
+          <span style="color:var(--lf-text-muted);font-size:12px;white-space:nowrap;">— or enter URL manually —</span>
+          <div style="flex:1;height:1px;background:rgba(255,255,255,0.06);"></div>
+        </div>
+
+        <div class="admin-form-group">
+          <label class="admin-form-label" for="hero-title-input">Title</label>
+          <input class="admin-form-input" id="hero-title-input" placeholder="Our Love Story">
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-form-label" for="hero-subtitle-input">Subtitle</label>
+          <input class="admin-form-input" id="hero-subtitle-input" placeholder="A romantic tagline...">
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-form-label" for="hero-bg-url">Background URL (image or video)</label>
+          <input class="admin-form-input" id="hero-bg-url" placeholder="https://...">
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-form-label" for="hero-media-type">Media Type</label>
+          <select class="admin-form-select" id="hero-media-type">
+            <option value="image">Image</option>
+            <option value="video">Video</option>
+          </select>
+        </div>
+        <button class="admin-btn admin-btn-primary" id="hero-save">💾 Save Hero Banner</button>
+      </section>
+
+      <!-- ===== CREDITS ===== -->
+      <section class="admin-section" id="section-credits">
+        <h2 class="admin-section-title">Manage Credits</h2>
+        <div id="credits-list">
+          <!-- Populated by JS -->
+        </div>
+        <div style="display:flex;gap:12px;margin-top:16px;">
+          <button class="admin-btn admin-btn-secondary" id="credit-add">+ Add Credit</button>
+          <button class="admin-btn admin-btn-primary" id="credits-save">💾 Save All</button>
+        </div>
+      </section>
+
+      <!-- ===== SETTINGS ===== -->
+      <section class="admin-section" id="section-settings">
+        <h2 class="admin-section-title">Site Settings</h2>
+        <div class="admin-form-group">
+          <label class="admin-form-label" for="setting-site-title">Site Title</label>
+          <input class="admin-form-input" id="setting-site-title" placeholder="LOVEFLIX">
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-form-label" for="setting-tagline">Tagline</label>
+          <input class="admin-form-input" id="setting-tagline" placeholder="Our Story. Our Memories. Our Forever.">
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-form-label" for="setting-start-date">Relationship Start Date</label>
+          <input class="admin-form-input" id="setting-start-date" type="date">
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-form-label" for="setting-intro-duration">Intro Duration (ms)</label>
+          <input class="admin-form-input" id="setting-intro-duration" type="number" value="4000">
+        </div>
+
+        <!-- LoveCode Setting -->
+        <div class="admin-form-group" style="border-top:1px solid rgba(255,255,255,0.06);padding-top:20px;margin-top:8px;">
+          <label class="admin-form-label" for="setting-lovecode">🔐 LoveCode <span style="color:var(--lf-blush);font-size:11px;font-weight:400;">(4-digit PIN to enter the site)</span></label>
+          <div style="display:flex;gap:10px;align-items:center;">
+            <input class="admin-form-input" id="setting-lovecode"
+              type="password"
+              inputmode="numeric"
+              maxlength="4"
+              pattern="[0-9]{4}"
+              placeholder="4-digit code"
+              autocomplete="off"
+              style="letter-spacing:0.4em;font-size:1.3rem;text-align:center;max-width:160px;">
+            <button type="button" id="lovecode-toggle-vis"
+              style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 14px;color:var(--lf-text-secondary);cursor:pointer;font-size:16px;transition:all 0.2s;"
+              aria-label="Show/hide code">👁️</button>
+          </div>
+          <p style="font-size:12px;color:var(--lf-text-dim);margin-top:8px;">Visitors must enter this code to access LoveFlix. Default is <strong style="color:var(--lf-text-muted);">1234</strong> if not set.</p>
+        </div>
+
+        <button class="admin-btn admin-btn-primary" id="settings-save">💾 Save Settings</button>
+      </section>
+
+      <!-- ===== BACKUP ===== -->
+      <section class="admin-section" id="section-backup">
+        <h2 class="admin-section-title">Backup & Restore</h2>
+        <p style="color:var(--lf-text-secondary);margin-bottom:24px;font-size:14px;">Export all your data as a JSON file or import a previous backup.</p>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;">
+          <button class="admin-btn admin-btn-primary" id="export-btn">📥 Export Backup</button>
+          <button class="admin-btn admin-btn-secondary" id="import-btn">📤 Import Backup</button>
+          <input type="file" id="import-file" accept=".json" style="display:none;">
+        </div>
+      </section>
+
+      <!-- ===== LOVE CODE SECURITY ===== -->
+      <section class="admin-section" id="section-lovecode">
+        <h2 class="admin-section-title">🔐 Love Code Security</h2>
+        <p style="color:var(--lf-text-secondary);font-size:13px;margin-bottom:24px;">Configure the romantic passcode protecting your LoveFlix. All settings sync to Firestore.</p>
+
+        <div class="lc-admin-section">
+          <div class="lc-admin-title">❤️ Love Code Lock</div>
+          <div class="lc-toggle-row">
+            <span class="lc-toggle-label">Enable Love Code Lock</span>
+            <label class="lc-toggle"><input type="checkbox" id="lc-enabled" checked><span class="lc-toggle-slider"></span></label>
+          </div>
+          <div class="admin-form-group" style="margin-top:16px;">
+            <label class="admin-form-label" for="lc-code">🔑 Love Code (4 digits)</label>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <input class="admin-form-input" id="lc-code" type="password" inputmode="numeric" maxlength="4" placeholder="e.g. 1437" autocomplete="off" style="letter-spacing:0.5em;font-size:1.4rem;text-align:center;max-width:140px;">
+              <button type="button" id="lc-code-vis" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 14px;color:var(--lf-text-secondary);cursor:pointer;">👁️</button>
+            </div>
+          </div>
+          <div class="admin-form-group">
+            <label class="admin-form-label" for="lc-timeout">⏱️ Auto-lock After (minutes)</label>
+            <input class="admin-form-input" id="lc-timeout" type="number" min="1" max="1440" value="5" style="max-width:120px;">
+          </div>
+          <div class="admin-form-group">
+            <label class="admin-form-label" for="lc-max-attempts">🚫 Max Failed Attempts</label>
+            <input class="admin-form-input" id="lc-max-attempts" type="number" min="1" max="20" value="5" style="max-width:120px;">
+          </div>
+          <div class="admin-form-group">
+            <label class="admin-form-label" for="lc-cooldown">❄️ Cooldown Duration (minutes)</label>
+            <input class="admin-form-input" id="lc-cooldown" type="number" min="1" max="60" value="2" style="max-width:120px;">
+          </div>
+        </div>
+
+        <div class="lc-admin-section" style="margin-top:16px;">
+          <div class="lc-admin-title">🎨 Appearance</div>
+          <div class="admin-form-group">
+            <label class="admin-form-label" for="lc-title-text">Lock Screen Title</label>
+            <input class="admin-form-input" id="lc-title-text" placeholder="LOVE CODE">
+          </div>
+          <div class="admin-form-group">
+            <label class="admin-form-label" for="lc-subtitle-text">Romantic Subtitle</label>
+            <input class="admin-form-input" id="lc-subtitle-text" placeholder="Enter the code that unlocks our forever.">
+          </div>
+          <div class="admin-form-group">
+            <label class="admin-form-label" for="lc-bg-url">Background Image/Video URL</label>
+            <input class="admin-form-input" id="lc-bg-url" placeholder="https://...">
+          </div>
+        </div>
+
+        <div class="lc-admin-section" style="margin-top:16px;">
+          <div class="lc-admin-title">🔊 Sensory &amp; Haptics</div>
+          <div class="lc-toggle-row">
+            <span class="lc-toggle-label">Enable Heartbeat Sound</span>
+            <label class="lc-toggle"><input type="checkbox" id="lc-sound"><span class="lc-toggle-slider"></span></label>
+          </div>
+          <div class="lc-toggle-row">
+            <span class="lc-toggle-label">Enable Haptic Vibration</span>
+            <label class="lc-toggle"><input type="checkbox" id="lc-vibration" checked><span class="lc-toggle-slider"></span></label>
+          </div>
+        </div>
+
+        <div class="lc-action-btns">
+          <button class="admin-btn admin-btn-primary" id="lc-save-btn">💾 Save Love Code Settings</button>
+          <button class="admin-btn admin-btn-secondary" id="lc-lock-now-btn">🔒 Lock Now</button>
+          <button class="admin-btn admin-btn-secondary" id="lc-test-btn">🧪 Test Lock Screen</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+  <script src="js/config.js?v=7"></script>
+  <script src="js/firebase-config.js?v=7"></script>
+  <script src="js/cloudinary.js?v=7"></script>
+  <script src="js/utils.js?v=7"></script>
+  <script src="js/notifications.js?v=7"></script>
+  <script src="js/storage.js?v=7"></script>
+  <script src="js/lovecode.js?v=7"></script>
+  <script src="js/auth.js?v=7"></script>
+  <script src="js/admin.js?v=7"></script>
+</body>
+</html>

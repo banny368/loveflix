@@ -1,0 +1,225 @@
+/* ============================================
+   LOVEFLIX — Profile Selection Styles
+   Netflix-style "Who's Watching?" screen
+   ============================================ */
+
+.profiles-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--lf-space-xl);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ---- Background ---- */
+.profiles-bg {
+  position: fixed;
+  inset: 0;
+  background: var(--lf-bg-primary);
+  z-index: 0;
+}
+
+.profiles-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(229, 9, 20, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 50%, rgba(255, 77, 109, 0.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* ---- Floating Particles ---- */
+.profiles-particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ---- Content ---- */
+.profiles-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 900px;
+  width: 100%;
+}
+
+/* ---- Title ---- */
+.profiles-logo {
+  font-family: var(--lf-font-display);
+  font-size: var(--lf-fs-logo);
+  color: var(--lf-red);
+  letter-spacing: 0.15em;
+  margin-bottom: var(--lf-space-sm);
+  text-shadow: 0 0 20px var(--lf-red-glow);
+  cursor: pointer;
+  transition: text-shadow var(--lf-transition-base);
+}
+
+.profiles-logo:hover {
+  text-shadow: 0 0 40px var(--lf-red-glow), 0 0 80px var(--lf-red-glow);
+}
+
+.profiles-title {
+  font-family: var(--lf-font-elegant);
+  font-size: var(--lf-fs-h1);
+  color: var(--lf-text-primary);
+  margin-bottom: var(--lf-space-2xl);
+  opacity: 0;
+  animation: fadeInUp 0.8s ease 0.3s forwards;
+}
+
+/* ---- Profile Grid ---- */
+.profiles-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--lf-space-xl);
+  margin-bottom: var(--lf-space-2xl);
+}
+
+/* ---- Profile Card ---- */
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--lf-space-md);
+  cursor: pointer;
+  opacity: 0;
+  animation: fadeInUp 0.6s ease forwards;
+  transition: transform var(--lf-transition-spring);
+}
+
+.profile-card:nth-child(1) { animation-delay: 0.4s; }
+.profile-card:nth-child(2) { animation-delay: 0.5s; }
+.profile-card:nth-child(3) { animation-delay: 0.6s; }
+.profile-card:nth-child(4) { animation-delay: 0.7s; }
+.profile-card:nth-child(5) { animation-delay: 0.8s; }
+
+.profile-card:hover {
+  transform: scale(1.08);
+}
+
+.profile-avatar {
+  width: var(--lf-profile-avatar);
+  height: var(--lf-profile-avatar);
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  background: var(--lf-bg-tertiary);
+  border: 2px solid transparent;
+  transition: all var(--lf-transition-base);
+  box-shadow: var(--lf-shadow-md);
+}
+
+.profile-avatar::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 22px;
+  padding: 2px;
+  background: linear-gradient(135deg, var(--lf-red), var(--lf-rose), var(--lf-gold));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity var(--lf-transition-base);
+}
+
+.profile-card:hover .profile-avatar::before {
+  opacity: 1;
+}
+
+.profile-card:hover .profile-avatar {
+  box-shadow: 0 0 30px rgba(229, 9, 20, 0.3), 0 0 60px rgba(255, 77, 109, 0.15);
+}
+
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  background: linear-gradient(135deg, var(--lf-bg-tertiary), var(--lf-bg-elevated));
+}
+
+.profile-name {
+  font-family: var(--lf-font-body);
+  font-size: var(--lf-fs-body);
+  color: var(--lf-text-secondary);
+  font-weight: var(--lf-fw-medium);
+  transition: color var(--lf-transition-fast);
+  letter-spacing: 0.02em;
+}
+
+.profile-card:hover .profile-name {
+  color: var(--lf-text-primary);
+}
+
+/* ---- Action Buttons ---- */
+.profiles-actions {
+  display: flex;
+  gap: var(--lf-space-md);
+  justify-content: center;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeIn 0.5s ease 1s forwards;
+}
+
+.profiles-btn {
+  font-family: var(--lf-font-body);
+  font-size: var(--lf-fs-small);
+  color: var(--lf-text-secondary);
+  padding: 10px 24px;
+  border: 1px solid var(--lf-text-muted);
+  border-radius: var(--lf-radius-full);
+  cursor: pointer;
+  background: transparent;
+  transition: all var(--lf-transition-base);
+  letter-spacing: 0.05em;
+}
+
+.profiles-btn:hover {
+  color: var(--lf-text-primary);
+  border-color: var(--lf-text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ---- Hidden Admin Access ---- */
+.profiles-admin-hint {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  cursor: default;
+  opacity: 0;
+  z-index: 10;
+  transition: opacity var(--lf-transition-base);
+}
+
+.profiles-admin-hint:hover {
+  opacity: 0.3;
+  cursor: pointer;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 480px) {
+  .profiles-grid { gap: var(--lf-space-lg); }
+  .profile-avatar { border-radius: 16px; }
+}

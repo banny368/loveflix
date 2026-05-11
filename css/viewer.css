@@ -1,0 +1,217 @@
+/* ============================================
+   LOVEFLIX — Full-Screen Viewer Styles
+   ============================================ */
+
+.viewer-page {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--lf-z-overlay);
+}
+
+/* ---- Media Display ---- */
+.viewer-media-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.viewer-media-wrap img,
+.viewer-media-wrap video {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  animation: fadeIn 0.4s ease;
+}
+
+/* ---- Top Bar ---- */
+.viewer-topbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+  z-index: 10;
+  opacity: 1;
+  transition: opacity var(--lf-transition-base);
+}
+
+.viewer-page.controls-hidden .viewer-topbar,
+.viewer-page.controls-hidden .viewer-bottombar,
+.viewer-page.controls-hidden .viewer-nav {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.viewer-back {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: var(--lf-text-primary);
+  font-family: var(--lf-font-body);
+  font-size: var(--lf-fs-body);
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: var(--lf-radius-md);
+  transition: background var(--lf-transition-fast);
+}
+
+.viewer-back:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.viewer-title {
+  font-family: var(--lf-font-body);
+  font-size: var(--lf-fs-body);
+  color: var(--lf-text-primary);
+  font-weight: var(--lf-fw-medium);
+  text-align: center;
+  flex: 1;
+  padding: 0 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.viewer-counter {
+  font-size: var(--lf-fs-small);
+  color: var(--lf-text-muted);
+  white-space: nowrap;
+}
+
+/* ---- Navigation Arrows ---- */
+.viewer-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 80px;
+  background: rgba(0,0,0,0.4);
+  border: none;
+  color: var(--lf-text-primary);
+  font-size: 28px;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--lf-transition-fast);
+  backdrop-filter: blur(4px);
+}
+
+.viewer-nav:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+.viewer-nav-prev { left: 0; border-radius: 0 8px 8px 0; }
+.viewer-nav-next { right: 0; border-radius: 8px 0 0 8px; }
+
+/* ---- Bottom Bar ---- */
+.viewer-bottombar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px 24px;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  z-index: 10;
+  transition: opacity var(--lf-transition-base);
+}
+
+.viewer-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: var(--lf-text-secondary);
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: var(--lf-radius-md);
+  transition: all var(--lf-transition-fast);
+  font-family: var(--lf-font-body);
+}
+
+.viewer-action:hover {
+  color: var(--lf-text-primary);
+  background: rgba(255,255,255,0.08);
+}
+
+.viewer-action.liked {
+  color: var(--lf-red);
+}
+
+.viewer-action-icon {
+  font-size: 22px;
+}
+
+.viewer-action-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ---- Slideshow Progress ---- */
+.viewer-slideshow-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: var(--lf-gradient-romantic);
+  z-index: 20;
+  transition: width 0.1s linear;
+  box-shadow: 0 0 8px var(--lf-red-glow);
+}
+
+/* ---- Caption ---- */
+.viewer-caption {
+  position: absolute;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 10;
+  padding: 12px 24px;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+  border-radius: var(--lf-radius-lg);
+  max-width: 80%;
+}
+
+.viewer-caption-title {
+  font-family: var(--lf-font-elegant);
+  font-size: var(--lf-fs-h3);
+  color: var(--lf-text-primary);
+  margin-bottom: 4px;
+}
+
+.viewer-caption-desc {
+  font-size: var(--lf-fs-small);
+  color: var(--lf-text-secondary);
+  font-style: italic;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 480px) {
+  .viewer-nav { width: 40px; height: 60px; font-size: 22px; }
+  .viewer-action { padding: 6px 10px; }
+  .viewer-action-icon { font-size: 18px; }
+  .viewer-caption { max-width: 90%; bottom: 80px; }
+}

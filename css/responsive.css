@@ -1,0 +1,539 @@
+/* ============================================
+   LOVEFLIX — Responsive Breakpoints (Premium)
+   Mobile-first, fully responsive design system
+   ============================================ */
+
+/* ============================================
+   BASE MOBILE DEFAULTS (≤ 480px)
+   ============================================ */
+@media (max-width: 480px) {
+  :root {
+    --lf-page-padding: 1rem;
+    --lf-card-width: 150px;
+    --lf-navbar-height: 56px;
+    --lf-profile-avatar: 86px;
+    --lf-space-2xl: 2rem;
+    --lf-space-3xl: 2.5rem;
+  }
+
+  /* ---- Global ---- */
+  .desktop-only { display: none !important; }
+
+  /* ---- Navbar ---- */
+  .navbar-links { display: none !important; }
+  .navbar-search { display: none !important; }
+  .days-counter { display: none !important; }
+
+  /* ---- Hero ---- */
+  .hero-banner { height: 60vh; min-height: 360px; }
+  .hero-content {
+    bottom: 12%;
+    left: var(--lf-page-padding);
+    right: var(--lf-page-padding);
+    max-width: 100%;
+  }
+  .hero-title { font-size: clamp(1.6rem, 7vw, 2.2rem) !important; }
+  .hero-subtitle { font-size: 1rem !important; margin-bottom: 0.75rem; }
+  .hero-desc { display: none; }
+  .hero-buttons {
+    flex-direction: row;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .hero-btn {
+    padding: 10px 18px;
+    font-size: 13px;
+    flex: 1;
+    justify-content: center;
+    min-width: 100px;
+  }
+
+  /* ---- Content Rows ---- */
+  .content-row { padding: 0 var(--lf-page-padding); }
+  .row-title { font-size: 1rem; }
+  .row-see-all { font-size: 11px; }
+
+  /* ---- Profiles Grid — 2 columns ---- */
+  .profiles-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: var(--lf-space-lg) var(--lf-space-md) !important;
+    justify-items: center;
+    width: 100%;
+    max-width: 340px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .profiles-content { padding: 0 var(--lf-page-padding); }
+  .profiles-title { margin-bottom: var(--lf-space-xl); font-size: 1.3rem; }
+  .profile-avatar { border-radius: 16px; }
+  .profile-avatar-placeholder { font-size: 2rem; }
+
+  /* ---- Admin Panel ---- */
+  .admin-sidebar {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    bottom: 0;
+    z-index: var(--lf-z-overlay);
+    transition: left var(--lf-transition-base);
+    width: 260px !important;
+    box-shadow: 4px 0 30px rgba(0,0,0,0.5);
+  }
+  .admin-sidebar.open { left: 0; }
+  .admin-main {
+    margin-left: 0 !important;
+    padding: 16px !important;
+  }
+  .admin-topbar { margin-bottom: 20px; }
+  .admin-mobile-toggle { display: flex !important; }
+
+  /* Admin Stats — 1 per row on very small screens */
+  .admin-stats {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+  .stat-card { padding: 16px !important; }
+  .stat-card-value { font-size: 1.8rem !important; }
+
+  /* ---- Admin Login ---- */
+  .admin-login-card {
+    margin: 1rem;
+    padding: 1.5rem !important;
+  }
+
+  /* ---- Footer ---- */
+  .lf-footer-links { gap: var(--lf-space-md); }
+
+  /* ---- Viewer ---- */
+  .viewer-controls { padding: 12px var(--lf-page-padding); }
+}
+
+/* ============================================
+   SMALL MOBILE (≤ 360px)
+   ============================================ */
+@media (max-width: 360px) {
+  :root {
+    --lf-page-padding: 0.75rem;
+    --lf-card-width: 130px;
+    --lf-profile-avatar: 76px;
+  }
+
+  .profiles-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: var(--lf-space-md) !important;
+    max-width: 280px !important;
+  }
+
+  .admin-stats {
+    grid-template-columns: 1fr !important;
+  }
+
+  .hero-title { font-size: 1.4rem !important; }
+  .hero-btn { padding: 9px 14px; font-size: 12px; }
+}
+
+/* ============================================
+   TABLET (481px – 768px)
+   ============================================ */
+@media (min-width: 481px) and (max-width: 768px) {
+  :root {
+    --lf-page-padding: 1.5rem;
+    --lf-card-width: 190px;
+    --lf-profile-avatar: 100px;
+    --lf-navbar-height: 60px;
+  }
+
+  .mobile-only { display: none !important; }
+  .navbar-links { display: none !important; }
+
+  /* Days counter — compact on tablet */
+  .days-counter { font-size: 11px; padding: 4px 10px; }
+  .days-counter span:first-child { display: none; }
+
+  /* Hero */
+  .hero-banner { height: 65vh; min-height: 420px; }
+  .hero-content { bottom: 15%; max-width: 85%; }
+  .hero-buttons { gap: 10px; }
+  .hero-btn { padding: 11px 22px; font-size: 14px; }
+
+  /* Profiles — 3 per row on tablet */
+  .profiles-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: var(--lf-space-xl) var(--lf-space-lg) !important;
+    justify-items: center;
+  }
+
+  /* Admin */
+  .admin-sidebar {
+    position: fixed;
+    left: -100%;
+    transition: left var(--lf-transition-base);
+    width: 260px !important;
+  }
+  .admin-sidebar.open { left: 0; }
+  .admin-main { margin-left: 0 !important; padding: 20px !important; }
+  .admin-mobile-toggle { display: flex !important; }
+
+  .admin-stats { grid-template-columns: repeat(2, 1fr) !important; }
+
+  .content-row { padding: 0 var(--lf-page-padding); }
+}
+
+/* ============================================
+   SMALL DESKTOP / LARGE TABLET (769px – 1024px)
+   ============================================ */
+@media (min-width: 769px) and (max-width: 1024px) {
+  :root {
+    --lf-page-padding: 2rem;
+    --lf-card-width: 210px;
+    --lf-profile-avatar: 110px;
+  }
+
+  .mobile-only { display: none !important; }
+  .tablet-only { display: none !important; }
+
+  .admin-stats { grid-template-columns: repeat(3, 1fr) !important; }
+}
+
+/* ============================================
+   DESKTOP (> 1024px)
+   ============================================ */
+@media (min-width: 1025px) {
+  :root {
+    --lf-page-padding: 3.5rem;
+    --lf-card-width: 240px;
+    --lf-profile-avatar: 120px;
+  }
+  .mobile-only { display: none !important; }
+  .tablet-only { display: none !important; }
+  .admin-mobile-toggle { display: none !important; }
+}
+
+/* ============================================
+   LARGE DESKTOP (> 1440px)
+   ============================================ */
+@media (min-width: 1441px) {
+  :root {
+    --lf-page-padding: 4rem;
+    --lf-card-width: 270px;
+  }
+  body { max-width: 1920px; margin: 0 auto; }
+}
+
+/* ============================================
+   TOUCH DEVICES — Premium Touch Animations
+   ============================================ */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover-only transforms on touch */
+  .hover-lift:hover,
+  .hover-scale:hover,
+  .hover-glow:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* Touch feedback — scale down on active */
+  .profile-card:active {
+    transform: scale(0.95) !important;
+    transition: transform 0.12s ease !important;
+  }
+
+  .hero-btn:active,
+  .profiles-btn:active,
+  .admin-btn:active {
+    transform: scale(0.97) !important;
+    opacity: 0.85;
+    transition: all 0.1s ease !important;
+  }
+
+  .media-card:active {
+    transform: scale(0.97) !important;
+    transition: transform 0.12s ease !important;
+  }
+
+  /* Always show card info on touch */
+  .media-card-info {
+    transform: translateY(0) !important;
+    opacity: 1 !important;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+  }
+  .media-card-gradient { opacity: 0.6 !important; }
+  .card-hover-info { opacity: 1 !important; }
+
+  /* Sidebar links bigger tap targets */
+  .sidebar-link { padding: 14px 20px !important; }
+
+  /* Smooth scroll for carousels */
+  .row-carousel {
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+  }
+  .media-card { scroll-snap-align: start; }
+
+  /* Bigger touch targets for buttons */
+  .navbar-search-btn,
+  .music-toggle,
+  .admin-mobile-toggle {
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Ripple effect on buttons */
+  .hero-btn,
+  .profiles-btn,
+  .admin-btn,
+  .sidebar-link {
+    position: relative;
+    overflow: hidden;
+  }
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
+}
+
+/* ============================================
+   HIGH CONTRAST
+   ============================================ */
+@media (prefers-contrast: high) {
+  :root {
+    --lf-text-secondary: #E0E0E0;
+    --lf-text-muted: #C0C0C0;
+    --lf-glass-border: rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* ============================================
+   LANDSCAPE MOBILE (short screens)
+   ============================================ */
+@media (max-height: 500px) and (max-width: 900px) {
+  .hero-banner { height: 100vw; min-height: 300px; max-height: 85vh; }
+  .profiles-page {
+    min-height: auto;
+    padding: 1rem;
+    justify-content: flex-start;
+    padding-top: 2rem;
+  }
+  .profiles-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+    max-width: 100% !important;
+  }
+  .profile-avatar { width: 70px !important; height: 70px !important; }
+  .admin-sidebar { width: 220px !important; }
+}
+
+/* ============================================
+   PREMIUM MOBILE ANIMATIONS
+   ============================================ */
+
+/* Smooth touch ripple effect */
+@keyframes touchRipple {
+  from { transform: scale(0); opacity: 0.4; }
+  to   { transform: scale(3); opacity: 0; }
+}
+
+/* Card press on touch */
+@keyframes cardPress {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+
+/* Slide up from bottom (mobile sheet) */
+@keyframes slideUpMobile {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* Bottom fade in for mobile content */
+@keyframes fadeInUpMobile {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+/* Swipe hint animation */
+@keyframes swipeHint {
+  0%   { transform: translateX(0);   opacity: 1; }
+  40%  { transform: translateX(-20px); opacity: 0.5; }
+  60%  { transform: translateX(-20px); opacity: 0.5; }
+  100% { transform: translateX(0);   opacity: 0; }
+}
+
+/* Mobile hero shimmer */
+@keyframes mobileShimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+/* Glow pulse for active cards */
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(229,9,20,0.3); }
+  50%       { box-shadow: 0 0 25px rgba(229,9,20,0.6); }
+}
+
+/* Mobile utility classes */
+.mobile-slide-up {
+  animation: slideUpMobile 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+.mobile-fade-up {
+  animation: fadeInUpMobile 0.35s ease forwards;
+}
+.touch-glow-active {
+  animation: glowPulse 1.5s ease-in-out infinite;
+}
+
+/* ============================================
+   ADMIN PANEL — Mobile Overrides
+   ============================================ */
+@media (max-width: 768px) {
+  /* Topbar */
+  .admin-topbar-title { font-size: 1.1rem !important; }
+
+  /* Section titles */
+  .admin-section-title { font-size: 1.15rem !important; }
+
+  /* Forms */
+  .admin-form-input,
+  .admin-form-select {
+    font-size: 16px !important; /* Prevents iOS zoom on focus */
+  }
+
+  /* Modal full-width on mobile */
+  .admin-modal {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    max-height: 90vh !important;
+    overflow-y: auto;
+    border-radius: 16px 16px 0 0 !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    top: auto !important;
+    animation: slideUpMobile 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards !important;
+  }
+
+  .admin-modal-overlay {
+    align-items: flex-end !important;
+  }
+
+  /* Backup / export buttons */
+  #export-btn, #import-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Table — horizontal scroll */
+  .admin-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--lf-radius-md);
+  }
+  .admin-table { min-width: 580px; }
+}
+
+/* ============================================
+   HOME PAGE — Mobile Overrides
+   ============================================ */
+@media (max-width: 768px) {
+  /* Navbar right side — compact */
+  .navbar-right { gap: 8px !important; }
+  .music-toggle { font-size: 16px !important; }
+
+  /* Days counter — show compact version on tablet */
+  .days-counter {
+    font-size: 10px;
+    padding: 3px 8px;
+  }
+
+  /* Row arrows — hide on mobile (touch scroll instead) */
+  .row-arrow { display: none !important; }
+
+  /* Romantic quote */
+  .romantic-quote { padding: var(--lf-space-2xl) var(--lf-page-padding); }
+  .romantic-quote-text { font-size: clamp(1.2rem, 5vw, 1.8rem); }
+
+  /* Footer */
+  .lf-footer { padding: var(--lf-space-xl) var(--lf-page-padding); }
+  .lf-footer-links { gap: var(--lf-space-md); flex-direction: column; align-items: center; }
+}
+
+/* ============================================
+   PROFILES PAGE — Mobile Overrides
+   ============================================ */
+@media (max-width: 600px) {
+  .profiles-page {
+    padding: var(--lf-space-lg) var(--lf-page-padding);
+    justify-content: center;
+    min-height: 100svh; /* safe area */
+  }
+
+  .profiles-logo {
+    font-size: clamp(2rem, 10vw, 3rem) !important;
+    margin-bottom: var(--lf-space-xs);
+  }
+
+  .profiles-title {
+    font-size: clamp(1.1rem, 5vw, 1.6rem) !important;
+    margin-bottom: var(--lf-space-xl);
+  }
+
+  .profiles-actions { gap: var(--lf-space-sm); }
+  .profiles-btn {
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+
+  /* Profile card hover disabled on touch, but tap animation */
+  .profile-card { transition: transform 0.15s ease !important; }
+  .profile-card:active { transform: scale(0.93) !important; }
+}
+
+/* ============================================
+   ADMIN LOGIN — Mobile
+   ============================================ */
+@media (max-width: 480px) {
+  .admin-login-page {
+    padding: 1rem;
+    align-items: flex-start;
+    padding-top: 3rem;
+  }
+
+  .admin-login-card {
+    width: 100% !important;
+    border-radius: 16px !important;
+    padding: 1.75rem 1.25rem !important;
+  }
+
+  .admin-login-title { font-size: 1.3rem !important; }
+  .admin-login-subtitle { font-size: 13px; }
+}
+
+/* ============================================
+   SAFE AREA INSETS (iPhone notch/home bar)
+   ============================================ */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .profiles-page,
+  .admin-main,
+  .lf-footer {
+    padding-bottom: calc(var(--lf-space-xl) + env(safe-area-inset-bottom));
+  }
+
+  .lf-navbar {
+    padding-top: env(safe-area-inset-top);
+    height: calc(var(--lf-navbar-height) + env(safe-area-inset-top));
+  }
+}

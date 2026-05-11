@@ -1,0 +1,169 @@
+/* ============================================
+   LOVEFLIX — Design System Variables
+   Netflix-authentic dark cinematic palette
+   ============================================ */
+
+:root {
+  /* ---- Brand Colors ---- */
+  --lf-red: #E50914;
+  --lf-red-hover: #F40612;
+  --lf-red-dark: #B20710;
+  --lf-red-glow: rgba(229, 9, 20, 0.5);
+
+  /* ---- Romantic Highlight Colors ---- */
+  --lf-rose: #FF4D6D;
+  --lf-blush: #FFC2D1;
+  --lf-warm-white: #FFF1F3;
+
+  /* ---- Background Colors ---- */
+  --lf-bg-primary: #141414;
+  --lf-bg-secondary: #1A1A1A;
+  --lf-bg-tertiary: #222222;
+  --lf-bg-card: #181818;
+  --lf-bg-elevated: #2A2A2A;
+  --lf-bg-overlay: rgba(0, 0, 0, 0.75);
+  --lf-bg-modal: rgba(0, 0, 0, 0.85);
+
+  /* ---- Text Colors ---- */
+  --lf-text-primary: #FFFFFF;
+  --lf-text-secondary: #B3B3B3;
+  --lf-text-muted: #808080;
+  --lf-text-dim: #666666;
+  --lf-text-link: #E50914;
+
+  /* ---- Accent Colors ---- */
+  --lf-gold: #FFD700;
+  --lf-pink: #FF6B9D;
+  --lf-purple: #A855F7;
+  --lf-blue: #3B82F6;
+  --lf-green: #22C55E;
+  --lf-orange: #F97316;
+
+  /* ---- Gradients ---- */
+  --lf-gradient-hero: linear-gradient(
+    to top,
+    var(--lf-bg-primary) 0%,
+    rgba(20, 20, 20, 0.8) 30%,
+    rgba(20, 20, 20, 0.4) 60%,
+    transparent 100%
+  );
+  --lf-gradient-hero-left: linear-gradient(
+    to right,
+    var(--lf-bg-primary) 0%,
+    rgba(20, 20, 20, 0.7) 40%,
+    transparent 100%
+  );
+  --lf-gradient-card: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.9) 100%
+  );
+  --lf-gradient-red: linear-gradient(135deg, #E50914 0%, #B20710 100%);
+  --lf-gradient-romantic: linear-gradient(135deg, #FF4D6D 0%, #E50914 100%);
+  --lf-gradient-gold: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  --lf-gradient-glass: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  --lf-gradient-shimmer: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.06) 50%,
+    transparent 100%
+  );
+  --lf-gradient-gold-shimmer: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 215, 0, 0.15) 50%,
+    transparent 100%
+  );
+
+  /* ---- Typography ---- */
+  --lf-font-display: 'Bebas Neue', 'Impact', sans-serif;
+  --lf-font-elegant: 'Playfair Display', 'Georgia', serif;
+  --lf-font-romantic: 'Great Vibes', 'Dancing Script', cursive;
+  --lf-font-body: 'Poppins', 'Segoe UI', sans-serif;
+
+  --lf-fs-hero: clamp(2.5rem, 5vw, 4.5rem);
+  --lf-fs-h1: clamp(1.75rem, 3.5vw, 3rem);
+  --lf-fs-h2: clamp(1.25rem, 2.5vw, 2rem);
+  --lf-fs-h3: clamp(1rem, 2vw, 1.5rem);
+  --lf-fs-body: clamp(0.875rem, 1.5vw, 1rem);
+  --lf-fs-small: clamp(0.75rem, 1.2vw, 0.875rem);
+  --lf-fs-xs: 0.75rem;
+  --lf-fs-logo: clamp(2rem, 4vw, 3.5rem);
+
+  --lf-fw-light: 300;
+  --lf-fw-regular: 400;
+  --lf-fw-medium: 500;
+  --lf-fw-semibold: 600;
+  --lf-fw-bold: 700;
+
+  --lf-lh-tight: 1.1;
+  --lf-lh-snug: 1.3;
+  --lf-lh-normal: 1.5;
+  --lf-lh-relaxed: 1.75;
+
+  /* ---- Spacing ---- */
+  --lf-space-xs: 0.25rem;
+  --lf-space-sm: 0.5rem;
+  --lf-space-md: 1rem;
+  --lf-space-lg: 1.5rem;
+  --lf-space-xl: 2rem;
+  --lf-space-2xl: 3rem;
+  --lf-space-3xl: 4rem;
+  --lf-space-4xl: 6rem;
+
+  /* ---- Page Padding ---- */
+  --lf-page-padding: clamp(1rem, 4vw, 3.5rem);
+
+  /* ---- Border Radius ---- */
+  --lf-radius-sm: 4px;
+  --lf-radius-md: 8px;
+  --lf-radius-lg: 12px;
+  --lf-radius-xl: 16px;
+  --lf-radius-full: 9999px;
+
+  /* ---- Shadows ---- */
+  --lf-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --lf-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --lf-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --lf-shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.6);
+  --lf-shadow-glow: 0 0 20px var(--lf-red-glow);
+  --lf-shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+
+  /* ---- Glassmorphism ---- */
+  --lf-glass-bg: rgba(255, 255, 255, 0.05);
+  --lf-glass-bg-strong: rgba(255, 255, 255, 0.1);
+  --lf-glass-border: rgba(255, 255, 255, 0.08);
+  --lf-glass-blur: blur(20px);
+  --lf-glass-blur-strong: blur(40px);
+
+  /* ---- Transitions ---- */
+  --lf-transition-fast: 150ms ease;
+  --lf-transition-base: 250ms ease;
+  --lf-transition-slow: 400ms ease;
+  --lf-transition-slower: 600ms ease;
+  --lf-transition-spring: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ---- Z-Index Layers ---- */
+  --lf-z-base: 1;
+  --lf-z-card: 10;
+  --lf-z-dropdown: 100;
+  --lf-z-sticky: 200;
+  --lf-z-navbar: 500;
+  --lf-z-overlay: 700;
+  --lf-z-modal: 800;
+  --lf-z-toast: 900;
+  --lf-z-loader: 1000;
+
+  /* ---- Sizes ---- */
+  --lf-navbar-height: 68px;
+  --lf-card-width: 240px;
+  --lf-card-height: 135px;
+  --lf-profile-avatar: 120px;
+  --lf-sidebar-width: 260px;
+  --lf-max-content: 1400px;
+}

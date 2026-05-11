@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Choose your milestone — LoveFlix profile selection">
+  <meta name="theme-color" content="#141414">
+  <title>Who's Watching? — LoveFlix</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Great+Vibes&family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/profiles.css">
+  <link rel="stylesheet" href="css/lovecode.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>">
+</head>
+<body>
+  <div class="profiles-page">
+    <!-- Background -->
+    <div class="profiles-bg" aria-hidden="true"></div>
+    <div class="profiles-particles" aria-hidden="true"></div>
+
+    <!-- Content -->
+    <div class="profiles-content">
+      <h2 class="profiles-logo" id="profiles-logo">LOVEFLIX</h2>
+      <h1 class="profiles-title">Who's Watching Our Story?</h1>
+
+      <!-- Profile Cards Grid -->
+      <div class="profiles-grid" id="profiles-grid" role="list">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Actions -->
+      <div class="profiles-actions">
+        <button class="profiles-btn" id="manage-profiles-btn" aria-label="Manage profiles">
+          Manage Profiles
+        </button>
+      </div>
+    </div>
+
+    <!-- Hidden Admin Access (triple-click) -->
+    <button class="profiles-admin-hint" id="admin-hint" aria-label="Admin access" tabindex="-1"></button>
+  </div>
+
+  <!-- Firebase SDK (CDN) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+  <script src="js/config.js?v=7"></script>
+  <script src="js/firebase-config.js?v=7"></script>
+  <script src="js/utils.js?v=7"></script>
+  <script src="js/notifications.js?v=7"></script>
+  <script src="js/storage.js?v=7"></script>
+  <script src="js/lovecode.js?v=7"></script>
+  <script src="js/profiles.js?v=7"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      window.LoveCodeLock?.check(() => {
+        // unlocked — profiles.js handles the rest
+        window.LoveCodeLock?.recordActivity();
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+{
+  "profiles": [
+    { "name": "1 Month", "slug": "1-month", "coverImage": "", "sortOrder": 1, "active": true },
+    { "name": "3 Months", "slug": "3-months", "coverImage": "", "sortOrder": 2, "active": true },
+    { "name": "6 Months", "slug": "6-months", "coverImage": "", "sortOrder": 3, "active": true },
+    { "name": "1 Year", "slug": "1-year", "coverImage": "", "sortOrder": 4, "active": true },
+    { "name": "Forever", "slug": "forever", "coverImage": "", "sortOrder": 5, "active": true }
+  ],
+  "hero": {
+    "title": "Our Love Story",
+    "subtitle": "Every moment with you is a memory I treasure forever",
+    "backgroundUrl": "",
+    "mediaType": "image",
+    "buttonText": "Play"
+  },
+  "credits": [
+    { "role": "Directed by", "value": "God", "sortOrder": 1 },
+    { "role": "Boyfriend", "value": "Your Name", "sortOrder": 2 },
+    { "role": "Girlfriend", "value": "Partner Name", "sortOrder": 3 },
+    { "role": "Written by", "value": "Fate & Destiny", "sortOrder": 4 },
+    { "role": "Produced by", "value": "Patience & Support", "sortOrder": 5 },
+    { "role": "Director of Photography", "value": "Our Camera Rolls", "sortOrder": 6 },
+    { "role": "Executive Producers", "value": "Shared Future Plans", "sortOrder": 7 },
+    { "role": "Technical Advisor", "value": "Honest Communication", "sortOrder": 8 },
+    { "role": "Catering By", "value": "Midnight Cravings", "sortOrder": 9 },
+    { "role": "Stunt Coordinators", "value": "Arguments & Fights", "sortOrder": 10 },
+    { "role": "Time Management", "value": "Five More Minutes", "sortOrder": 11 },
+    { "role": "Wardrobe Designer", "value": "Each Other's Hoodies", "sortOrder": 12 }
+  ],
+  "settings": {
+    "siteTitle": "LOVEFLIX",
+    "tagline": "Our Story. Our Memories. Our Forever.",
+    "introDuration": 4000,
+    "autoplay": true,
+    "backgroundMusic": true,
+    "relationshipStartDate": "2024-01-01",
+    "theme": "dark",
+    "enableAds": false
+  }
+}

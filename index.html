@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="LoveFlix — Your Love Story, Streaming Forever. A cinematic anniversary experience.">
+  <meta name="theme-color" content="#141414">
+  <title>LoveFlix — Your Love Story</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Great+Vibes&family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/intro.css">
+  <link rel="stylesheet" href="css/lovecode.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>">
+</head>
+<body>
+  <main class="intro-page" id="intro-page" role="main" aria-label="LoveFlix Intro">
+    <!-- Ambient Glow -->
+    <div class="intro-bg-glow" aria-hidden="true"></div>
+
+    <!-- Floating Particles -->
+    <div class="intro-particles" aria-hidden="true"></div>
+
+    <!-- Logo -->
+    <div class="intro-logo-wrap">
+      <h1 class="intro-logo" id="intro-logo">LOVEFLIX</h1>
+      <p class="intro-tagline">Our Story. Our Memories. Our Forever.</p>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="intro-progress-wrap" aria-label="Loading progress">
+      <div class="intro-progress-track">
+        <div class="intro-progress-bar" id="intro-progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+      <p class="intro-progress-text">Loading Our Love Story...</p>
+    </div>
+
+    <!-- Skip Intro -->
+    <button class="intro-skip" id="skip-btn" aria-label="Skip intro">Skip Intro ▸</button>
+
+    <!-- Sound Toggle -->
+    <button class="intro-sound" id="sound-btn" aria-label="Toggle sound">🔇</button>
+  </main>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/lovecode.js"></script>
+  <script src="js/intro.js"></script>
+</body>
+</html>

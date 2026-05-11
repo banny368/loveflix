@@ -1,0 +1,156 @@
+/* ============================================
+   LOVEFLIX — Modern CSS Reset
+   Sensible defaults for dark cinematic UI
+   ============================================ */
+
+/* --- Box Model --- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* --- Document --- */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  font-size: 16px;
+  tab-size: 4;
+}
+
+body {
+  min-height: 100vh;
+  font-family: var(--lf-font-body);
+  font-weight: var(--lf-fw-regular);
+  line-height: var(--lf-lh-normal);
+  color: var(--lf-text-primary);
+  background-color: var(--lf-bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* --- Typography --- */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--lf-font-display);
+  font-weight: var(--lf-fw-bold);
+  line-height: var(--lf-lh-tight);
+  color: var(--lf-text-primary);
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+  color: var(--lf-text-secondary);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* --- Lists --- */
+ul, ol {
+  list-style: none;
+}
+
+/* --- Media --- */
+img, video, svg, canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+img {
+  font-style: italic; /* Fallback styled alt text */
+}
+
+/* --- Form Elements --- */
+input, button, textarea, select {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  outline: none;
+}
+
+button {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--lf-text-muted);
+  opacity: 1;
+}
+
+/* --- Tables --- */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* --- Scrollbar (WebKit) --- */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--lf-bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--lf-bg-elevated);
+  border-radius: var(--lf-radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--lf-text-muted);
+}
+
+/* Firefox Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--lf-bg-elevated) var(--lf-bg-primary);
+}
+
+/* --- Selection --- */
+::selection {
+  background-color: var(--lf-red);
+  color: var(--lf-text-primary);
+}
+
+/* --- Focus Visible --- */
+:focus-visible {
+  outline: 2px solid var(--lf-red);
+  outline-offset: 2px;
+}
+
+/* --- Accessibility --- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- Utility --- */
+.hidden {
+  display: none !important;
+}
+
+.no-scroll {
+  overflow: hidden !important;
+}
