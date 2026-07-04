@@ -11,12 +11,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/variables.css">
-  <link rel="stylesheet" href="css/reset.css">
-  <link rel="stylesheet" href="css/animations.css">
-  <link rel="stylesheet" href="css/admin.css">
-  <link rel="stylesheet" href="css/lovecode.css">
-  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/variables.css?v=9">
+  <link rel="stylesheet" href="css/reset.css?v=9">
+  <link rel="stylesheet" href="css/animations.css?v=9">
+  <link rel="stylesheet" href="css/admin.css?v=9">
+  <link rel="stylesheet" href="css/lovecode.css?v=9">
+  <link rel="stylesheet" href="css/responsive.css?v=9">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
 </head>
@@ -60,6 +60,9 @@
         <a class="sidebar-link" data-section="section-lovecode" href="#section-lovecode">
           <span class="sidebar-link-icon">🔐</span> Love Code
         </a>
+        <a class="sidebar-link" data-section="section-connections" href="#section-connections">
+          <span class="sidebar-link-icon">🔌</span> Connections
+        </a>
       </nav>
 
       <div class="sidebar-footer">
@@ -80,39 +83,6 @@
         <h1 class="admin-topbar-title" id="admin-topbar-title">Dashboard</h1>
         <div></div>
       </div>
-
-      <!-- INLINE NAV SCRIPT — bypasses file caching, runs before external JS -->
-      <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        function showAdminSection(targetId) {
-          document.querySelectorAll('.admin-section').forEach(function(s) {
-            s.style.display = (s.id === targetId) ? 'block' : 'none';
-          });
-          document.querySelectorAll('.sidebar-link[data-section]').forEach(function(link) {
-            link.classList.toggle('active', link.dataset.section === targetId);
-          });
-          var titleEl = document.getElementById('admin-topbar-title');
-          var activeLink = document.querySelector('.sidebar-link[data-section="' + targetId + '"]');
-          if (titleEl && activeLink) {
-            var icon = activeLink.querySelector('.sidebar-link-icon');
-            titleEl.textContent = icon
-              ? activeLink.textContent.replace(icon.textContent, '').trim()
-              : activeLink.textContent.trim();
-          }
-        }
-
-        document.querySelectorAll('.sidebar-link[data-section]').forEach(function(link) {
-          link.addEventListener('click', function(e) {
-            e.preventDefault();
-            showAdminSection(link.dataset.section);
-          });
-        });
-
-        // Default: show Dashboard
-        showAdminSection('section-dashboard');
-        window.__showAdminSection = showAdminSection;
-      });
-      </script>
 
       <!-- ===== DASHBOARD ===== -->
       <section class="admin-section active" id="section-dashboard">
@@ -165,6 +135,13 @@
             <option>Special Moments</option>
             <option>Timeline Highlights</option>
             <option>Surprises</option>
+          </select>
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-form-label" for="upload-profile">Profile / Milestone</label>
+          <select class="admin-form-select" id="upload-profile">
+            <option value="">All profiles</option>
+            <!-- Populated by JS from your profiles -->
           </select>
         </div>
 
@@ -408,6 +385,140 @@
           <button class="admin-btn admin-btn-secondary" id="lc-test-btn">🧪 Test Lock Screen</button>
         </div>
       </section>
+
+      <!-- ===== CONNECTIONS (Firebase + Cloudinary) ===== -->
+      <section class="admin-section" id="section-connections">
+        <h2 class="admin-section-title">🔌 Connections</h2>
+        <p style="color:var(--lf-text-secondary);font-size:13px;margin-bottom:20px;">
+          Connect LoveFlix to your own Firebase project (database + login) and Cloudinary account (photo/video hosting).
+        </p>
+
+        <!-- Status -->
+        <div class="connection-status-row">
+          <div class="connection-status" id="conn-firebase-status">
+            <span class="connection-status-dot"></span>
+            <div>
+              <div class="connection-status-name">Firebase</div>
+              <div class="connection-status-detail" id="conn-firebase-detail">Checking...</div>
+            </div>
+          </div>
+          <div class="connection-status" id="conn-cloudinary-status">
+            <span class="connection-status-dot"></span>
+            <div>
+              <div class="connection-status-name">Cloudinary</div>
+              <div class="connection-status-detail" id="conn-cloudinary-detail">Checking...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==== Firebase Panel ==== -->
+        <div class="lc-admin-section" style="margin-top:20px;">
+          <div class="lc-admin-title">🔥 Firebase Configuration</div>
+
+          <details class="guide-box">
+            <summary>📖 How do I get my Firebase config? (step-by-step)</summary>
+            <ol>
+              <li>Go to <strong>console.firebase.google.com</strong> and create a project (e.g. "loveflix").</li>
+              <li><strong>Authentication → Sign-in method</strong>: enable <em>Email/Password</em>, then <strong>Users → Add user</strong> (your admin email + password).</li>
+              <li><strong>Firestore Database → Create database</strong> (start in test mode).</li>
+              <li>In <strong>Firestore → Rules</strong>, paste:
+                <pre>rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{collection}/{document} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+  }
+}</pre></li>
+              <li><strong>Project Settings → General → Your apps → Web app</strong> → register an app and copy the <code>firebaseConfig</code> block.</li>
+              <li>Paste that whole block in the box below and click <strong>Parse</strong>, then <strong>Save</strong>.</li>
+            </ol>
+            <p class="guide-note">⚠️ Saved here = <strong>this browser only</strong>. To make it permanent for all devices and visitors, put the same values in <code>js/config.js</code> and re-upload the site.</p>
+          </details>
+
+          <div class="admin-form-group" style="margin-top:14px;">
+            <label class="admin-form-label" for="fb-paste">Paste your <code>firebaseConfig</code> here (from Firebase console)</label>
+            <textarea class="admin-form-input config-paste" id="fb-paste" rows="6" placeholder='const firebaseConfig = {
+  apiKey: "AIza...",
+  authDomain: "your-project.firebaseapp.com",
+  projectId: "your-project-id",
+  ...
+};'></textarea>
+            <button class="admin-btn admin-btn-secondary" id="fb-parse-btn" style="margin-top:8px;">✨ Parse &amp; Fill Fields</button>
+          </div>
+
+          <div class="connection-fields-grid">
+            <div class="admin-form-group">
+              <label class="admin-form-label" for="fb-api-key">API Key</label>
+              <input class="admin-form-input" id="fb-api-key" placeholder="AIza..." autocomplete="off">
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label" for="fb-auth-domain">Auth Domain</label>
+              <input class="admin-form-input" id="fb-auth-domain" placeholder="your-project.firebaseapp.com" autocomplete="off">
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label" for="fb-project-id">Project ID</label>
+              <input class="admin-form-input" id="fb-project-id" placeholder="your-project-id" autocomplete="off">
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label" for="fb-storage-bucket">Storage Bucket</label>
+              <input class="admin-form-input" id="fb-storage-bucket" placeholder="your-project.appspot.com" autocomplete="off">
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label" for="fb-sender-id">Messaging Sender ID</label>
+              <input class="admin-form-input" id="fb-sender-id" placeholder="123456789" autocomplete="off">
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label" for="fb-app-id">App ID</label>
+              <input class="admin-form-input" id="fb-app-id" placeholder="1:123:web:abc" autocomplete="off">
+            </div>
+          </div>
+
+          <div class="lc-action-btns" style="margin-top:14px;">
+            <button class="admin-btn admin-btn-primary" id="fb-save-btn">💾 Save Firebase Config</button>
+            <button class="admin-btn admin-btn-secondary" id="fb-reset-btn">↩️ Reset to File Defaults</button>
+          </div>
+        </div>
+
+        <!-- ==== Cloudinary Panel ==== -->
+        <div class="lc-admin-section" style="margin-top:16px;">
+          <div class="lc-admin-title">☁️ Cloudinary Configuration</div>
+
+          <details class="guide-box">
+            <summary>📖 How do I set up Cloudinary? (step-by-step)</summary>
+            <ol>
+              <li>Create a free account at <strong>cloudinary.com</strong>.</li>
+              <li>On the <strong>Dashboard</strong>, copy your <em>Cloud Name</em>.</li>
+              <li>Go to <strong>Settings → Upload → Upload presets → Add upload preset</strong>.</li>
+              <li>Set <strong>Signing Mode</strong> to <em>Unsigned</em>, optionally set the folder to <code>loveflix</code>, and save.</li>
+              <li>Enter the Cloud Name and preset name below, click <strong>Test</strong>, then <strong>Save</strong>.</li>
+            </ol>
+            <p class="guide-note">💡 Cloudinary settings also sync to your database, so they work on every device you sign in from. For visitors nothing changes — they only view the already-uploaded media.</p>
+          </details>
+
+          <div class="connection-fields-grid" style="margin-top:14px;">
+            <div class="admin-form-group">
+              <label class="admin-form-label" for="cld-cloud-name">Cloud Name</label>
+              <input class="admin-form-input" id="cld-cloud-name" placeholder="e.g. dxyz123ab" autocomplete="off">
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label" for="cld-upload-preset">Upload Preset (unsigned)</label>
+              <input class="admin-form-input" id="cld-upload-preset" placeholder="e.g. ml_default" autocomplete="off">
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label" for="cld-folder">Folder (optional)</label>
+              <input class="admin-form-input" id="cld-folder" placeholder="loveflix" autocomplete="off">
+            </div>
+          </div>
+
+          <div class="lc-action-btns" style="margin-top:14px;">
+            <button class="admin-btn admin-btn-primary" id="cld-save-btn">💾 Save Cloudinary Config</button>
+            <button class="admin-btn admin-btn-secondary" id="cld-test-btn">🧪 Test Connection</button>
+            <button class="admin-btn admin-btn-secondary" id="cld-reset-btn">↩️ Reset to File Defaults</button>
+          </div>
+        </div>
+      </section>
     </main>
   </div>
 
@@ -416,14 +527,14 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-  <script src="js/config.js?v=7"></script>
-  <script src="js/firebase-config.js?v=7"></script>
-  <script src="js/cloudinary.js?v=7"></script>
-  <script src="js/utils.js?v=7"></script>
-  <script src="js/notifications.js?v=7"></script>
-  <script src="js/storage.js?v=7"></script>
-  <script src="js/lovecode.js?v=7"></script>
-  <script src="js/auth.js?v=7"></script>
-  <script src="js/admin.js?v=7"></script>
+  <script src="js/config.js?v=9"></script>
+  <script src="js/firebase-config.js?v=9"></script>
+  <script src="js/cloudinary.js?v=9"></script>
+  <script src="js/utils.js?v=9"></script>
+  <script src="js/notifications.js?v=9"></script>
+  <script src="js/storage.js?v=9"></script>
+  <script src="js/lovecode.js?v=9"></script>
+  <script src="js/auth.js?v=9"></script>
+  <script src="js/admin.js?v=9"></script>
 </body>
 </html>

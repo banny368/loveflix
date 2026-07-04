@@ -172,8 +172,12 @@ Place your audio files in the `assets/` folders:
 | Upload fails | Verify Cloudinary unsigned preset |
 | Admin login fails | Ensure Firebase Auth user exists |
 | Pages show demo data | Normal when Firebase isn't configured |
-| No music plays | Add MP3 files to assets folder |
+| Pages blank with Firebase configured | Check Firestore rules allow public **read** (see Security Rules above) |
+| No music plays | Add MP3 files to `assets/music/` and `assets/sounds/` (see READMEs inside) |
+| Profile shows same content as others | Tag media with a Profile/Milestone in Admin → Upload Media |
 | 404 on GitHub Pages | Ensure `404.html` is in root |
+
+> Backups from Admin → Backup include profiles, media, hero, credits, settings, and ads. Re-import via the same page.
 
 ---
 

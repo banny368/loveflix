@@ -46,13 +46,22 @@ document.addEventListener('DOMContentLoaded', () => {
   if (soundBtn) {
     soundBtn.addEventListener('click', () => {
       soundOn = !soundOn;
-      soundBtn.textContent = soundOn ? '🔊' : '🔇';
       if (soundOn && !introAudio) {
         introAudio = new Audio('assets/sounds/intro.mp3');
         introAudio.volume = 0.5;
-        introAudio.play().catch(() => {});
+        introAudio.play().then(() => {
+          soundBtn.textContent = '🔊';
+        }).catch(() => {
+          soundOn = false;
+          introAudio = null;
+          soundBtn.textContent = '🔇';
+          console.warn('[Intro] Sound unavailable — add assets/sounds/intro.mp3');
+        });
       } else if (introAudio) {
         introAudio.muted = !soundOn;
+        soundBtn.textContent = soundOn ? '🔊' : '🔇';
+      } else {
+        soundBtn.textContent = soundOn ? '🔊' : '🔇';
       }
     });
   }

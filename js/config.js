@@ -69,6 +69,27 @@ const LoveFlixConfig = {
   }
 };
 
+// ---- Runtime Override (set from Admin → Connections) ----
+// A static site can't rewrite this file, so admin-entered Firebase/
+// Cloudinary values are stored per-browser and merged here at load,
+// before firebase-config.js initializes. js/config.js above stays the
+// permanent source of truth for visitors.
+try {
+  const override = JSON.parse(localStorage.getItem('loveflix_config_override') || 'null');
+  if (override && typeof override === 'object') {
+    if (override.firebase && typeof override.firebase === 'object') {
+      Object.assign(LoveFlixConfig.firebase, override.firebase);
+      LoveFlixConfig._firebaseOverridden = true;
+    }
+    if (override.cloudinary && typeof override.cloudinary === 'object') {
+      Object.assign(LoveFlixConfig.cloudinary, override.cloudinary);
+      LoveFlixConfig._cloudinaryOverridden = true;
+    }
+  }
+} catch (e) {
+  console.warn('[LoveFlix] Ignoring invalid config override:', e);
+}
+
 // Make config globally accessible
 if (typeof window !== 'undefined') {
   window.LoveFlixConfig = LoveFlixConfig;

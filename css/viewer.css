@@ -48,6 +48,7 @@
 
 .viewer-page.controls-hidden .viewer-topbar,
 .viewer-page.controls-hidden .viewer-bottombar,
+.viewer-page.controls-hidden .viewer-caption,
 .viewer-page.controls-hidden .viewer-nav {
   opacity: 0;
   pointer-events: none;
@@ -193,6 +194,7 @@
   backdrop-filter: blur(10px);
   border-radius: var(--lf-radius-lg);
   max-width: 80%;
+  transition: opacity var(--lf-transition-base);
 }
 
 .viewer-caption-title {

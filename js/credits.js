@@ -18,11 +18,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     LoveFlixUtils.createParticles(particlesContainer, 15, 'sparkle');
   }
 
-  // Load credits from Firestore
+  // Load credits from Firestore — fall back to demo data on error OR
+  // when the collection is empty, so the page never scrolls blank.
   let credits = [];
   try {
     credits = await Storage?.getCredits();
   } catch (e) {
+    console.warn('[Credits] Load failed, using demo data:', e);
+  }
+  if (!credits || credits.length === 0) {
     credits = Storage?.getDemoData('credits') || [];
   }
 
@@ -62,8 +66,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         creditsMusic.volume = 0.4;
       }
       if (creditsMusic.paused) {
-        creditsMusic.play().catch(() => {});
-        musicBtn.textContent = '🎵';
+        creditsMusic.play().then(() => {
+          musicBtn.textContent = '🎵';
+        }).catch(() => {
+          musicBtn.textContent = '🔇';
+          console.warn('[Credits] Music unavailable — add assets/music/credits.mp3');
+        });
       } else {
         creditsMusic.pause();
         musicBtn.textContent = '🔇';
@@ -80,13 +88,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function renderCredits(credits) {
     if (!creditsContainer) return;
+    const esc = window.LoveFlixUtils?.escapeHtml || (s => s ?? '');
     creditsContainer.innerHTML = '';
     credits.forEach(credit => {
       const item = document.createElement('div');
       item.className = 'credit-item';
       item.innerHTML = `
-        <div class="credit-role">${credit.role}</div>
-        <div class="credit-value">${credit.value}</div>
+        <div class="credit-role">${esc(credit.role)}</div>
+        <div class="credit-value">${esc(credit.value)}</div>
       `;
       creditsContainer.appendChild(item);
 

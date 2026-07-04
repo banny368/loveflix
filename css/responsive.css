@@ -97,7 +97,7 @@
   .stat-card-value { font-size: 1.8rem !important; }
 
   /* ---- Admin Login ---- */
-  .admin-login-card {
+  .login-card {
     margin: 1rem;
     padding: 1.5rem !important;
   }
@@ -106,7 +106,8 @@
   .lf-footer-links { gap: var(--lf-space-md); }
 
   /* ---- Viewer ---- */
-  .viewer-controls { padding: 12px var(--lf-page-padding); }
+  .viewer-topbar { padding: 12px var(--lf-page-padding); }
+  .viewer-bottombar { padding: 14px var(--lf-page-padding); gap: 6px; }
 }
 
 /* ============================================
@@ -512,14 +513,14 @@
     padding-top: 3rem;
   }
 
-  .admin-login-card {
+  .login-card {
     width: 100% !important;
     border-radius: 16px !important;
     padding: 1.75rem 1.25rem !important;
   }
 
-  .admin-login-title { font-size: 1.3rem !important; }
-  .admin-login-subtitle { font-size: 13px; }
+  .login-logo { font-size: 1.8rem !important; }
+  .login-subtitle { font-size: 13px; }
 }
 
 /* ============================================

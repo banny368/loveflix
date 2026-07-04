@@ -153,10 +153,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     mediaWrap.offsetHeight; // reflow
     mediaWrap.style.animation = '';
 
+    const esc = Utils?.escapeHtml || (s => s ?? '');
     if (item.type === 'video' && item.url) {
-      mediaWrap.innerHTML = `<video src="${item.url}" controls autoplay playsinline style="max-width:100%;max-height:100%;"></video>`;
+      mediaWrap.innerHTML = `<video src="${esc(item.url)}" controls autoplay playsinline style="max-width:100%;max-height:100%;"></video>`;
     } else if (item.url) {
-      mediaWrap.innerHTML = `<img src="${item.url}" alt="${item.title || 'Memory'}" style="max-width:100%;max-height:100%;object-fit:contain;">`;
+      mediaWrap.innerHTML = `<img src="${esc(item.url)}" alt="${esc(item.title || 'Memory')}" style="max-width:100%;max-height:100%;object-fit:contain;">`;
     } else {
       mediaWrap.innerHTML = `<div style="font-size:5rem;opacity:0.3;">📸</div>`;
     }
@@ -189,7 +190,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function goBack() {
     stopSlideshow();
-    window.history.back();
+    // Direct/shared links have no history to go back to
+    if (window.history.length <= 1) {
+      window.location.href = 'home.html';
+    } else {
+      window.history.back();
+    }
   }
 
   function toggleSlideshow() {

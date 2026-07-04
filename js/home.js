@@ -3,9 +3,10 @@
    ============================================ */
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const { $, $$, daysBetween, debounce, initLazyLoading, createParticles } = window.LoveFlixUtils || {};
+  const { $, $$, daysBetween, debounce, initLazyLoading, createParticles, escapeHtml, getUrlParam, retrieve } = window.LoveFlixUtils || {};
   const Storage = window.LoveFlixStorage;
   const Notify = window.LoveFlixNotify;
+  const esc = escapeHtml || (s => s ?? '');
 
   // ---- Navbar scroll effect ----
   const navbar = document.querySelector('.lf-navbar');
@@ -59,10 +60,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   // ---- Days counter ----
   const daysEl = document.getElementById('days-count');
   if (daysEl && daysBetween) {
-    const settings = await Storage?.getSettings();
-    const startDate = settings?.relationshipStartDate || window.LoveFlixConfig?.relationship?.startDate || '2024-01-01';
-    const days = daysBetween(startDate);
-    daysEl.textContent = days.toLocaleString();
+    try {
+      const settings = await Storage?.getSettings();
+      const startDate = settings?.relationshipStartDate || window.LoveFlixConfig?.relationship?.startDate || '2024-01-01';
+      const days = daysBetween(startDate);
+      daysEl.textContent = days.toLocaleString();
+    } catch (e) {
+      console.warn('[Home] Days counter failed:', e);
+    }
   }
 
   // ---- Background music ----
@@ -76,9 +81,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         bgMusic.volume = 0.3;
       }
       if (bgMusic.paused) {
-        bgMusic.play().catch(() => {});
-        musicBtn.textContent = '🎵';
-        musicBtn.classList.add('playing');
+        bgMusic.play().then(() => {
+          musicBtn.textContent = '🎵';
+          musicBtn.classList.add('playing');
+        }).catch(() => {
+          musicBtn.textContent = '🔇';
+          musicBtn.classList.remove('playing');
+          Notify?.info('Music unavailable — add assets/music/background.mp3 🎵');
+        });
       } else {
         bgMusic.pause();
         musicBtn.textContent = '🔇';
@@ -88,8 +98,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // ---- Load hero ----
-  const heroData = await Storage?.getHero();
-  renderHero(heroData);
+  try {
+    const heroData = await Storage?.getHero();
+    renderHero(heroData);
+  } catch (e) {
+    console.warn('[Home] Hero load failed:', e);
+  }
 
   // ---- Load media by category ----
   const categories = [
@@ -100,7 +114,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     'Surprises'
   ];
 
-  const allMedia = await Storage?.getMedia() || [];
+  let rawMedia = [];
+  try {
+    rawMedia = await Storage?.getMedia() || [];
+  } catch (e) {
+    console.warn('[Home] Media load failed:', e);
+  }
+
+  // ---- Profile filter (?profile=<slug> from profiles page) ----
+  const profileSlug = getUrlParam ? (getUrlParam('profile') || '') : '';
+  let allMedia = rawMedia;
+  if (profileSlug) {
+    // Untagged media (no profileId) shows under every profile
+    allMedia = rawMedia.filter(m => !m.profileId || m.profileId === profileSlug);
+    showProfileChip(profileSlug);
+  }
+
   const contentArea = document.getElementById('home-content');
 
   if (contentArea) {
@@ -117,12 +146,31 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (other.length > 0) {
       renderRow(contentArea, 'More Memories', other);
     }
-
-    // If no media at all, show all placeholder rows
-    if (allMedia.length === 0) {
-      // Already handled above with placeholders
-    }
   }
+
+  // ---- Hero buttons ----
+  document.getElementById('hero-play')?.addEventListener('click', () => {
+    const target = allMedia.find(m => m.featured && m.url) || allMedia.find(m => m.url);
+    if (target) {
+      window.location.href = `viewer.html?id=${encodeURIComponent(target.id)}`;
+    } else {
+      Notify?.info('No memories uploaded yet — add some in the Admin panel! 💕');
+    }
+  });
+
+  let myListActive = false;
+  const heroListBtn = document.getElementById('hero-list');
+  heroListBtn?.addEventListener('click', () => {
+    const favorites = (retrieve && retrieve('favorites')) || [];
+    if (!myListActive && favorites.length === 0) {
+      Notify?.info('No favorites yet — tap ♡ Like in the viewer to build your list 💕');
+      return;
+    }
+    myListActive = !myListActive;
+    heroListBtn.textContent = myListActive ? '✕ Clear My List' : '♡ My List';
+    applyCardFilter(card => !myListActive || favorites.includes(card.dataset.id));
+    if (myListActive) Notify?.love(`Showing your ${favorites.length} favorite${favorites.length > 1 ? 's' : ''} ❤️`);
+  });
 
   // Romantic quote
   renderQuote(contentArea);
@@ -166,12 +214,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     row.className = 'content-row';
     row.innerHTML = `
       <div class="row-header">
-        <h2 class="row-title">${title}</h2>
-        <span class="row-see-all">See All ›</span>
+        <h2 class="row-title">${esc(title)}</h2>
+        <button class="row-see-all" aria-expanded="false">See All ›</button>
       </div>
       <div class="row-carousel-wrap">
         <button class="row-arrow row-arrow-left" aria-label="Scroll left">‹</button>
-        <div class="row-carousel" data-category="${title}"></div>
+        <div class="row-carousel" data-category="${esc(title)}"></div>
         <button class="row-arrow row-arrow-right" aria-label="Scroll right">›</button>
       </div>
     `;
@@ -188,6 +236,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     leftBtn?.addEventListener('click', () => carousel.scrollBy({ left: -scrollAmt, behavior: 'smooth' }));
     rightBtn?.addEventListener('click', () => carousel.scrollBy({ left: scrollAmt, behavior: 'smooth' }));
 
+    // See All — expand carousel into a wrapped grid
+    const seeAllBtn = row.querySelector('.row-see-all');
+    seeAllBtn?.addEventListener('click', () => {
+      const expanded = row.classList.toggle('expanded');
+      seeAllBtn.textContent = expanded ? 'Show Less ‹' : 'See All ›';
+      seeAllBtn.setAttribute('aria-expanded', expanded);
+    });
+
     container.appendChild(row);
   }
 
@@ -197,6 +253,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     card.setAttribute('role', 'button');
     card.setAttribute('tabindex', '0');
     card.setAttribute('aria-label', item.title || 'Memory');
+    card.dataset.id = item.id || '';
 
     const isPlaceholder = !item.url && !item.thumbnail;
 
@@ -205,25 +262,25 @@ document.addEventListener('DOMContentLoaded', async () => {
       const emojis = ['📸', '🎬', '💖', '🌅', '🎉', '✨'];
       card.innerHTML = `
         ${emojis[index % emojis.length]}
-        <span>${item.title || 'Add Memory'}</span>
+        <span>${esc(item.title || 'Add Memory')}</span>
       `;
     } else {
       const thumbUrl = item.thumbnail || item.url;
       card.innerHTML = `
-        <img class="media-card-img" data-src="${thumbUrl}" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='180'%3E%3Crect fill='%23222'/%3E%3C/svg%3E" alt="${item.title || ''}" loading="lazy">
+        <img class="media-card-img" data-src="${esc(thumbUrl)}" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='180'%3E%3Crect fill='%23222'/%3E%3C/svg%3E" alt="${esc(item.title || '')}" loading="lazy">
         <div class="media-card-gradient"></div>
         <div class="media-card-play">▶</div>
         ${item.type ? `<span class="media-card-type">${item.type === 'video' ? '🎬 Video' : '📸 Photo'}</span>` : ''}
         <div class="media-card-info">
-          <div class="media-card-title">${item.title || ''}</div>
-          <div class="media-card-meta">${item.description || ''}</div>
+          <div class="media-card-title">${esc(item.title || '')}</div>
+          <div class="media-card-meta">${esc(item.description || '')}</div>
         </div>
       `;
     }
 
     card.addEventListener('click', () => {
       if (!isPlaceholder) {
-        window.location.href = `viewer.html?id=${item.id}`;
+        window.location.href = `viewer.html?id=${encodeURIComponent(item.id)}`;
       }
     });
 
@@ -263,15 +320,41 @@ document.addEventListener('DOMContentLoaded', async () => {
     container.appendChild(section);
   }
 
-  function filterMedia(query) {
-    if (!query) {
-      document.querySelectorAll('.media-card').forEach(c => c.style.display = '');
-      return;
-    }
-    const q = query.toLowerCase();
-    document.querySelectorAll('.media-card').forEach(card => {
-      const title = card.getAttribute('aria-label')?.toLowerCase() || '';
-      card.style.display = title.includes(q) ? '' : 'none';
+  // Show/hide cards by predicate; hide rows that end up empty
+  function applyCardFilter(predicate) {
+    document.querySelectorAll('.content-row').forEach(row => {
+      let visible = 0;
+      row.querySelectorAll('.media-card').forEach(card => {
+        const show = predicate(card);
+        card.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      row.style.display = visible > 0 ? '' : 'none';
     });
+  }
+
+  function filterMedia(query) {
+    const q = (query || '').toLowerCase();
+    applyCardFilter(card => {
+      if (!q) return true;
+      const title = card.getAttribute('aria-label')?.toLowerCase() || '';
+      return title.includes(q);
+    });
+  }
+
+  function showProfileChip(slug) {
+    const navLeft = document.querySelector('.navbar-left');
+    if (!navLeft) return;
+    const chip = document.createElement('a');
+    chip.className = 'profile-chip';
+    chip.href = 'profiles.html';
+    chip.title = 'Switch profile';
+    chip.textContent = `💕 ${slug.replace(/-/g, ' ')}`;
+    navLeft.appendChild(chip);
+    // Swap the slug for the real profile name once loaded
+    Storage?.getProfiles().then(profiles => {
+      const p = (profiles || []).find(x => x.slug === slug || x.id === slug);
+      if (p?.name) chip.textContent = `💕 ${p.name}`;
+    }).catch(() => {});
   }
 });

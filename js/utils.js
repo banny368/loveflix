@@ -79,6 +79,16 @@ const LoveFlixUtils = (() => {
     return str.substring(0, len) + '...';
   }
 
+  function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   function slugify(text) {
     return text.toString().toLowerCase().trim()
       .replace(/\s+/g, '-')
@@ -252,7 +262,7 @@ const LoveFlixUtils = (() => {
   return {
     $, $$, createElement,
     daysBetween, formatDate, timeAgo,
-    formatDuration, formatFileSize, truncate, slugify,
+    formatDuration, formatFileSize, truncate, escapeHtml, slugify,
     debounce, throttle,
     initLazyLoading,
     store, retrieve, removeStore,

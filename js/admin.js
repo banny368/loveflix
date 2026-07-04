@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const Cloud   = window.LoveFlixCloud;
   const Notify  = window.LoveFlixNotify;
   const Utils   = window.LoveFlixUtils;
+  const esc     = Utils?.escapeHtml || (s => s ?? '');
 
   // =============================================
   // SIDEBAR NAVIGATION — Pure click-based
@@ -82,23 +83,33 @@ document.addEventListener('DOMContentLoaded', () => {
   // =============================================
   (async () => {
     await Auth?.requireAuth('admin-login.html');
+
+    // Cloudinary config synced to Firestore (Admin → Connections) applies
+    // on devices without a local override, before any upload happens.
+    try {
+      const s = await Storage?.getSettings();
+      if (s?.cloudinaryCloudName && s?.cloudinaryUploadPreset && !window.LoveFlixConfig?._cloudinaryOverridden) {
+        Object.assign(window.LoveFlixConfig.cloudinary, {
+          cloudName: s.cloudinaryCloudName,
+          uploadPreset: s.cloudinaryUploadPreset,
+          folder: s.cloudinaryFolder || window.LoveFlixConfig.cloudinary.folder
+        });
+      }
+    } catch (e) {
+      console.warn('[Admin] Cloudinary settings sync skipped:', e);
+    }
+
     loadStats();
     setupUploadZone();
+    loadUploadProfileSelect();
     loadMediaTable();
     loadProfilesManager();
     loadHeroManager();
     loadCreditsManager();
     loadSettingsManager();
     loadLoveCodeManager();
+    loadConnectionsManager();
   })();
-
-
-  // ---- Export / Import ----
-  document.getElementById('export-btn')?.addEventListener('click', exportData);
-  document.getElementById('import-btn')?.addEventListener('click', () => {
-    document.getElementById('import-file')?.click();
-  });
-  document.getElementById('import-file')?.addEventListener('change', importData);
 
   /* ============================================
      Stats Dashboard
@@ -158,6 +169,27 @@ document.addEventListener('DOMContentLoaded', () => {
     fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
   }
 
+  // Populate the "Profile / Milestone" select in the upload form
+  async function loadUploadProfileSelect() {
+    const select = document.getElementById('upload-profile');
+    if (!select) return;
+    try {
+      const profiles = await Storage?.getProfiles() || [];
+      const current = select.value;
+      // Rebuild, keeping the fixed "All profiles" option in place
+      [...select.querySelectorAll('option')].slice(1).forEach(o => o.remove());
+      profiles.filter(p => p.active !== false).forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.slug || p.id;
+        opt.textContent = p.name;
+        select.appendChild(opt);
+      });
+      if ([...select.options].some(o => o.value === current)) select.value = current;
+    } catch (e) {
+      console.warn('[Admin] Could not load profiles for upload select:', e);
+    }
+  }
+
   async function handleFiles(files) {
     if (!files || files.length === 0) return;
     const progressWrap = document.getElementById('upload-progress');
@@ -180,6 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const title = document.getElementById('upload-title')?.value || file.name.split('.')[0];
           const category = document.getElementById('upload-category')?.value || 'Our Best Memories';
           const desc = document.getElementById('upload-desc')?.value || '';
+          const profileId = document.getElementById('upload-profile')?.value || '';
 
           await Storage?.add('media', {
             title: title,
@@ -193,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sortOrder: Date.now(),
             duration: result.duration,
             tags: [],
-            profileId: ''
+            profileId: profileId
           });
 
           Notify?.success(`"${title}" uploaded successfully! 🎉`);
@@ -234,34 +267,43 @@ document.addEventListener('DOMContentLoaded', () => {
     media.forEach(item => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td><img class="admin-table-thumb" src="${item.thumbnail || item.url || ''}" alt="" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2234%22%3E%3Crect fill=%22%23333%22 width=%2260%22 height=%2234%22/%3E%3C/svg%3E'"></td>
-        <td>${Utils?.truncate(item.title, 30) || '—'}</td>
-        <td>${item.type || '—'}</td>
-        <td>${item.category || '—'}</td>
+        <td><img class="admin-table-thumb" src="${esc(item.thumbnail || item.url || '')}" alt="" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2234%22%3E%3Crect fill=%22%23333%22 width=%2260%22 height=%2234%22/%3E%3C/svg%3E'"></td>
+        <td>${esc(Utils?.truncate(item.title, 30) || '—')}</td>
+        <td>${esc(item.type || '—')}</td>
+        <td>${esc(item.category || '—')}</td>
         <td>${item.featured ? '⭐' : '—'}</td>
         <td>
-          <button class="admin-btn admin-btn-sm admin-btn-secondary" onclick="toggleFeatured('${item.id}', ${!item.featured})">☆</button>
-          <button class="admin-btn admin-btn-sm admin-btn-danger" onclick="deleteMedia('${item.id}')">✕</button>
+          <button class="admin-btn admin-btn-sm admin-btn-secondary" data-action="feature" title="Toggle featured">☆</button>
+          <button class="admin-btn admin-btn-sm admin-btn-danger" data-action="delete" title="Delete">✕</button>
         </td>
       `;
+      tr.querySelector('[data-action="feature"]').addEventListener('click', () => toggleFeatured(item.id, !item.featured));
+      tr.querySelector('[data-action="delete"]').addEventListener('click', () => deleteMedia(item.id));
       tbody.appendChild(tr);
     });
   }
 
-  // Global functions for inline handlers
-  window.deleteMedia = async (id) => {
+  async function deleteMedia(id) {
     if (!confirm('Delete this memory?')) return;
-    await Storage?.remove('media', id);
-    Notify?.success('Deleted');
-    loadMediaTable();
-    loadStats();
-  };
+    try {
+      await Storage?.remove('media', id);
+      Notify?.success('Deleted');
+      loadMediaTable();
+      loadStats();
+    } catch (e) {
+      Notify?.error('Delete failed: ' + e.message);
+    }
+  }
 
-  window.toggleFeatured = async (id, val) => {
-    await Storage?.update('media', id, { featured: val });
-    Notify?.info(val ? 'Marked as featured ⭐' : 'Unfeatured');
-    loadMediaTable();
-  };
+  async function toggleFeatured(id, val) {
+    try {
+      await Storage?.update('media', id, { featured: val });
+      Notify?.info(val ? 'Marked as featured ⭐' : 'Unfeatured');
+      loadMediaTable();
+    } catch (e) {
+      Notify?.error('Update failed: ' + e.message);
+    }
+  }
 
   /* ============================================
      Profiles Manager — Full CRUD
@@ -295,22 +337,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const card = document.createElement('div');
         card.style.cssText = 'display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;margin-bottom:10px;';
         const avatar = p.coverImage
-          ? `<img src="${p.coverImage}" style="width:44px;height:44px;border-radius:8px;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'">`
+          ? `<img src="${esc(p.coverImage)}" style="width:44px;height:44px;border-radius:8px;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'">`
           : `<span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:rgba(229,9,20,0.1);border-radius:8px;font-size:22px;flex-shrink:0;">💕</span>`;
         card.innerHTML = `
           ${avatar}
           <div style="flex:1;min-width:0;">
-            <div style="color:var(--lf-text-primary);font-weight:500;">${p.name}</div>
+            <div style="color:var(--lf-text-primary);font-weight:500;">${esc(p.name)}</div>
             <div style="color:var(--lf-text-muted);font-size:12px;margin-top:2px;">
-              Slug: ${p.slug || '—'} &nbsp;|&nbsp;
+              Slug: ${esc(p.slug || '—')} &nbsp;|&nbsp;
               <span style="color:${p.active !== false ? '#4ade80' : '#f87171'}">${p.active !== false ? '● Active' : '● Hidden'}</span>
             </div>
           </div>
           <div style="display:flex;gap:8px;flex-shrink:0;">
-            <button class="admin-btn admin-btn-sm admin-btn-secondary" onclick="editProfile('${p.id}')">✏️ Edit</button>
-            <button class="admin-btn admin-btn-sm admin-btn-danger" onclick="deleteProfile('${p.id}', '${p.name.replace(/'/g, "\\'")}')">✕</button>
+            <button class="admin-btn admin-btn-sm admin-btn-secondary" data-action="edit">✏️ Edit</button>
+            <button class="admin-btn admin-btn-sm admin-btn-danger" data-action="delete">✕</button>
           </div>
         `;
+        card.querySelector('[data-action="edit"]').addEventListener('click', () => openProfileModal(p));
+        card.querySelector('[data-action="delete"]').addEventListener('click', () => deleteProfile(p.id, p.name));
         container.appendChild(card);
       });
     }
@@ -334,16 +378,16 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div class="admin-form-group">
           <label class="admin-form-label" for="pm-name">Profile Name *</label>
-          <input class="admin-form-input" id="pm-name" placeholder="e.g. 1 Month, Our First Year..." value="${profile?.name || ''}">
+          <input class="admin-form-input" id="pm-name" placeholder="e.g. 1 Month, Our First Year..." value="${esc(profile?.name || '')}">
         </div>
         <div class="admin-form-group">
           <label class="admin-form-label" for="pm-slug">URL Slug *</label>
-          <input class="admin-form-input" id="pm-slug" placeholder="e.g. 1-month, first-year" value="${profile?.slug || ''}">
+          <input class="admin-form-input" id="pm-slug" placeholder="e.g. 1-month, first-year" value="${esc(profile?.slug || '')}">
           <small style="color:var(--lf-text-muted);font-size:11px;margin-top:4px;display:block;">Auto-generated from name. Use lowercase letters, numbers, and hyphens only.</small>
         </div>
         <div class="admin-form-group">
           <label class="admin-form-label" for="pm-cover">Cover Image URL</label>
-          <input class="admin-form-input" id="pm-cover" placeholder="https://... (leave empty for emoji)" value="${profile?.coverImage || ''}">
+          <input class="admin-form-input" id="pm-cover" placeholder="https://... (leave empty for emoji)" value="${esc(profile?.coverImage || '')}">
         </div>
         <div class="admin-form-group">
           <label class="admin-form-label" for="pm-order">Sort Order</label>
@@ -409,6 +453,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         closeModal();
         loadProfilesManager();
+        loadUploadProfileSelect();
         loadStats();
       } catch (err) {
         Notify?.error('Save failed: ' + err.message);
@@ -418,25 +463,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Global handlers for inline onclick attributes
+  // Kept global for the "+ Add Profile" inline onclick in admin.html
   window.openProfileModal = openProfileModal;
-  window.editProfile = async (id) => {
-    const profiles = await Storage?.getProfiles() || [];
-    const profile = profiles.find(p => p.id === id);
-    if (profile) openProfileModal(profile);
-  };
 
-  window.deleteProfile = async (id, name) => {
+  async function deleteProfile(id, name) {
     if (!confirm(`Delete profile "${name}"? This cannot be undone.`)) return;
     try {
       await Storage?.remove('profiles', id);
       Notify?.success(`Profile "${name}" deleted.`);
       loadProfilesManager();
+      loadUploadProfileSelect();
       loadStats();
     } catch (err) {
       Notify?.error('Delete failed: ' + err.message);
     }
-  };
+  }
 
   /* ============================================
      Hero Manager — with Upload + Preview
@@ -558,7 +599,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  document.getElementById('hero-save')?.addEventListener('click', async () => {
+  document.getElementById('hero-save')?.addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
     const data = {
       title: document.getElementById('hero-title-input')?.value || '',
       subtitle: document.getElementById('hero-subtitle-input')?.value || '',
@@ -566,9 +608,16 @@ document.addEventListener('DOMContentLoaded', () => {
       mediaType: document.getElementById('hero-media-type')?.value || 'image',
       buttonText: 'Play'
     };
-    await Storage?.setDoc('hero', 'main', data);
-    updateHeroPreview(data.backgroundUrl, data.mediaType);
-    Notify?.success('Hero banner updated! 🎬');
+    try {
+      btn.disabled = true;
+      await Storage?.setDoc('hero', 'main', data);
+      updateHeroPreview(data.backgroundUrl, data.mediaType);
+      Notify?.success('Hero banner updated! 🎬');
+    } catch (err) {
+      Notify?.error('Save failed: ' + err.message);
+    } finally {
+      btn.disabled = false;
+    }
   });
 
   /* ============================================
@@ -577,21 +626,23 @@ document.addEventListener('DOMContentLoaded', () => {
   async function loadCreditsManager() {
     const container = document.getElementById('credits-list');
     if (!container) return;
-    const credits = await Storage?.getCredits() || [];
+    const credits = await Storage?.getCredits().catch(() => []) || [];
     container.innerHTML = '';
     credits.forEach(c => {
       const row = document.createElement('div');
       row.style.cssText = 'display:flex;gap:12px;margin-bottom:8px;align-items:center;';
       row.innerHTML = `
-        <input class="admin-form-input" value="${c.role}" style="flex:1;" data-id="${c.id}" data-field="role">
-        <input class="admin-form-input" value="${c.value}" style="flex:1;" data-id="${c.id}" data-field="value">
-        <button class="admin-btn admin-btn-sm admin-btn-danger" onclick="deleteCredit('${c.id}')">✕</button>
+        <input class="admin-form-input" value="${esc(c.role)}" style="flex:1;" data-id="${esc(c.id)}" data-field="role">
+        <input class="admin-form-input" value="${esc(c.value)}" style="flex:1;" data-id="${esc(c.id)}" data-field="value">
+        <button class="admin-btn admin-btn-sm admin-btn-danger" data-action="delete" title="Delete credit">✕</button>
       `;
+      row.querySelector('[data-action="delete"]').addEventListener('click', () => deleteCredit(c.id));
       container.appendChild(row);
     });
   }
 
-  document.getElementById('credits-save')?.addEventListener('click', async () => {
+  document.getElementById('credits-save')?.addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
     const inputs = document.querySelectorAll('#credits-list input');
     const updates = {};
     inputs.forEach(input => {
@@ -600,22 +651,39 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!updates[id]) updates[id] = {};
       updates[id][field] = input.value;
     });
-    for (const [id, data] of Object.entries(updates)) {
-      await Storage?.update('credits', id, data);
+    try {
+      btn.disabled = true;
+      for (const [id, data] of Object.entries(updates)) {
+        await Storage?.update('credits', id, data);
+      }
+      Notify?.success('Credits saved! 🎬');
+    } catch (err) {
+      Notify?.error('Save failed: ' + err.message);
+    } finally {
+      btn.disabled = false;
     }
-    Notify?.success('Credits saved! 🎬');
   });
 
   document.getElementById('credit-add')?.addEventListener('click', async () => {
-    await Storage?.add('credits', { role: 'New Role', value: 'Name', sortOrder: Date.now() });
-    loadCreditsManager();
-    Notify?.info('Credit added');
+    try {
+      await Storage?.add('credits', { role: 'New Role', value: 'Name', sortOrder: Date.now() });
+      loadCreditsManager();
+      Notify?.info('Credit added');
+    } catch (err) {
+      Notify?.error('Add failed: ' + err.message);
+    }
   });
 
-  window.deleteCredit = async (id) => {
-    await Storage?.remove('credits', id);
-    loadCreditsManager();
-  };
+  async function deleteCredit(id) {
+    if (!confirm('Delete this credit line?')) return;
+    try {
+      await Storage?.remove('credits', id);
+      loadCreditsManager();
+      Notify?.success('Credit deleted');
+    } catch (err) {
+      Notify?.error('Delete failed: ' + err.message);
+    }
+  }
 
   /* ============================================
      Settings Manager (with LoveCode)
@@ -797,9 +865,204 @@ document.addEventListener('DOMContentLoaded', () => {
       Notify?.info('Locked! The next visitor will see the Love Code screen. 🔒');
     });
 
-    // Test Lock Screen
+    // Test Lock Screen — test() loads saved settings first, so the
+    // overlay verifies against the real code, not the default 1234.
     document.getElementById('lc-test-btn')?.addEventListener('click', () => {
-      window.LoveCodeLock?.show();
+      if (window.LoveCodeLock?.test) window.LoveCodeLock.test();
+      else window.LoveCodeLock?.show();
+    });
+  }
+
+  /* ============================================
+     Connections Manager (Firebase + Cloudinary)
+     Saves per-browser overrides read by js/config.js at load.
+     ============================================ */
+  const OVERRIDE_KEY = 'loveflix_config_override';
+
+  function readOverride() {
+    try { return JSON.parse(localStorage.getItem(OVERRIDE_KEY) || 'null') || {}; }
+    catch { return {}; }
+  }
+
+  function writeOverride(override) {
+    if (Object.keys(override).length === 0) localStorage.removeItem(OVERRIDE_KEY);
+    else localStorage.setItem(OVERRIDE_KEY, JSON.stringify(override));
+  }
+
+  function fieldVal(id) {
+    return document.getElementById(id)?.value.trim() || '';
+  }
+
+  // Pull key values out of a pasted firebaseConfig block (JS snippet or JSON)
+  function parseFirebaseSnippet(raw) {
+    const keys = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId'];
+    const found = {};
+    keys.forEach(key => {
+      const m = raw.match(new RegExp(`["']?${key}["']?\\s*[:=]\\s*["']([^"']+)["']`));
+      if (m) found[key] = m[1].trim();
+    });
+    return found;
+  }
+
+  function updateConnectionStatus() {
+    const cfg = window.LoveFlixConfig || {};
+    const ready = !!window.LoveFlixFirebase?.isReady();
+    const fbStatus = document.getElementById('conn-firebase-status');
+    const fbDetail = document.getElementById('conn-firebase-detail');
+    fbStatus?.classList.toggle('connected', ready);
+    fbStatus?.classList.toggle('warning', !ready);
+    if (fbDetail) {
+      fbDetail.textContent = ready
+        ? `Connected — ${cfg.firebase?.projectId || '?'}${cfg._firebaseOverridden ? ' (browser override)' : ' (js/config.js)'}`
+        : 'Not connected — running in demo mode';
+    }
+
+    const cld = cfg.cloudinary || {};
+    const configured = !!cld.cloudName && cld.cloudName !== 'YOUR_CLOUD_NAME' && !!cld.uploadPreset;
+    const cldStatus = document.getElementById('conn-cloudinary-status');
+    const cldDetail = document.getElementById('conn-cloudinary-detail');
+    cldStatus?.classList.toggle('connected', configured);
+    cldStatus?.classList.toggle('warning', !configured);
+    if (cldDetail) {
+      cldDetail.textContent = configured
+        ? `${cld.cloudName} / ${cld.uploadPreset}${cfg._cloudinaryOverridden ? ' (browser override)' : ''}`
+        : 'Not configured — uploads disabled';
+    }
+  }
+
+  function loadConnectionsManager() {
+    const cfg = window.LoveFlixConfig || {};
+    updateConnectionStatus();
+
+    // Prefill Firebase fields from the live (possibly overridden) config
+    const fb = cfg.firebase || {};
+    setText('fb-api-key', fb.apiKey, true);
+    setText('fb-auth-domain', fb.authDomain, true);
+    setText('fb-project-id', fb.projectId, true);
+    setText('fb-storage-bucket', fb.storageBucket, true);
+    setText('fb-sender-id', fb.messagingSenderId, true);
+    setText('fb-app-id', fb.appId, true);
+
+    // Prefill Cloudinary fields
+    const cld = cfg.cloudinary || {};
+    setText('cld-cloud-name', cld.cloudName, true);
+    setText('cld-upload-preset', cld.uploadPreset, true);
+    setText('cld-folder', cld.folder, true);
+
+    // Parse pasted firebaseConfig snippet
+    document.getElementById('fb-parse-btn')?.addEventListener('click', () => {
+      const raw = document.getElementById('fb-paste')?.value || '';
+      const parsed = parseFirebaseSnippet(raw);
+      const count = Object.keys(parsed).length;
+      if (count === 0) {
+        Notify?.error('No config values found — paste the whole firebaseConfig block from Firebase console.');
+        return;
+      }
+      if (parsed.apiKey) setText('fb-api-key', parsed.apiKey, true);
+      if (parsed.authDomain) setText('fb-auth-domain', parsed.authDomain, true);
+      if (parsed.projectId) setText('fb-project-id', parsed.projectId, true);
+      if (parsed.storageBucket) setText('fb-storage-bucket', parsed.storageBucket, true);
+      if (parsed.messagingSenderId) setText('fb-sender-id', parsed.messagingSenderId, true);
+      if (parsed.appId) setText('fb-app-id', parsed.appId, true);
+      Notify?.success(`Filled ${count} field${count > 1 ? 's' : ''} from pasted config ✨ Review and click Save.`);
+    });
+
+    // Save Firebase override (reload so firebase-config.js reinitializes)
+    document.getElementById('fb-save-btn')?.addEventListener('click', () => {
+      const fbData = {
+        apiKey: fieldVal('fb-api-key'),
+        authDomain: fieldVal('fb-auth-domain'),
+        projectId: fieldVal('fb-project-id'),
+        storageBucket: fieldVal('fb-storage-bucket'),
+        messagingSenderId: fieldVal('fb-sender-id'),
+        appId: fieldVal('fb-app-id')
+      };
+      if (!fbData.apiKey || !fbData.projectId || !fbData.appId) {
+        Notify?.error('API Key, Project ID and App ID are required.');
+        return;
+      }
+      const override = readOverride();
+      override.firebase = fbData;
+      writeOverride(override);
+      Notify?.success('Firebase config saved for this browser! Reloading… 🔥');
+      setTimeout(() => window.location.reload(), 1400);
+    });
+
+    document.getElementById('fb-reset-btn')?.addEventListener('click', () => {
+      const override = readOverride();
+      delete override.firebase;
+      writeOverride(override);
+      Notify?.info('Firebase override removed — using js/config.js. Reloading…');
+      setTimeout(() => window.location.reload(), 1200);
+    });
+
+    // Save Cloudinary — applies live (no reload) + syncs to Firestore
+    document.getElementById('cld-save-btn')?.addEventListener('click', async () => {
+      const cldData = {
+        cloudName: fieldVal('cld-cloud-name'),
+        uploadPreset: fieldVal('cld-upload-preset'),
+        folder: fieldVal('cld-folder') || 'loveflix'
+      };
+      if (!cldData.cloudName || !cldData.uploadPreset) {
+        Notify?.error('Cloud Name and Upload Preset are required.');
+        return;
+      }
+      const override = readOverride();
+      override.cloudinary = cldData;
+      writeOverride(override);
+      Object.assign(window.LoveFlixConfig.cloudinary, cldData);
+      window.LoveFlixConfig._cloudinaryOverridden = true;
+      updateConnectionStatus();
+      try {
+        await Storage?.setDoc('settings', 'main', {
+          cloudinaryCloudName: cldData.cloudName,
+          cloudinaryUploadPreset: cldData.uploadPreset,
+          cloudinaryFolder: cldData.folder
+        });
+        Notify?.success('Cloudinary config saved & synced to all your devices! ☁️');
+      } catch (e) {
+        Notify?.warning('Saved for this browser, but database sync failed: ' + e.message);
+      }
+    });
+
+    document.getElementById('cld-reset-btn')?.addEventListener('click', () => {
+      const override = readOverride();
+      delete override.cloudinary;
+      writeOverride(override);
+      Notify?.info('Cloudinary override removed — using js/config.js. Reloading…');
+      setTimeout(() => window.location.reload(), 1200);
+    });
+
+    // Test: an empty upload tells us whether the cloud name (and preset) exist
+    document.getElementById('cld-test-btn')?.addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      const name = fieldVal('cld-cloud-name');
+      const preset = fieldVal('cld-upload-preset');
+      if (!name) { Notify?.error('Enter a Cloud Name first.'); return; }
+      btn.disabled = true;
+      try {
+        const form = new FormData();
+        if (preset) form.append('upload_preset', preset);
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${encodeURIComponent(name)}/image/upload`, {
+          method: 'POST',
+          body: form
+        });
+        const body = await res.json().catch(() => ({}));
+        const msg = (body?.error?.message || '').toLowerCase();
+        if (msg.includes('cloud') && (msg.includes('not found') || msg.includes('invalid'))) {
+          Notify?.error(`Cloud name "${name}" not found — check your Cloudinary dashboard.`);
+        } else if (msg.includes('upload preset')) {
+          Notify?.error(`Cloud name OK, but the preset "${preset}" was rejected: ${body.error.message}`);
+        } else if (msg.includes('missing required parameter')) {
+          Notify?.success('Cloudinary is reachable and accepted your settings! ✓');
+        } else {
+          Notify?.info(`Cloudinary responded (HTTP ${res.status}) — settings look usable.`);
+        }
+      } catch {
+        Notify?.error('Could not reach Cloudinary — check your internet connection.');
+      } finally {
+        btn.disabled = false;
+      }
     });
   }
 });

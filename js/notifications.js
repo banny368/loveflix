@@ -10,7 +10,7 @@ const LoveFlixNotify = (() => {
       container = document.createElement('div');
       container.id = 'lf-toast-container';
       container.setAttribute('aria-live', 'polite');
-      container.style.cssText = 'position:fixed;top:80px;right:20px;z-index:900;display:flex;flex-direction:column;gap:12px;max-width:400px;width:calc(100% - 40px);pointer-events:none;';
+      container.style.cssText = 'position:fixed;top:80px;right:20px;z-index:1100;display:flex;flex-direction:column;gap:12px;max-width:400px;width:calc(100% - 40px);pointer-events:none;';
       document.body.appendChild(container);
     }
     return container;

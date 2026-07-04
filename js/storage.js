@@ -35,8 +35,28 @@ const LoveFlixStorage = (() => {
   async function getWhere(collection, field, op, value, orderBy = 'sortOrder') {
     const db = getDb();
     if (!db) return [];
-    const snap = await db.collection(colName(collection)).where(field, op, value).orderBy(orderBy).get();
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    try {
+      const snap = await db.collection(colName(collection)).where(field, op, value).orderBy(orderBy).get();
+      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    } catch (e) {
+      console.error(`[Storage] getWhere(${collection}):`, e);
+      return [];
+    }
+  }
+
+  // Plain fetch without orderBy — includes docs that lack the sort field
+  // (Firestore orderBy silently excludes them). Sorted client-side.
+  async function getAllRaw(collection) {
+    const db = getDb();
+    if (!db) return getDemoData(collection);
+    try {
+      const snap = await db.collection(colName(collection)).get();
+      const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      return items.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+    } catch (e) {
+      console.error(`[Storage] getAllRaw(${collection}):`, e);
+      return [];
+    }
   }
 
   async function add(collection, data) {
@@ -100,29 +120,44 @@ const LoveFlixStorage = (() => {
   async function getMedia(options = {}) {
     const db = getDb();
     if (!db) return getDemoData('media');
-    let query = db.collection(colName('media'));
-    if (options.category) query = query.where('category', '==', options.category);
-    if (options.profileId) query = query.where('profileId', '==', options.profileId);
-    if (options.featured) query = query.where('featured', '==', true);
-    if (options.type) query = query.where('type', '==', options.type);
-    query = query.orderBy(options.orderBy || 'sortOrder', options.dir || 'asc');
-    if (options.limit) query = query.limit(options.limit);
-    const snap = await query.get();
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    try {
+      let query = db.collection(colName('media'));
+      if (options.category) query = query.where('category', '==', options.category);
+      if (options.profileId) query = query.where('profileId', '==', options.profileId);
+      if (options.featured) query = query.where('featured', '==', true);
+      if (options.type) query = query.where('type', '==', options.type);
+      query = query.orderBy(options.orderBy || 'sortOrder', options.dir || 'asc');
+      if (options.limit) query = query.limit(options.limit);
+      const snap = await query.get();
+      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    } catch (e) {
+      console.error('[Storage] getMedia:', e);
+      return getDemoData('media');
+    }
   }
 
   async function getHero() {
     const db = getDb();
     if (!db) return getDemoData('hero');
-    const snap = await db.collection(colName('hero')).limit(1).get();
-    return snap.empty ? getDemoData('hero') : { id: snap.docs[0].id, ...snap.docs[0].data() };
+    try {
+      const snap = await db.collection(colName('hero')).limit(1).get();
+      return snap.empty ? getDemoData('hero') : { id: snap.docs[0].id, ...snap.docs[0].data() };
+    } catch (e) {
+      console.error('[Storage] getHero:', e);
+      return getDemoData('hero');
+    }
   }
 
   async function getSettings() {
     const db = getDb();
     if (!db) return getDemoData('settings');
-    const doc = await db.collection(colName('settings')).doc('main').get();
-    return doc.exists ? doc.data() : getDemoData('settings');
+    try {
+      const doc = await db.collection(colName('settings')).doc('main').get();
+      return doc.exists ? doc.data() : getDemoData('settings');
+    } catch (e) {
+      console.error('[Storage] getSettings:', e);
+      return getDemoData('settings');
+    }
   }
 
   async function getCredits() {
@@ -148,7 +183,9 @@ const LoveFlixStorage = (() => {
     const data = {};
     const collections = ['profiles', 'media', 'hero', 'credits', 'settings', 'ads'];
     for (const col of collections) {
-      data[col] = await getAll(col, 'sortOrder');
+      // getAllRaw: orderBy would silently drop docs without a sortOrder
+      // field (hero/main, settings/main), losing them from backups.
+      data[col] = await getAllRaw(col);
     }
     return data;
   }
@@ -209,7 +246,7 @@ const LoveFlixStorage = (() => {
   }
 
   return {
-    getAll, getById, getWhere, add, update, remove, setDoc,
+    getAll, getAllRaw, getById, getWhere, add, update, remove, setDoc,
     onSnapshot, batchUpdate,
     getProfiles, getMedia, getHero, getSettings, getCredits, getAds,
     exportAll, importAll, getDemoData

@@ -90,7 +90,10 @@ window.LoveCodeLock = (function () {
     }
   }
 
+  let activityBound = false;
   function bindActivityEvents() {
+    if (activityBound) return;
+    activityBound = true;
     ['mousemove','click','keydown','touchstart','scroll'].forEach(ev => {
       window.addEventListener(ev, recordActivity, { passive: true });
     });
@@ -519,9 +522,12 @@ window.LoveCodeLock = (function () {
 
     window._lcOnUnlock = onUnlock;
 
+    // Bind in both branches so activity keeps the session alive
+    // even when the unlock happens via the keypad on this page.
+    bindActivityEvents();
+
     if (isUnlocked()) {
       resetInactivityTimer();
-      bindActivityEvents();
       if (typeof onUnlock === 'function') onUnlock();
       return;
     }
@@ -540,18 +546,25 @@ window.LoveCodeLock = (function () {
   window.showLoveCode = async function (onUnlock) {
     await loadSettings();
     window._lcOnUnlock = onUnlock || (() => { window.location.href = 'profiles.html'; });
-    if (!settings.loveCodeEnabled) {
+    if (!settings.loveCodeEnabled || isUnlocked()) {
       if (typeof window._lcOnUnlock === 'function') window._lcOnUnlock();
       return;
     }
     show();
   };
 
+  /* ── Public: test (admin preview with saved settings) ── */
+  async function testLock() {
+    await loadSettings();
+    show();
+  }
+
   return {
     check: checkLoveCodeLock,
     lock: lockNow,
     show,
     hide,
+    test: testLock,
     recordActivity
   };
 })();
