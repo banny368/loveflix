@@ -1,0 +1,234 @@
+/* ============================================
+   LOVEFLIX — Timeline Page Styles (v3)
+   ============================================ */
+
+.timeline-page {
+  position: relative;
+  z-index: 2;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: calc(var(--lf-navbar-height) + 40px) var(--lf-page-padding) 60px;
+}
+
+.timeline-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.timeline-title {
+  font-family: var(--lf-font-display);
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  color: var(--lf-text-primary);
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 40px rgba(229, 9, 20, 0.35);
+}
+
+.timeline-subtitle {
+  font-family: var(--lf-font-romantic);
+  font-size: clamp(1.1rem, 3vw, 1.5rem);
+  color: var(--lf-blush);
+  margin-top: 6px;
+}
+
+/* ---- Central line ---- */
+.timeline-track {
+  position: relative;
+  padding: 20px 0;
+}
+
+.timeline-track::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: linear-gradient(to bottom, transparent, rgba(229, 9, 20, 0.5) 8%, rgba(255, 77, 109, 0.5) 92%, transparent);
+}
+
+/* ---- Season markers ---- */
+.timeline-season {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  margin: 36px 0 28px;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: all 0.6s var(--lf-ease-out-expo);
+}
+
+.timeline-season.in-view { opacity: 1; transform: translateY(0); }
+
+.timeline-season span {
+  display: inline-block;
+  padding: 6px 22px;
+  border-radius: var(--lf-radius-full);
+  background: var(--lf-gradient-red);
+  color: #fff;
+  font-family: var(--lf-font-display);
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  box-shadow: var(--lf-glow-red);
+}
+
+.timeline-season em {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--lf-font-romantic);
+  font-style: normal;
+  font-size: 1rem;
+  color: var(--lf-text-muted);
+}
+
+/* ---- Entries ---- */
+.timeline-entry {
+  position: relative;
+  width: 50%;
+  padding: 0 40px 36px;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: all 0.6s var(--lf-ease-out-expo);
+}
+
+.timeline-entry.in-view { opacity: 1; transform: translateY(0); }
+
+.timeline-left  { left: 0; text-align: right; }
+.timeline-right { left: 50%; text-align: left; }
+
+.timeline-dot {
+  position: absolute;
+  top: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--lf-bg-secondary);
+  border: 2px solid var(--lf-red);
+  color: var(--lf-red);
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 14px rgba(229, 9, 20, 0.5);
+  z-index: 2;
+}
+
+.timeline-left  .timeline-dot { right: -15px; }
+.timeline-right .timeline-dot { left: -15px; }
+
+.timeline-card {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  text-align: inherit;
+  overflow: hidden;
+  transition: transform 0.25s var(--lf-ease-spring), box-shadow 0.25s ease;
+}
+
+.timeline-card:hover {
+  transform: translateY(-4px) scale(1.015);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.6), var(--lf-glow-pink);
+}
+
+.timeline-thumb {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+}
+
+.timeline-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.timeline-card:hover .timeline-thumb img { transform: scale(1.06); }
+
+.timeline-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 2px 10px;
+  border-radius: var(--lf-radius-full);
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  font-family: var(--lf-font-body);
+  font-size: 10px;
+  backdrop-filter: blur(4px);
+}
+
+.timeline-info { padding: 14px 16px 16px; }
+
+.timeline-date {
+  display: block;
+  font-family: var(--lf-font-body);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--lf-rose);
+  margin-bottom: 4px;
+}
+
+.timeline-entry-title {
+  font-family: var(--lf-font-body);
+  font-size: 16px;
+  font-weight: var(--lf-fw-semibold);
+  color: var(--lf-text-primary);
+}
+
+.timeline-entry-desc {
+  margin-top: 4px;
+  font-family: var(--lf-font-body);
+  font-size: 13px;
+  color: var(--lf-text-secondary);
+  line-height: 1.55;
+}
+
+/* ---- Empty / end states ---- */
+.timeline-empty {
+  text-align: center;
+  padding: 60px 20px;
+  font-family: var(--lf-font-body);
+  color: var(--lf-text-secondary);
+}
+
+.timeline-end {
+  text-align: center;
+  padding: 30px 0 10px;
+  font-family: var(--lf-font-romantic);
+  font-size: 1.3rem;
+  color: var(--lf-blush);
+}
+
+.timeline-end-heart {
+  font-size: 2rem;
+  animation: heartbeat 1.5s ease-in-out infinite;
+  margin-bottom: 8px;
+}
+
+/* ---- Mobile: single column ---- */
+@media (max-width: 700px) {
+  .timeline-track::before { left: 18px; }
+
+  .timeline-entry,
+  .timeline-left,
+  .timeline-right {
+    width: 100%;
+    left: 0;
+    text-align: left;
+    padding: 0 0 28px 46px;
+  }
+
+  .timeline-left .timeline-dot,
+  .timeline-right .timeline-dot {
+    left: 4px;
+    right: auto;
+  }
+
+  .timeline-season { text-align: left; padding-left: 46px; }
+}

@@ -101,11 +101,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadStats();
     setupUploadZone();
+    setupMusicUpload();
     loadUploadProfileSelect();
     loadMediaTable();
     loadProfilesManager();
     loadHeroManager();
     loadCreditsManager();
+    loadNotesManager();
     loadSettingsManager();
     loadLoveCodeManager();
     loadConnectionsManager();
@@ -169,6 +171,47 @@ document.addEventListener('DOMContentLoaded', () => {
     fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
   }
 
+  // Background-music upload (audio hosts under Cloudinary's video type)
+  function setupMusicUpload() {
+    const zone = document.getElementById('music-upload-zone');
+    const input = document.getElementById('music-upload-input');
+    if (!zone || !input) return;
+
+    const uploadTrack = async (file) => {
+      const progress = document.getElementById('music-upload-progress');
+      const bar = document.getElementById('music-upload-bar');
+      const text = document.getElementById('music-upload-text');
+      if (progress) progress.classList.add('active');
+      if (text) text.textContent = `Uploading ${file.name}...`;
+      try {
+        const result = await Cloud?.upload(file, (pct) => {
+          if (bar) bar.style.width = pct + '%';
+        }, 'video');
+        if (result?.url) {
+          setText('setting-music-url', result.url, true);
+          Notify?.success('Music uploaded! Click 💾 Save Settings to apply. 🎵');
+        }
+      } catch (err) {
+        Notify?.error('Music upload failed: ' + err.message);
+      } finally {
+        if (progress) progress.classList.remove('active');
+        if (bar) bar.style.width = '0%';
+      }
+    };
+
+    zone.addEventListener('click', () => input.click());
+    zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+    zone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      zone.classList.remove('drag-over');
+      if (e.dataTransfer.files[0]) uploadTrack(e.dataTransfer.files[0]);
+    });
+    input.addEventListener('change', (e) => {
+      if (e.target.files[0]) uploadTrack(e.target.files[0]);
+    });
+  }
+
   // Populate the "Profile / Milestone" select in the upload form
   async function loadUploadProfileSelect() {
     const select = document.getElementById('upload-profile');
@@ -213,6 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const category = document.getElementById('upload-category')?.value || 'Our Best Memories';
           const desc = document.getElementById('upload-desc')?.value || '';
           const profileId = document.getElementById('upload-profile')?.value || '';
+          const memoryDate = document.getElementById('upload-date')?.value || '';
 
           await Storage?.add('media', {
             title: title,
@@ -226,7 +270,8 @@ document.addEventListener('DOMContentLoaded', () => {
             sortOrder: Date.now(),
             duration: result.duration,
             tags: [],
-            profileId: profileId
+            profileId: profileId,
+            memoryDate: memoryDate
           });
 
           Notify?.success(`"${title}" uploaded successfully! 🎉`);
@@ -260,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tbody.innerHTML = '';
 
     if (media.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--lf-text-muted);">No media uploaded yet. Start uploading! 📸</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--lf-text-muted);">No media uploaded yet. Start uploading! 📸</td></tr>';
       return;
     }
 
@@ -271,15 +316,102 @@ document.addEventListener('DOMContentLoaded', () => {
         <td>${esc(Utils?.truncate(item.title, 30) || '—')}</td>
         <td>${esc(item.type || '—')}</td>
         <td>${esc(item.category || '—')}</td>
+        <td>${esc(item.memoryDate || '—')}</td>
         <td>${item.featured ? '⭐' : '—'}</td>
         <td>
+          <button class="admin-btn admin-btn-sm admin-btn-secondary" data-action="edit" title="Edit">✏️</button>
           <button class="admin-btn admin-btn-sm admin-btn-secondary" data-action="feature" title="Toggle featured">☆</button>
           <button class="admin-btn admin-btn-sm admin-btn-danger" data-action="delete" title="Delete">✕</button>
         </td>
       `;
+      tr.querySelector('[data-action="edit"]').addEventListener('click', () => openMediaModal(item));
       tr.querySelector('[data-action="feature"]').addEventListener('click', () => toggleFeatured(item.id, !item.featured));
       tr.querySelector('[data-action="delete"]').addEventListener('click', () => deleteMedia(item.id));
       tbody.appendChild(tr);
+    });
+  }
+
+  // Edit a memory's details (media items were previously delete-only)
+  async function openMediaModal(item) {
+    document.getElementById('media-modal-overlay')?.remove();
+
+    let profiles = [];
+    try { profiles = await Storage?.getProfiles() || []; } catch {}
+
+    const categories = ['Popular on LoveFlix', 'Our Best Memories', 'Special Moments', 'Timeline Highlights', 'Surprises'];
+    if (item.category && !categories.includes(item.category)) categories.push(item.category);
+
+    const overlay = document.createElement('div');
+    overlay.id = 'media-modal-overlay';
+    overlay.className = 'admin-modal-overlay active';
+    overlay.innerHTML = `
+      <div class="admin-modal" role="dialog" aria-modal="true">
+        <div class="admin-modal-header">
+          <h2 class="admin-modal-title">✏️ Edit Memory</h2>
+          <button class="admin-modal-close" id="media-modal-close" aria-label="Close">✕</button>
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-form-label" for="mm-title">Title</label>
+          <input class="admin-form-input" id="mm-title" value="${esc(item.title || '')}">
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-form-label" for="mm-desc">Description</label>
+          <input class="admin-form-input" id="mm-desc" value="${esc(item.description || '')}">
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-form-label" for="mm-category">Category</label>
+          <select class="admin-form-select" id="mm-category">
+            ${categories.map(c => `<option ${c === item.category ? 'selected' : ''}>${esc(c)}</option>`).join('')}
+          </select>
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-form-label" for="mm-profile">Profile / Milestone</label>
+          <select class="admin-form-select" id="mm-profile">
+            <option value="">All profiles</option>
+            ${profiles.filter(p => p.active !== false).map(p => {
+              const val = p.slug || p.id;
+              return `<option value="${esc(val)}" ${val === item.profileId ? 'selected' : ''}>${esc(p.name)}</option>`;
+            }).join('')}
+          </select>
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-form-label" for="mm-date">Memory Date</label>
+          <input class="admin-form-input" id="mm-date" type="date" value="${esc(item.memoryDate || '')}" style="max-width:220px;">
+        </div>
+        <div class="admin-modal-footer">
+          <button class="admin-btn admin-btn-secondary" id="media-modal-cancel">Cancel</button>
+          <button class="admin-btn admin-btn-primary" id="media-modal-save">💾 Save Changes</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+
+    const closeModal = () => overlay.remove();
+    document.getElementById('media-modal-close')?.addEventListener('click', closeModal);
+    document.getElementById('media-modal-cancel')?.addEventListener('click', closeModal);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+
+    document.getElementById('media-modal-save')?.addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      const data = {
+        title: document.getElementById('mm-title')?.value.trim() || 'Memory',
+        description: document.getElementById('mm-desc')?.value.trim() || '',
+        category: document.getElementById('mm-category')?.value || 'Our Best Memories',
+        profileId: document.getElementById('mm-profile')?.value || '',
+        memoryDate: document.getElementById('mm-date')?.value || ''
+      };
+      try {
+        btn.disabled = true;
+        btn.textContent = 'Saving...';
+        await Storage?.update('media', item.id, data);
+        Notify?.success(`"${data.title}" updated! ✏️`);
+        closeModal();
+        loadMediaTable();
+      } catch (err) {
+        Notify?.error(explainSaveError(err));
+        btn.disabled = false;
+        btn.textContent = '💾 Save Changes';
+      }
     });
   }
 
@@ -291,7 +423,7 @@ document.addEventListener('DOMContentLoaded', () => {
       loadMediaTable();
       loadStats();
     } catch (e) {
-      Notify?.error('Delete failed: ' + e.message);
+      Notify?.error(explainSaveError(e));
     }
   }
 
@@ -301,7 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
       Notify?.info(val ? 'Marked as featured ⭐' : 'Unfeatured');
       loadMediaTable();
     } catch (e) {
-      Notify?.error('Update failed: ' + e.message);
+      Notify?.error(explainSaveError(e));
     }
   }
 
@@ -335,7 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       profiles.forEach(p => {
         const card = document.createElement('div');
-        card.style.cssText = 'display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;margin-bottom:10px;';
+        card.className = 'profile-row';
         const avatar = p.coverImage
           ? `<img src="${esc(p.coverImage)}" style="width:44px;height:44px;border-radius:8px;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'">`
           : `<span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:rgba(229,9,20,0.1);border-radius:8px;font-size:22px;flex-shrink:0;">💕</span>`;
@@ -456,7 +588,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadUploadProfileSelect();
         loadStats();
       } catch (err) {
-        Notify?.error('Save failed: ' + err.message);
+        Notify?.error(explainSaveError(err));
         const saveBtn = document.getElementById('profile-modal-save');
         if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = isEdit ? '💾 Update Profile' : '💾 Add Profile'; }
       }
@@ -475,7 +607,7 @@ document.addEventListener('DOMContentLoaded', () => {
       loadUploadProfileSelect();
       loadStats();
     } catch (err) {
-      Notify?.error('Delete failed: ' + err.message);
+      Notify?.error(explainSaveError(err));
     }
   }
 
@@ -614,7 +746,7 @@ document.addEventListener('DOMContentLoaded', () => {
       updateHeroPreview(data.backgroundUrl, data.mediaType);
       Notify?.success('Hero banner updated! 🎬');
     } catch (err) {
-      Notify?.error('Save failed: ' + err.message);
+      Notify?.error(explainSaveError(err));
     } finally {
       btn.disabled = false;
     }
@@ -630,10 +762,10 @@ document.addEventListener('DOMContentLoaded', () => {
     container.innerHTML = '';
     credits.forEach(c => {
       const row = document.createElement('div');
-      row.style.cssText = 'display:flex;gap:12px;margin-bottom:8px;align-items:center;';
+      row.className = 'credit-row';
       row.innerHTML = `
-        <input class="admin-form-input" value="${esc(c.role)}" style="flex:1;" data-id="${esc(c.id)}" data-field="role">
-        <input class="admin-form-input" value="${esc(c.value)}" style="flex:1;" data-id="${esc(c.id)}" data-field="value">
+        <input class="admin-form-input" value="${esc(c.role)}" data-id="${esc(c.id)}" data-field="role" aria-label="Credit role">
+        <input class="admin-form-input" value="${esc(c.value)}" data-id="${esc(c.id)}" data-field="value" aria-label="Credit value">
         <button class="admin-btn admin-btn-sm admin-btn-danger" data-action="delete" title="Delete credit">✕</button>
       `;
       row.querySelector('[data-action="delete"]').addEventListener('click', () => deleteCredit(c.id));
@@ -658,7 +790,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       Notify?.success('Credits saved! 🎬');
     } catch (err) {
-      Notify?.error('Save failed: ' + err.message);
+      Notify?.error(explainSaveError(err));
     } finally {
       btn.disabled = false;
     }
@@ -670,7 +802,7 @@ document.addEventListener('DOMContentLoaded', () => {
       loadCreditsManager();
       Notify?.info('Credit added');
     } catch (err) {
-      Notify?.error('Add failed: ' + err.message);
+      Notify?.error(explainSaveError(err));
     }
   });
 
@@ -681,9 +813,70 @@ document.addEventListener('DOMContentLoaded', () => {
       loadCreditsManager();
       Notify?.success('Credit deleted');
     } catch (err) {
-      Notify?.error('Delete failed: ' + err.message);
+      Notify?.error(explainSaveError(err));
     }
   }
+
+  /* ============================================
+     Love Notes Manager
+     ============================================ */
+  async function loadNotesManager() {
+    const container = document.getElementById('notes-list');
+    if (!container) return;
+    const notes = await Storage?.getAll('notes', 'sortOrder').catch(() => []) || [];
+    container.innerHTML = '';
+    if (notes.length === 0) {
+      container.innerHTML = '<p style="color:var(--lf-text-muted);text-align:center;padding:16px;">No notes yet — your first one is waiting to be written 💌</p>';
+      return;
+    }
+    notes.forEach(n => {
+      const row = document.createElement('div');
+      row.className = 'profile-row';
+      row.innerHTML = `
+        <span style="font-size:20px;flex-shrink:0;">💌</span>
+        <div style="flex:1;min-width:0;">
+          <div style="color:var(--lf-text-primary);font-size:14px;line-height:1.5;">${esc(n.text)}</div>
+          ${n.from ? `<div style="color:var(--lf-text-muted);font-size:12px;margin-top:2px;font-style:italic;">— ${esc(n.from)}</div>` : ''}
+        </div>
+        <button class="admin-btn admin-btn-sm admin-btn-danger" data-action="delete" title="Delete note">✕</button>
+      `;
+      row.querySelector('[data-action="delete"]').addEventListener('click', async () => {
+        if (!confirm('Delete this love note?')) return;
+        try {
+          await Storage?.remove('notes', n.id);
+          Notify?.success('Note deleted');
+          loadNotesManager();
+        } catch (err) {
+          Notify?.error(explainSaveError(err));
+        }
+      });
+      container.appendChild(row);
+    });
+  }
+
+  document.getElementById('note-add-btn')?.addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    const textEl = document.getElementById('note-text');
+    const fromEl = document.getElementById('note-from');
+    const text = textEl?.value.trim() || '';
+    if (!text) { Notify?.warning('Write something sweet first 💕'); return; }
+    try {
+      btn.disabled = true;
+      await Storage?.add('notes', {
+        text,
+        from: fromEl?.value.trim() || '',
+        sortOrder: Date.now()
+      });
+      if (textEl) textEl.value = '';
+      if (fromEl) fromEl.value = '';
+      Notify?.success('Love note saved! 💌');
+      loadNotesManager();
+    } catch (err) {
+      Notify?.error(explainSaveError(err));
+    } finally {
+      btn.disabled = false;
+    }
+  });
 
   /* ============================================
      Settings Manager (with LoveCode)
@@ -695,55 +888,29 @@ document.addEventListener('DOMContentLoaded', () => {
     setText('setting-tagline', settings.tagline, true);
     setText('setting-start-date', settings.relationshipStartDate, true);
     setText('setting-intro-duration', settings.introDuration, true);
-
-    // Load LoveCode (mask it)
-    const lcInput = document.getElementById('setting-lovecode');
-    if (lcInput && settings.loveCode) {
-      lcInput.value = settings.loveCode;
-    }
-
-    // Toggle visibility button
-    const toggleBtn = document.getElementById('lovecode-toggle-vis');
-    if (toggleBtn && lcInput) {
-      toggleBtn.addEventListener('click', () => {
-        const isHidden = lcInput.type === 'password';
-        lcInput.type = isHidden ? 'text' : 'password';
-        toggleBtn.textContent = isHidden ? '🙈' : '👁️';
-      });
-    }
-
-    // Allow only numeric digits in the LoveCode input
-    if (lcInput) {
-      lcInput.addEventListener('input', () => {
-        lcInput.value = lcInput.value.replace(/\D/g, '').slice(0, 4);
-      });
-    }
+    setText('setting-music-url', settings.backgroundMusicUrl || '', true);
   }
 
-  document.getElementById('settings-save')?.addEventListener('click', async () => {
-    const lcInput = document.getElementById('setting-lovecode');
-    const loveCode = lcInput?.value?.trim() || '';
-
-    // Validate: must be exactly 4 digits if provided
-    if (loveCode && !/^\d{4}$/.test(loveCode)) {
-      Notify?.error('LoveCode must be exactly 4 digits (0–9)');
-      lcInput.focus();
-      return;
-    }
-
+  document.getElementById('settings-save')?.addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
     const data = {
       siteTitle: document.getElementById('setting-site-title')?.value || 'LOVEFLIX',
       tagline: document.getElementById('setting-tagline')?.value || '',
       relationshipStartDate: document.getElementById('setting-start-date')?.value || '2024-01-01',
       introDuration: parseInt(document.getElementById('setting-intro-duration')?.value) || 4000,
+      backgroundMusicUrl: document.getElementById('setting-music-url')?.value.trim() || '',
       theme: 'dark'
     };
 
-    // Only save LoveCode if a valid value was entered
-    if (loveCode) data.loveCode = loveCode;
-
-    await Storage?.setDoc('settings', 'main', data);
-    Notify?.success(loveCode ? `Settings saved! LoveCode set to ${loveCode} 🔐` : 'Settings saved! ⚙️');
+    try {
+      btn.disabled = true;
+      await Storage?.setDoc('settings', 'main', data);
+      Notify?.success('Settings saved! ⚙️');
+    } catch (err) {
+      Notify?.error(explainSaveError(err));
+    } finally {
+      btn.disabled = false;
+    }
   });
 
   /* ============================================
@@ -789,6 +956,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!el) return;
     if (isInput) el.value = value || '';
     else el.textContent = value || '0';
+  }
+
+  // Turn cryptic Firestore errors into actionable messages
+  function explainSaveError(err) {
+    const msg = err?.message || String(err);
+    if (/insufficient permissions|permission-denied|PERMISSION_DENIED/i.test(msg)) {
+      return 'Save blocked by database rules 🛡️ Open Connections → Database Rules to fix it (takes 1 minute).';
+    }
+    if (/network|unavailable|offline/i.test(msg)) {
+      return 'Network problem — check your internet connection and try again.';
+    }
+    return 'Save failed: ' + msg;
   }
 
   /* ============================================
@@ -855,7 +1034,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await Storage?.setDoc('settings', 'main', data);
         Notify?.success(code ? `Love Code saved! 🔐 Code: ${code}` : 'Love Code settings saved! 💕');
       } catch (e) {
-        Notify?.error('Save failed: ' + e.message);
+        Notify?.error(explainSaveError(e));
       }
     });
 
@@ -1031,6 +1210,65 @@ document.addEventListener('DOMContentLoaded', () => {
       writeOverride(override);
       Notify?.info('Cloudinary override removed — using js/config.js. Reloading…');
       setTimeout(() => window.location.reload(), 1200);
+    });
+
+    // ---- Database Rules panel ----
+    document.getElementById('rules-copy-btn')?.addEventListener('click', async () => {
+      const rules = document.getElementById('rules-snippet')?.textContent || '';
+      try {
+        await navigator.clipboard.writeText(rules);
+        Notify?.success('Rules copied! Now open the Rules Editor and paste. 📋');
+      } catch {
+        Notify?.error('Copy failed — select the rules text manually and copy it.');
+      }
+    });
+
+    document.getElementById('rules-open-btn')?.addEventListener('click', () => {
+      const projectId = window.LoveFlixConfig?.firebase?.projectId;
+      if (!projectId) {
+        Notify?.error('No Firebase project configured — set it up above first.');
+        return;
+      }
+      window.open(`https://console.firebase.google.com/project/${encodeURIComponent(projectId)}/firestore/rules`, '_blank');
+      Notify?.info('Paste the copied rules and press Publish, then come back and Test. 🚀');
+    });
+
+    document.getElementById('rules-test-btn')?.addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      btn.disabled = true;
+      const setPill = (which, ok, text) => {
+        const pill = document.getElementById(`rules-${which}-status`);
+        const detail = document.getElementById(`rules-${which}-detail`);
+        pill?.classList.toggle('connected', ok);
+        pill?.classList.toggle('warning', !ok);
+        if (detail) detail.textContent = text;
+      };
+      const db = window.LoveFlixFirebase?.getDb();
+      if (!db) {
+        setPill('read', false, 'Firebase not connected');
+        setPill('write', false, 'Firebase not connected');
+        btn.disabled = false;
+        return;
+      }
+      // Read test
+      try {
+        await db.collection('settings').doc('main').get();
+        setPill('read', true, 'Visitors can view your LoveFlix ✓');
+      } catch (err) {
+        setPill('read', false, 'Reads blocked — publish the rules below');
+      }
+      // Write test (write + clean up a diagnostics doc)
+      try {
+        const ref = db.collection('diagnostics').doc('_rulescheck');
+        await ref.set({ checkedAt: Date.now() });
+        await ref.delete();
+        setPill('write', true, 'You can save changes ✓');
+        Notify?.success('All permissions look good! 🛡️');
+      } catch (err) {
+        setPill('write', false, 'Writes blocked — rules locked or test mode expired');
+        Notify?.error('Writes are blocked. Follow the 4 steps to publish the rules. 🛡️');
+      }
+      btn.disabled = false;
     });
 
     // Test: an empty upload tells us whether the cloud name (and preset) exist

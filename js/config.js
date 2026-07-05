@@ -24,6 +24,7 @@ const LoveFlixConfig = {
     maxFileSize: 50 * 1024 * 1024, // 50MB
     allowedImageFormats: ["jpg", "jpeg", "png", "webp", "gif"],
     allowedVideoFormats: ["mp4", "mov", "webm"],
+    allowedAudioFormats: ["mp3", "m4a", "wav", "ogg"],
     thumbnailWidth: 400,
     thumbnailHeight: 225
   },
@@ -55,7 +56,8 @@ const LoveFlixConfig = {
     ads: "ads",
     credits: "credits",
     settings: "settings",
-    favorites: "favorites"
+    favorites: "favorites",
+    notes: "notes"
   },
 
   // ---- Feature Flags ----

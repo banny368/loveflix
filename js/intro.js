@@ -52,18 +52,40 @@ document.addEventListener('DOMContentLoaded', () => {
         introAudio.play().then(() => {
           soundBtn.textContent = '🔊';
         }).catch(() => {
-          soundOn = false;
+          // No file? Synthesize a cinematic "ta-dum" instead — zero assets needed.
           introAudio = null;
-          soundBtn.textContent = '🔇';
-          console.warn('[Intro] Sound unavailable — add assets/sounds/intro.mp3');
+          playTaDum();
+          soundBtn.textContent = '🔊';
         });
       } else if (introAudio) {
         introAudio.muted = !soundOn;
         soundBtn.textContent = soundOn ? '🔊' : '🔇';
       } else {
+        if (soundOn) playTaDum();
         soundBtn.textContent = soundOn ? '🔊' : '🔇';
       }
     });
+  }
+
+  // Netflix-style "ta-dum" via WebAudio (same oscillator trick as the
+  // LoveCode success chime) — works with no audio files at all.
+  function playTaDum() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      [[87, 0, 0.9], [110, 0.02, 1.1], [174, 0.14, 1.3]].forEach(([freq, delay, dur]) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+        gain.gain.setValueAtTime(0.0001, ctx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.28, ctx.currentTime + delay + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + delay + dur);
+        osc.start(ctx.currentTime + delay);
+        osc.stop(ctx.currentTime + delay + dur + 0.05);
+      });
+    } catch (_) {}
   }
 
   function goToProfiles() {

@@ -31,23 +31,75 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   if (allMedia.length > 0) {
+    buildFilmstrip();
     showMedia(currentIndex);
   } else {
     if (mediaWrap) mediaWrap.innerHTML = '<p style="color:#808080;font-size:18px;">No memories yet. Upload some in the Admin panel! 💕</p>';
+  }
+
+  /* ---- Filmstrip (quick-jump thumbnails) ---- */
+  function buildFilmstrip() {
+    const escf = Utils?.escapeHtml || (s => s ?? '');
+    const strip = document.createElement('div');
+    strip.className = 'viewer-filmstrip';
+    strip.id = 'viewer-filmstrip';
+    strip.setAttribute('aria-label', 'All memories');
+    allMedia.forEach((m, i) => {
+      const thumb = document.createElement('button');
+      thumb.className = 'filmstrip-thumb';
+      thumb.setAttribute('aria-label', m.title || `Memory ${i + 1}`);
+      const src = m.thumbnail || m.url;
+      thumb.innerHTML = src
+        ? `<img src="${escf(src)}" alt="" loading="lazy">${m.type === 'video' ? '<span class="filmstrip-badge">▶</span>' : ''}`
+        : '📸';
+      thumb.addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentIndex = i;
+        showMedia(i);
+        if (slideshowActive) resetSlideshow();
+      });
+      strip.appendChild(thumb);
+    });
+    viewerPage?.insertBefore(strip, document.querySelector('.viewer-bottombar'));
+  }
+
+  function updateFilmstrip(index) {
+    const strip = document.getElementById('viewer-filmstrip');
+    if (!strip) return;
+    strip.querySelectorAll('.filmstrip-thumb').forEach((t, i) => {
+      t.classList.toggle('active', i === index);
+    });
+    strip.querySelectorAll('.filmstrip-thumb')[index]
+      ?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
   }
 
   // ---- Navigation ----
   document.getElementById('prev-btn')?.addEventListener('click', () => navigate(-1));
   document.getElementById('next-btn')?.addEventListener('click', () => navigate(1));
 
-  // Keyboard controls
+  // Keyboard controls — while a video plays, the player owns Space/F/←/→
+  // (seek); use Shift+←/→ to switch memories during playback.
   document.addEventListener('keydown', (e) => {
+    const playerActive = window.LoveFlixPlayer?.isActive();
     switch(e.key) {
-      case 'ArrowLeft': navigate(-1); break;
-      case 'ArrowRight': navigate(1); break;
+      case 'ArrowLeft':
+        if (playerActive && !e.shiftKey) return;
+        navigate(-1);
+        break;
+      case 'ArrowRight':
+        if (playerActive && !e.shiftKey) return;
+        navigate(1);
+        break;
       case 'Escape': goBack(); break;
-      case ' ': e.preventDefault(); toggleSlideshow(); break;
-      case 'f': case 'F': toggleFullscreen(); break;
+      case ' ':
+        if (playerActive) return;
+        e.preventDefault();
+        toggleSlideshow();
+        break;
+      case 'f': case 'F':
+        if (playerActive) return;
+        toggleFullscreen();
+        break;
     }
   });
 
@@ -95,6 +147,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (btn.classList.contains('liked')) {
       icon.textContent = '❤️';
       LoveFlixNotify?.love('Added to favorites! 💕');
+      Utils?.heartBurst(e.clientX || window.innerWidth / 2, e.clientY || window.innerHeight - 80);
     } else {
       icon.textContent = '♡';
     }
@@ -154,10 +207,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     mediaWrap.style.animation = '';
 
     const esc = Utils?.escapeHtml || (s => s ?? '');
+    window.LoveFlixPlayer?.unmount();
+
     if (item.type === 'video' && item.url) {
-      mediaWrap.innerHTML = `<video src="${esc(item.url)}" controls autoplay playsinline style="max-width:100%;max-height:100%;"></video>`;
+      mediaWrap.innerHTML = '';
+      if (window.LoveFlixPlayer) {
+        LoveFlixPlayer.mount(mediaWrap, item, {
+          getNext: () => allMedia.length > 1 ? allMedia[(index + 1) % allMedia.length] : null,
+          onNext: () => navigate(1)
+        });
+      } else {
+        mediaWrap.innerHTML = `<video src="${esc(item.url)}" controls autoplay playsinline style="max-width:100%;max-height:100%;"></video>`;
+      }
     } else if (item.url) {
-      mediaWrap.innerHTML = `<img src="${esc(item.url)}" alt="${esc(item.title || 'Memory')}" style="max-width:100%;max-height:100%;object-fit:contain;">`;
+      const ambientSrc = item.thumbnail || item.url;
+      mediaWrap.innerHTML = `
+        <div class="viewer-ambient" style="background-image:url('${esc(ambientSrc)}')"></div>
+        <img src="${esc(item.url)}" alt="${esc(item.title || 'Memory')}" style="max-width:100%;max-height:100%;object-fit:contain;position:relative;z-index:1;">
+      `;
     } else {
       mediaWrap.innerHTML = `<div style="font-size:5rem;opacity:0.3;">📸</div>`;
     }
@@ -167,6 +234,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (counterEl) counterEl.textContent = `${index + 1} / ${allMedia.length}`;
     if (captionTitle) captionTitle.textContent = item.title || '';
     if (captionDesc) captionDesc.textContent = item.description || '';
+    const metaEl = document.getElementById('caption-meta');
+    if (metaEl) {
+      const bits = [];
+      if (item.category) bits.push(esc(item.category));
+      if (item.memoryDate) bits.push(esc(Utils?.formatDate(item.memoryDate) || item.memoryDate));
+      metaEl.innerHTML = bits.map(b => `<span class="caption-chip">${b}</span>`).join('');
+    }
+
+    // Filmstrip highlight + recently-viewed tracking (for Continue Watching)
+    updateFilmstrip(index);
+    if (Utils && item.id) {
+      const recent = (Utils.retrieve('recentlyViewed') || []).filter(r => r.id !== item.id);
+      recent.unshift({ id: item.id, at: Date.now() });
+      Utils.store('recentlyViewed', recent.slice(0, 12));
+    }
 
     // Update URL without reload
     Utils?.setUrlParam('id', item.id);
@@ -190,6 +272,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function goBack() {
     stopSlideshow();
+    window.LoveFlixPlayer?.unmount();
     // Direct/shared links have no history to go back to
     if (window.history.length <= 1) {
       window.location.href = 'home.html';

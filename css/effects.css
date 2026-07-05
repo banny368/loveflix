@@ -1,0 +1,223 @@
+/* ============================================
+   LOVEFLIX — Shared Premium Effects (v3)
+   Aurora, glass, shine, transitions, bottom nav
+   ============================================ */
+
+/* ---- Aurora ambient background ---- */
+.lf-aurora {
+  position: fixed;
+  inset: -20%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 40% 35% at 20% 25%, var(--lf-aurora-1), transparent 70%),
+    radial-gradient(ellipse 35% 40% at 80% 20%, var(--lf-aurora-2), transparent 70%),
+    radial-gradient(ellipse 45% 35% at 55% 85%, var(--lf-aurora-3), transparent 70%);
+  filter: blur(40px);
+  animation: lfAuroraDrift 26s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes lfAuroraDrift {
+  0%   { transform: translate3d(-2%, -1%, 0) scale(1); }
+  50%  { transform: translate3d(2%, 2%, 0) scale(1.06); }
+  100% { transform: translate3d(-1%, 1%, 0) scale(1.02); }
+}
+
+/* ---- Film grain (subtle) ---- */
+.lf-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+  background-size: 120px 120px;
+}
+
+/* ---- Glass panel ---- */
+.lf-glass {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.025) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: var(--lf-radius-xl);
+}
+
+/* ---- Button shine sweep ---- */
+.lf-btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.lf-btn-shine::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -80%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(105deg, transparent 0%, rgba(255, 255, 255, 0.35) 50%, transparent 100%);
+  transform: skewX(-20deg);
+  transition: left 0.6s var(--lf-ease-out-expo);
+  pointer-events: none;
+}
+
+.lf-btn-shine:hover::after { left: 130%; }
+
+/* ---- Accessible focus ring ---- */
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--lf-rose);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ---- Page transitions ---- */
+body.page-enter { animation: lfPageEnter 0.35s var(--lf-ease-out-expo) both; }
+body.page-leave { animation: lfPageLeave 0.25s ease both; }
+
+@keyframes lfPageEnter {
+  from { opacity: 0; transform: scale(1.012); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes lfPageLeave {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(0.99); }
+}
+
+/* ---- Heart burst (generalized like-animation) ---- */
+.heart-burst-particle {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  font-size: 1.1rem;
+  animation: heartBurstFly 0.9s var(--lf-ease-out-expo) forwards;
+}
+
+@keyframes heartBurstFly {
+  0%   { opacity: 1; transform: translate(0, 0) scale(0.6) rotate(0deg); }
+  100% { opacity: 0; transform: translate(var(--dx, 0), var(--dy, -80px)) scale(1.25) rotate(var(--rot, 0deg)); }
+}
+
+/* ---- Scroll progress bar ---- */
+.lf-scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0;
+  background: var(--lf-gradient-romantic);
+  box-shadow: var(--lf-glow-red);
+  z-index: calc(var(--lf-z-navbar) + 1);
+  pointer-events: none;
+  transition: width 0.08s linear;
+}
+
+/* ---- Floating action buttons (Surprise / Love Note) ---- */
+.lf-fab-stack {
+  position: fixed;
+  right: 18px;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: var(--lf-z-sticky);
+}
+
+.lf-fab {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(160deg, rgba(40, 20, 28, 0.9), rgba(24, 12, 18, 0.92));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+  transition: transform 0.25s var(--lf-ease-spring), box-shadow 0.25s ease;
+}
+
+.lf-fab:hover {
+  transform: translateY(-3px) scale(1.06);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.55), var(--lf-glow-pink);
+}
+
+.lf-fab:active { transform: scale(0.94); }
+
+/* ---- Mobile bottom navigation ---- */
+.lf-bottom-nav {
+  display: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--lf-bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: rgba(14, 14, 14, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  z-index: var(--lf-z-navbar);
+}
+
+.lf-bottom-nav a,
+.lf-bottom-nav button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  color: var(--lf-text-muted);
+  font-family: var(--lf-font-body);
+  font-size: 10px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color var(--lf-transition-fast);
+  padding-top: 6px;
+}
+
+.lf-bottom-nav a .bn-icon,
+.lf-bottom-nav button .bn-icon {
+  font-size: 20px;
+  line-height: 1;
+  transition: transform 0.2s var(--lf-ease-spring);
+}
+
+.lf-bottom-nav a.active,
+.lf-bottom-nav a:hover,
+.lf-bottom-nav button:hover {
+  color: var(--lf-text-primary);
+}
+
+.lf-bottom-nav a.active .bn-icon { transform: translateY(-2px) scale(1.12); }
+
+@media (max-width: 768px) {
+  .lf-bottom-nav { display: flex; }
+  /* Give page content room above the bar */
+  body.has-bottom-nav { padding-bottom: calc(var(--lf-bottom-nav-height) + env(safe-area-inset-bottom, 0px)); }
+  body.has-bottom-nav .lf-footer { padding-bottom: calc(var(--lf-space-2xl) + var(--lf-bottom-nav-height)); }
+  body.has-bottom-nav .lf-fab-stack {
+    bottom: calc(var(--lf-bottom-nav-height) + 18px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* ---- Reduced motion: kill decorative animation ---- */
+@media (prefers-reduced-motion: reduce) {
+  .lf-aurora { animation: none; }
+  .lf-grain { display: none; }
+}

@@ -55,13 +55,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // Music
+  // Music — prefer the track configured in Admin → Settings
   let creditsMusic = null;
+  let musicUrl = 'assets/music/credits.mp3';
+  try {
+    const settings = await Storage?.getSettings();
+    if (settings?.backgroundMusicUrl) musicUrl = settings.backgroundMusicUrl;
+  } catch {}
   if (musicBtn) {
     musicBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       if (!creditsMusic) {
-        creditsMusic = new Audio('assets/music/credits.mp3');
+        creditsMusic = new Audio(musicUrl);
         creditsMusic.loop = true;
         creditsMusic.volume = 0.4;
       }
@@ -70,7 +75,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           musicBtn.textContent = '🎵';
         }).catch(() => {
           musicBtn.textContent = '🔇';
-          console.warn('[Credits] Music unavailable — add assets/music/credits.mp3');
+          creditsMusic = null;
+          console.warn('[Credits] Music unavailable — set a track in Admin → Settings → Music');
         });
       } else {
         creditsMusic.pause();

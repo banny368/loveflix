@@ -166,4 +166,16 @@
   --lf-profile-avatar: 120px;
   --lf-sidebar-width: 260px;
   --lf-max-content: 1400px;
+
+  /* ---- v3 Cinematic Tokens ---- */
+  --lf-rosegold: #E8B4B8;
+  --lf-aurora-1: rgba(229, 9, 20, 0.10);
+  --lf-aurora-2: rgba(168, 85, 247, 0.07);
+  --lf-aurora-3: rgba(255, 77, 109, 0.08);
+  --lf-glow-red: 0 0 24px rgba(229, 9, 20, 0.45);
+  --lf-glow-pink: 0 0 24px rgba(255, 107, 157, 0.4);
+  --lf-glow-gold: 0 0 24px rgba(255, 215, 0, 0.35);
+  --lf-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --lf-ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --lf-bottom-nav-height: 60px;
 }

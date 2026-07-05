@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="LoveFlix — Browse your love story memories in a cinematic Netflix-style experience.">
+  <meta name="description" content="LoveFlix Timeline — Our story, episode by episode.">
   <meta name="theme-color" content="#141414">
-  <title>Home — LoveFlix</title>
+  <title>Timeline — LoveFlix</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,10 +16,11 @@
   <link rel="stylesheet" href="css/animations.css?v=10">
   <link rel="stylesheet" href="css/effects.css?v=10">
   <link rel="stylesheet" href="css/home.css?v=10">
+  <link rel="stylesheet" href="css/timeline.css?v=10">
   <link rel="stylesheet" href="css/lovecode.css?v=10">
   <link rel="stylesheet" href="css/responsive.css?v=10">
 
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
 </head>
 <body class="page-enter has-bottom-nav">
   <!-- Ambient Layers -->
@@ -27,29 +28,17 @@
   <div class="lf-grain" aria-hidden="true"></div>
   <div class="lf-scroll-progress" id="scroll-progress" aria-hidden="true"></div>
 
-  <!-- Floating Particles -->
-  <div class="home-particles" aria-hidden="true"></div>
-
   <!-- Navbar -->
   <nav class="lf-navbar" id="navbar" role="navigation" aria-label="Main navigation">
     <div class="navbar-left">
       <a href="profiles.html" class="navbar-logo" aria-label="LoveFlix Home">LOVEFLIX</a>
       <div class="navbar-links desktop-only">
-        <a href="home.html" class="active">Home</a>
-        <a href="timeline.html">Timeline</a>
+        <a href="home.html">Home</a>
+        <a href="timeline.html" class="active">Timeline</a>
         <a href="credits.html">Credits</a>
       </div>
     </div>
     <div class="navbar-right">
-      <div class="navbar-search" id="search-wrap">
-        <button class="navbar-search-btn" aria-label="Search">🔍</button>
-        <input type="text" class="navbar-search-input" id="search-input" placeholder="Search memories..." aria-label="Search memories">
-      </div>
-      <div class="days-counter" id="days-counter" aria-label="Days together">
-        <span class="days-counter-heart">❤️</span>
-        <span><strong id="days-count">0</strong> days</span>
-      </div>
-      <button class="music-toggle" id="music-toggle" aria-label="Toggle background music">🔇</button>
       <button class="navbar-menu-btn" id="navbar-menu-btn" aria-label="Open navigation menu" aria-expanded="false">☰</button>
     </div>
   </nav>
@@ -63,37 +52,28 @@
     <a href="admin-login.html">⚙️ Admin</a>
   </div>
 
-  <!-- Hero Banner -->
-  <section class="hero-banner" id="hero-banner" aria-label="Featured memory">
-    <img class="hero-media" id="hero-media" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%231a1a2e'/%3E%3Cstop offset='100%25' stop-color='%23141414'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='1920' height='1080'/%3E%3Ctext x='960' y='540' text-anchor='middle' fill='%23333' font-size='80' font-family='sans-serif'%3E❤️%3C/text%3E%3C/svg%3E" alt="Featured memory">
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-      <button class="hero-countdown" id="hero-countdown" aria-label="Anniversary countdown" style="display:none;"></button>
-      <h1 class="hero-title" id="hero-title">Our Love Story</h1>
-      <p class="hero-subtitle" id="hero-subtitle">Every moment with you is a memory I treasure forever</p>
-      <div class="hero-buttons">
-        <button class="hero-btn hero-btn-play lf-btn-shine" id="hero-play" aria-label="Play">▶ Play</button>
-        <button class="hero-btn hero-btn-list" id="hero-list" aria-label="My list">♡ My List</button>
-      </div>
+  <!-- Timeline -->
+  <main class="timeline-page" role="main">
+    <header class="timeline-header">
+      <h1 class="timeline-title">Our Story</h1>
+      <p class="timeline-subtitle">Episode by episode, memory by memory 💕</p>
+    </header>
+
+    <div class="timeline-track" id="timeline-track">
+      <!-- Populated by JS -->
     </div>
-  </section>
 
-  <!-- Content Rows -->
-  <main class="home-content" id="home-content" role="main">
-    <!-- Populated by JS -->
+    <div class="timeline-end" id="timeline-end" style="display:none;">
+      <div class="timeline-end-heart">❤️</div>
+      <p>To be continued… forever.</p>
+    </div>
   </main>
-
-  <!-- Floating Actions -->
-  <div class="lf-fab-stack" aria-label="Quick actions">
-    <button class="lf-fab" id="fab-note" aria-label="Open a love note" title="A note for you 💌">💌</button>
-    <button class="lf-fab" id="fab-surprise" aria-label="Surprise me" title="Surprise me 🎲">🎲</button>
-  </div>
 
   <!-- Footer -->
   <footer class="lf-footer">
     <div class="lf-footer-links">
+      <a href="home.html">Home</a>
       <a href="profiles.html">Profiles</a>
-      <a href="timeline.html">Timeline</a>
       <a href="credits.html">Credits</a>
       <a href="admin-login.html">Admin</a>
     </div>
@@ -102,10 +82,10 @@
 
   <!-- Mobile Bottom Nav -->
   <nav class="lf-bottom-nav" aria-label="Bottom navigation">
-    <a href="home.html" class="active"><span class="bn-icon">🏠</span>Home</a>
-    <a href="timeline.html"><span class="bn-icon">📖</span>Timeline</a>
-    <button id="bn-surprise" aria-label="Surprise me"><span class="bn-icon">🎲</span>Surprise</button>
+    <a href="home.html"><span class="bn-icon">🏠</span>Home</a>
+    <a href="timeline.html" class="active"><span class="bn-icon">📖</span>Timeline</a>
     <a href="credits.html"><span class="bn-icon">🎭</span>Credits</a>
+    <a href="profiles.html"><span class="bn-icon">👤</span>Profiles</a>
   </nav>
 
   <!-- Firebase SDK -->
@@ -117,10 +97,9 @@
   <script src="js/firebase-config.js?v=10"></script>
   <script src="js/utils.js?v=10"></script>
   <script src="js/notifications.js?v=10"></script>
-  <script src="js/loader.js?v=10"></script>
   <script src="js/storage.js?v=10"></script>
   <script src="js/lovecode.js?v=10"></script>
-  <script src="js/home.js?v=10"></script>
+  <script src="js/timeline.js?v=10"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       window.LoveCodeLock?.check(() => window.LoveCodeLock?.recordActivity());

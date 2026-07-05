@@ -24,6 +24,7 @@ html {
 
 body {
   min-height: 100vh;
+  min-height: 100svh; /* correct height under mobile browser URL bars */
   font-family: var(--lf-font-body);
   font-weight: var(--lf-fw-regular);
   line-height: var(--lf-lh-normal);

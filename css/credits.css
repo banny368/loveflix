@@ -137,7 +137,11 @@
   font-family: var(--lf-font-romantic);
   font-size: clamp(2rem, 5vw, 3.5rem);
   color: var(--lf-blush);
-  text-shadow: 0 0 30px rgba(255, 77, 109, 0.3);
+  background: linear-gradient(120deg, var(--lf-blush) 20%, var(--lf-gold) 50%, var(--lf-rose) 80%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 24px rgba(255, 77, 109, 0.35));
   margin-top: 24px;
 }
 

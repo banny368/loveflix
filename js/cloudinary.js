@@ -79,8 +79,9 @@ const LoveFlixCloud = (() => {
     const ext = file.name.split('.').pop().toLowerCase();
     const isImage = config.allowedImageFormats.includes(ext);
     const isVideo = config.allowedVideoFormats.includes(ext);
+    const isAudio = (config.allowedAudioFormats || []).includes(ext);
 
-    if (!isImage && !isVideo) {
+    if (!isImage && !isVideo && !isAudio) {
       return { valid: false, error: `Unsupported format: .${ext}` };
     }
 
@@ -89,7 +90,8 @@ const LoveFlixCloud = (() => {
       return { valid: false, error: `File too large. Max size: ${maxMB}MB` };
     }
 
-    return { valid: true, type: isImage ? 'image' : 'video' };
+    // Cloudinary hosts audio under the video resource type
+    return { valid: true, type: isImage ? 'image' : (isAudio ? 'audio' : 'video') };
   }
 
   /**
@@ -143,6 +145,7 @@ const LoveFlixCloud = (() => {
     const config = window.LoveFlixConfig?.cloudinary;
     if (config?.allowedImageFormats.includes(ext)) return 'image';
     if (config?.allowedVideoFormats.includes(ext)) return 'video';
+    if ((config?.allowedAudioFormats || []).includes(ext)) return 'audio';
     return 'unknown';
   }
 

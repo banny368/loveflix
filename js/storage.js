@@ -240,6 +240,11 @@ const LoveFlixStorage = (() => {
         { id: 'c9', role: 'Stunt Coordinators', value: 'Arguments & Fights', sortOrder: 9 },
         { id: 'c10', role: 'Wardrobe Designer', value: "Each Other's Hoodies", sortOrder: 10 }
       ],
+      notes: [
+        { id: 'n1', text: 'Every day with you feels like my favorite scene on repeat.', from: 'Your biggest fan', sortOrder: 1 },
+        { id: 'n2', text: 'If our love were a movie, I would never press pause.', from: 'Me', sortOrder: 2 },
+        { id: 'n3', text: 'You are the plot twist I never saw coming and never want to end.', from: 'Forever yours', sortOrder: 3 }
+      ],
       ads: []
     };
     return demo[collection] || [];

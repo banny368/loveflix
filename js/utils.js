@@ -233,6 +233,43 @@ const LoveFlixUtils = (() => {
     setTimeout(() => container.remove(), duration + 1000);
   }
 
+  /* ---- Page Transition ---- */
+  function pageTransition(url) {
+    document.body.classList.add('page-leave');
+    setTimeout(() => { window.location.href = url; }, 220);
+  }
+
+  /* ---- Heart Burst (like animation at a point) ---- */
+  function heartBurst(x, y, count = 10) {
+    const hearts = ['❤️', '💕', '💖', '✨'];
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('span');
+      p.className = 'heart-burst-particle';
+      p.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+      const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5);
+      const dist = 40 + Math.random() * 70;
+      p.style.left = x + 'px';
+      p.style.top = y + 'px';
+      p.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+      p.style.setProperty('--dy', (Math.sin(angle) * dist - 50) + 'px');
+      p.style.setProperty('--rot', (Math.random() * 240 - 120) + 'deg');
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 950);
+    }
+  }
+
+  /* ---- Typewriter Reveal ---- */
+  function typewriter(el, text, speed = 35) {
+    el.textContent = '';
+    let i = 0;
+    const timer = setInterval(() => {
+      el.textContent += text.charAt(i);
+      i++;
+      if (i >= text.length) clearInterval(timer);
+    }, speed);
+    return () => clearInterval(timer);
+  }
+
   /* ---- Heart Cursor Trail ---- */
   function initHeartTrail() {
     if (!window.LoveFlixConfig?.features?.enableHeartTrail) return;
@@ -268,7 +305,8 @@ const LoveFlixUtils = (() => {
     store, retrieve, removeStore,
     getUrlParam, setUrlParam,
     generateId, shuffle,
-    createParticles, launchConfetti, initHeartTrail
+    createParticles, launchConfetti, initHeartTrail,
+    pageTransition, heartBurst, typewriter
   };
 })();
 

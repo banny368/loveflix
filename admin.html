@@ -11,12 +11,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/variables.css?v=9">
-  <link rel="stylesheet" href="css/reset.css?v=9">
-  <link rel="stylesheet" href="css/animations.css?v=9">
-  <link rel="stylesheet" href="css/admin.css?v=9">
-  <link rel="stylesheet" href="css/lovecode.css?v=9">
-  <link rel="stylesheet" href="css/responsive.css?v=9">
+  <link rel="stylesheet" href="css/variables.css?v=10">
+  <link rel="stylesheet" href="css/reset.css?v=10">
+  <link rel="stylesheet" href="css/animations.css?v=10">
+  <link rel="stylesheet" href="css/effects.css?v=10">
+  <link rel="stylesheet" href="css/admin.css?v=10">
+  <link rel="stylesheet" href="css/lovecode.css?v=10">
+  <link rel="stylesheet" href="css/responsive.css?v=10">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
 </head>
@@ -50,6 +51,9 @@
         </a>
         <a class="sidebar-link" data-section="section-credits" href="#section-credits">
           <span class="sidebar-link-icon">🎭</span> Credits
+        </a>
+        <a class="sidebar-link" data-section="section-notes" href="#section-notes">
+          <span class="sidebar-link-icon">💌</span> Love Notes
         </a>
         <a class="sidebar-link" data-section="section-settings" href="#section-settings">
           <span class="sidebar-link-icon">⚙️</span> Settings
@@ -144,6 +148,10 @@
             <!-- Populated by JS from your profiles -->
           </select>
         </div>
+        <div class="admin-form-group">
+          <label class="admin-form-label" for="upload-date">Memory Date <span style="color:var(--lf-text-dim);font-size:11px;font-weight:400;">(places it on the Timeline)</span></label>
+          <input class="admin-form-input" id="upload-date" type="date" style="max-width:220px;">
+        </div>
 
         <div class="upload-zone" id="upload-zone">
           <div class="upload-zone-icon">📁</div>
@@ -171,6 +179,7 @@
                 <th>Title</th>
                 <th>Type</th>
                 <th>Category</th>
+                <th>Date</th>
                 <th>Featured</th>
                 <th>Actions</th>
               </tr>
@@ -266,6 +275,26 @@
         </div>
       </section>
 
+      <!-- ===== LOVE NOTES ===== -->
+      <section class="admin-section" id="section-notes">
+        <h2 class="admin-section-title">💌 Love Notes</h2>
+        <p style="color:var(--lf-text-secondary);font-size:13px;margin-bottom:20px;">
+          Write short love notes — a floating 💌 button on the homepage reveals a random one with a typewriter effect.
+        </p>
+        <div class="admin-form-group">
+          <label class="admin-form-label" for="note-text">Note</label>
+          <textarea class="admin-form-input" id="note-text" rows="3" placeholder="Every day with you feels like my favorite scene on repeat..."></textarea>
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-form-label" for="note-from">From (optional)</label>
+          <input class="admin-form-input" id="note-from" placeholder="e.g. Forever yours" style="max-width:280px;">
+        </div>
+        <button class="admin-btn admin-btn-primary" id="note-add-btn">💌 Add Note</button>
+        <div id="notes-list" style="margin-top:24px;">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
       <!-- ===== SETTINGS ===== -->
       <section class="admin-section" id="section-settings">
         <h2 class="admin-section-title">Site Settings</h2>
@@ -286,24 +315,26 @@
           <input class="admin-form-input" id="setting-intro-duration" type="number" value="4000">
         </div>
 
-        <!-- LoveCode Setting -->
+        <!-- Music -->
         <div class="admin-form-group" style="border-top:1px solid rgba(255,255,255,0.06);padding-top:20px;margin-top:8px;">
-          <label class="admin-form-label" for="setting-lovecode">🔐 LoveCode <span style="color:var(--lf-blush);font-size:11px;font-weight:400;">(4-digit PIN to enter the site)</span></label>
-          <div style="display:flex;gap:10px;align-items:center;">
-            <input class="admin-form-input" id="setting-lovecode"
-              type="password"
-              inputmode="numeric"
-              maxlength="4"
-              pattern="[0-9]{4}"
-              placeholder="4-digit code"
-              autocomplete="off"
-              style="letter-spacing:0.4em;font-size:1.3rem;text-align:center;max-width:160px;">
-            <button type="button" id="lovecode-toggle-vis"
-              style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 14px;color:var(--lf-text-secondary);cursor:pointer;font-size:16px;transition:all 0.2s;"
-              aria-label="Show/hide code">👁️</button>
+          <label class="admin-form-label" for="setting-music-url">🎵 Background Music URL</label>
+          <input class="admin-form-input" id="setting-music-url" placeholder="https://... (mp3 — upload below or paste any direct link)">
+          <div class="upload-zone" id="music-upload-zone" style="padding:20px;margin-top:10px;">
+            <div class="upload-zone-icon" style="font-size:1.6rem;">🎼</div>
+            <div class="upload-zone-text">Drop an MP3 here or click to upload it to Cloudinary</div>
+            <div class="upload-zone-hint">MP3, M4A, WAV — the URL field fills automatically</div>
+            <input type="file" id="music-upload-input" accept="audio/*" style="display:none;">
           </div>
-          <p style="font-size:12px;color:var(--lf-text-dim);margin-top:8px;">Visitors must enter this code to access LoveFlix. Default is <strong style="color:var(--lf-text-muted);">1234</strong> if not set.</p>
+          <div class="upload-progress" id="music-upload-progress" style="margin-top:8px;">
+            <div class="upload-progress-bar-wrap">
+              <div class="upload-progress-bar" id="music-upload-bar"></div>
+            </div>
+            <div class="upload-progress-text" id="music-upload-text">Uploading...</div>
+          </div>
+          <p style="font-size:12px;color:var(--lf-text-dim);margin-top:8px;">Plays on the homepage music toggle. Leave empty to use <code>assets/music/background.mp3</code> if you added it.</p>
         </div>
+
+        <p style="font-size:12px;color:var(--lf-text-dim);margin-top:4px;">🔐 Looking for the LoveCode PIN? It moved to the dedicated <strong>Love Code</strong> section in the sidebar.</p>
 
         <button class="admin-btn admin-btn-primary" id="settings-save">💾 Save Settings</button>
       </section>
@@ -518,6 +549,58 @@ service cloud.firestore {
             <button class="admin-btn admin-btn-secondary" id="cld-reset-btn">↩️ Reset to File Defaults</button>
           </div>
         </div>
+
+        <!-- ==== Database Rules Panel ==== -->
+        <div class="lc-admin-section" style="margin-top:16px;">
+          <div class="lc-admin-title">🛡️ Database Rules</div>
+          <p style="color:var(--lf-text-secondary);font-size:13px;margin-bottom:14px;">
+            If saving anything shows <em>"Missing or insufficient permissions"</em>, your Firestore security rules are blocking writes
+            (Firebase test mode expires after 30 days). Fix it in one minute below.
+          </p>
+
+          <div class="connection-status-row" id="rules-status-row" style="margin-bottom:14px;">
+            <div class="connection-status" id="rules-read-status">
+              <span class="connection-status-dot"></span>
+              <div>
+                <div class="connection-status-name">Public Read</div>
+                <div class="connection-status-detail" id="rules-read-detail">Not tested yet</div>
+              </div>
+            </div>
+            <div class="connection-status" id="rules-write-status">
+              <span class="connection-status-dot"></span>
+              <div>
+                <div class="connection-status-name">Admin Write</div>
+                <div class="connection-status-detail" id="rules-write-detail">Not tested yet</div>
+              </div>
+            </div>
+          </div>
+
+          <details class="guide-box" open>
+            <summary>📖 Fix in 4 steps</summary>
+            <ol>
+              <li>Click <strong>📋 Copy Rules</strong> below.</li>
+              <li>Click <strong>🚀 Open Rules Editor</strong> — it opens your exact Firebase project's rules page.</li>
+              <li>Select everything in the editor, paste, and press <strong>Publish</strong>.</li>
+              <li>Come back here and click <strong>🧪 Test Permissions</strong> — both pills should turn green.</li>
+            </ol>
+            <pre id="rules-snippet">rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{collection}/{document} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+  }
+}</pre>
+            <p class="guide-note">These rules let anyone <strong>view</strong> your LoveFlix (needed for your partner to see it) but only <strong>you</strong> (signed-in admin) can change anything.</p>
+          </details>
+
+          <div class="lc-action-btns" style="margin-top:14px;">
+            <button class="admin-btn admin-btn-primary" id="rules-copy-btn">📋 Copy Rules</button>
+            <button class="admin-btn admin-btn-secondary" id="rules-open-btn">🚀 Open Rules Editor</button>
+            <button class="admin-btn admin-btn-secondary" id="rules-test-btn">🧪 Test Permissions</button>
+          </div>
+        </div>
       </section>
     </main>
   </div>
@@ -527,14 +610,14 @@ service cloud.firestore {
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-  <script src="js/config.js?v=9"></script>
-  <script src="js/firebase-config.js?v=9"></script>
-  <script src="js/cloudinary.js?v=9"></script>
-  <script src="js/utils.js?v=9"></script>
-  <script src="js/notifications.js?v=9"></script>
-  <script src="js/storage.js?v=9"></script>
-  <script src="js/lovecode.js?v=9"></script>
-  <script src="js/auth.js?v=9"></script>
-  <script src="js/admin.js?v=9"></script>
+  <script src="js/config.js?v=10"></script>
+  <script src="js/firebase-config.js?v=10"></script>
+  <script src="js/cloudinary.js?v=10"></script>
+  <script src="js/utils.js?v=10"></script>
+  <script src="js/notifications.js?v=10"></script>
+  <script src="js/storage.js?v=10"></script>
+  <script src="js/lovecode.js?v=10"></script>
+  <script src="js/auth.js?v=10"></script>
+  <script src="js/admin.js?v=10"></script>
 </body>
 </html>
