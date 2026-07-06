@@ -164,9 +164,8 @@
 .hero-banner {
   position: relative;
   width: 100%;
-  height: 85vh;
-  height: 85svh;
-  min-height: 500px;
+  /* Fluid: scales continuously from small phones to 4K (capped) */
+  height: clamp(340px, 55svh + 8vw, 920px);
   overflow: hidden;
   margin-bottom: -80px;
 }
@@ -589,7 +588,7 @@
   .navbar-search { display: none !important; }
 
   /* Hero — no negative pull on mobile (rows overlapped the buttons) */
-  .hero-banner { height: 60vh; height: 60svh; min-height: 360px; margin-bottom: 0; }
+  .hero-banner { margin-bottom: 0; }
   .hero-content {
     bottom: 10%;
     left: 1rem;
@@ -645,7 +644,6 @@
 }
 
 @media (max-width: 480px) {
-  .hero-banner { height: 55vh; height: 55svh; min-height: 320px; }
   .hero-title { font-size: clamp(1.5rem, 8vw, 2rem) !important; }
   .hero-subtitle { font-size: 0.9rem !important; margin-bottom: 0.75rem; }
 }
@@ -884,7 +882,7 @@
 
 .detail-similar {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(min(150px, 100%), 1fr));
   gap: 10px;
 }
 
@@ -946,7 +944,7 @@
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(min(110px, 100%), 1fr));
   gap: 12px;
 }
 
@@ -1011,9 +1009,6 @@
 }
 
 @media (max-width: 480px) {
-  .detail-similar { grid-template-columns: repeat(2, 1fr); }
   .detail-actions { flex-wrap: wrap; }
   .detail-actions .hero-btn { flex: 1; }
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .hero-mute-pill { bottom: auto; top: calc(var(--lf-navbar-height) + 12px); }
 }

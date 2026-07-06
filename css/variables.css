@@ -105,18 +105,18 @@
   --lf-lh-normal: 1.5;
   --lf-lh-relaxed: 1.75;
 
-  /* ---- Spacing ---- */
+  /* ---- Spacing (fluid: scales continuously with viewport) ---- */
   --lf-space-xs: 0.25rem;
   --lf-space-sm: 0.5rem;
   --lf-space-md: 1rem;
-  --lf-space-lg: 1.5rem;
-  --lf-space-xl: 2rem;
-  --lf-space-2xl: 3rem;
-  --lf-space-3xl: 4rem;
-  --lf-space-4xl: 6rem;
+  --lf-space-lg: clamp(1.15rem, 1rem + 1vw, 1.5rem);
+  --lf-space-xl: clamp(1.4rem, 1.1rem + 1.5vw, 2rem);
+  --lf-space-2xl: clamp(1.9rem, 1.4rem + 2vw, 3rem);
+  --lf-space-3xl: clamp(2.4rem, 1.6rem + 3vw, 4rem);
+  --lf-space-4xl: clamp(3.2rem, 2rem + 5vw, 6rem);
 
   /* ---- Page Padding ---- */
-  --lf-page-padding: clamp(1rem, 4vw, 3.5rem);
+  --lf-page-padding: clamp(0.75rem, 3.5vw, 4rem);
 
   /* ---- Border Radius ---- */
   --lf-radius-sm: 4px;
@@ -159,11 +159,11 @@
   --lf-z-toast: 900;
   --lf-z-loader: 1000;
 
-  /* ---- Sizes ---- */
-  --lf-navbar-height: 68px;
-  --lf-card-width: 240px;
-  --lf-card-height: 135px;
-  --lf-profile-avatar: 120px;
+  /* ---- Sizes (fluid: no device buckets — every width gets its own fit) ---- */
+  --lf-navbar-height: clamp(56px, 42px + 2.2vw, 68px);
+  --lf-card-width: clamp(130px, 85px + 12.5vw, 300px);
+  --lf-card-height: calc(var(--lf-card-width) * 0.5625); /* 16:9 */
+  --lf-profile-avatar: clamp(76px, 55px + 7vw, 132px);
   --lf-sidebar-width: 260px;
   --lf-max-content: 1400px;
 
@@ -177,5 +177,15 @@
   --lf-glow-gold: 0 0 24px rgba(255, 215, 0, 0.35);
   --lf-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --lf-ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --lf-bottom-nav-height: 60px;
+  --lf-bottom-nav-height: clamp(52px, 8vh, 62px);
+}
+
+/* ---- Universal scale for very large screens (TV / 4K / ultrawide) ----
+   Everything rem/em-based (type, spacing, 1em SVG icons) grows together. */
+@media (min-width: 1920px) {
+  html { font-size: 17px; }
+}
+
+@media (min-width: 2560px) {
+  html { font-size: 18px; }
 }
