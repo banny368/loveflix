@@ -144,7 +144,12 @@ Add these rules in Firestore → Rules:
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Public read access
+    // Couple chat: both partners can read & send without logging in
+    match /chat/{message} {
+      allow read, create: if true;
+      allow update, delete: if request.auth != null;
+    }
+    // Public read access for everything else; admin-only writes
     match /{collection}/{document} {
       allow read: if true;
       allow write: if request.auth != null;

@@ -72,15 +72,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
       if (creditsMusic.paused) {
         creditsMusic.play().then(() => {
-          musicBtn.textContent = '🎵';
+          musicBtn.innerHTML = window.LFIcons?.get('music') || '🎵';
         }).catch(() => {
-          musicBtn.textContent = '🔇';
+          musicBtn.innerHTML = window.LFIcons?.get('musicOff') || '🔇';
           creditsMusic = null;
           console.warn('[Credits] Music unavailable — set a track in Admin → Settings → Music');
         });
       } else {
         creditsMusic.pause();
-        musicBtn.textContent = '🔇';
+        musicBtn.innerHTML = window.LFIcons?.get('musicOff') || '🔇';
       }
     });
   }

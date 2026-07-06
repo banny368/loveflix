@@ -108,6 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadHeroManager();
     loadCreditsManager();
     loadNotesManager();
+    loadChatManager();
     loadSettingsManager();
     loadLoveCodeManager();
     loadConnectionsManager();
@@ -319,9 +320,9 @@ document.addEventListener('DOMContentLoaded', () => {
         <td>${esc(item.memoryDate || '—')}</td>
         <td>${item.featured ? '⭐' : '—'}</td>
         <td>
-          <button class="admin-btn admin-btn-sm admin-btn-secondary" data-action="edit" title="Edit">✏️</button>
-          <button class="admin-btn admin-btn-sm admin-btn-secondary" data-action="feature" title="Toggle featured">☆</button>
-          <button class="admin-btn admin-btn-sm admin-btn-danger" data-action="delete" title="Delete">✕</button>
+          <button class="admin-btn admin-btn-sm admin-btn-secondary lf-icon" data-action="edit" title="Edit">${window.LFIcons?.get('edit') || '✏️'}</button>
+          <button class="admin-btn admin-btn-sm admin-btn-secondary lf-icon" data-action="feature" title="Toggle featured">${item.featured ? (window.LFIcons?.get('starFill') || '⭐') : (window.LFIcons?.get('star') || '☆')}</button>
+          <button class="admin-btn admin-btn-sm admin-btn-danger lf-icon" data-action="delete" title="Delete">${window.LFIcons?.get('trash') || '✕'}</button>
         </td>
       `;
       tr.querySelector('[data-action="edit"]').addEventListener('click', () => openMediaModal(item));
@@ -481,8 +482,8 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
           <div style="display:flex;gap:8px;flex-shrink:0;">
-            <button class="admin-btn admin-btn-sm admin-btn-secondary" data-action="edit">✏️ Edit</button>
-            <button class="admin-btn admin-btn-sm admin-btn-danger" data-action="delete">✕</button>
+            <button class="admin-btn admin-btn-sm admin-btn-secondary" data-action="edit"><span class="lf-icon">${window.LFIcons?.get('edit') || ''}</span> Edit</button>
+            <button class="admin-btn admin-btn-sm admin-btn-danger lf-icon" data-action="delete">${window.LFIcons?.get('trash') || '✕'}</button>
           </div>
         `;
         card.querySelector('[data-action="edit"]').addEventListener('click', () => openProfileModal(p));
@@ -766,7 +767,7 @@ document.addEventListener('DOMContentLoaded', () => {
       row.innerHTML = `
         <input class="admin-form-input" value="${esc(c.role)}" data-id="${esc(c.id)}" data-field="role" aria-label="Credit role">
         <input class="admin-form-input" value="${esc(c.value)}" data-id="${esc(c.id)}" data-field="value" aria-label="Credit value">
-        <button class="admin-btn admin-btn-sm admin-btn-danger" data-action="delete" title="Delete credit">✕</button>
+        <button class="admin-btn admin-btn-sm admin-btn-danger lf-icon" data-action="delete" title="Delete credit">${window.LFIcons?.get('trash') || '✕'}</button>
       `;
       row.querySelector('[data-action="delete"]').addEventListener('click', () => deleteCredit(c.id));
       container.appendChild(row);
@@ -838,7 +839,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div style="color:var(--lf-text-primary);font-size:14px;line-height:1.5;">${esc(n.text)}</div>
           ${n.from ? `<div style="color:var(--lf-text-muted);font-size:12px;margin-top:2px;font-style:italic;">— ${esc(n.from)}</div>` : ''}
         </div>
-        <button class="admin-btn admin-btn-sm admin-btn-danger" data-action="delete" title="Delete note">✕</button>
+        <button class="admin-btn admin-btn-sm admin-btn-danger lf-icon" data-action="delete" title="Delete note">${window.LFIcons?.get('trash') || '✕'}</button>
       `;
       row.querySelector('[data-action="delete"]').addEventListener('click', async () => {
         if (!confirm('Delete this love note?')) return;
@@ -877,6 +878,46 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.disabled = false;
     }
   });
+
+  /* ============================================
+     Chat Moderation
+     ============================================ */
+  async function loadChatManager() {
+    const container = document.getElementById('chat-mod-list');
+    if (!container) return;
+    const messages = await Storage?.getAllRaw('chat').catch(() => []) || [];
+    container.innerHTML = '';
+    if (messages.length === 0) {
+      container.innerHTML = '<p style="color:var(--lf-text-muted);text-align:center;padding:16px;">No chat messages yet. 💬</p>';
+      return;
+    }
+    // Newest first for moderation
+    messages.slice().reverse().slice(0, 100).forEach(m => {
+      const row = document.createElement('div');
+      row.className = 'profile-row';
+      const when = m.createdAt?.toDate ? m.createdAt.toDate().toLocaleString() : '';
+      row.innerHTML = `
+        <div style="flex:1;min-width:0;">
+          <div style="color:var(--lf-blush);font-size:11px;font-weight:600;">${esc(m.sender || '?')} <span style="color:var(--lf-text-dim);font-weight:400;">${esc(when)}</span></div>
+          <div style="color:var(--lf-text-primary);font-size:13.5px;margin-top:2px;line-height:1.5;">${esc(m.text || '')}</div>
+        </div>
+        <button class="admin-btn admin-btn-sm admin-btn-danger lf-icon" data-action="delete" title="Delete message">${window.LFIcons?.get('trash') || '✕'}</button>
+      `;
+      row.querySelector('[data-action="delete"]').addEventListener('click', async () => {
+        if (!confirm('Delete this message?')) return;
+        try {
+          await Storage?.remove('chat', m.id);
+          Notify?.success('Message deleted');
+          loadChatManager();
+        } catch (err) {
+          Notify?.error(explainSaveError(err));
+        }
+      });
+      container.appendChild(row);
+    });
+  }
+
+  document.getElementById('chat-refresh-btn')?.addEventListener('click', loadChatManager);
 
   /* ============================================
      Settings Manager (with LoveCode)
@@ -1002,7 +1043,7 @@ document.addEventListener('DOMContentLoaded', () => {
       visBtn.addEventListener('click', () => {
         const hidden = codeInput.type === 'password';
         codeInput.type = hidden ? 'text' : 'password';
-        visBtn.textContent = hidden ? '🙈' : '👁️';
+        visBtn.innerHTML = window.LFIcons?.get(hidden ? 'close' : 'eye') || (hidden ? '🙈' : '👁️');
       });
       // Numeric only
       codeInput.addEventListener('input', () => {

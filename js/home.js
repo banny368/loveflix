@@ -48,20 +48,20 @@ document.addEventListener('DOMContentLoaded', async () => {
       e.stopPropagation();
       const isOpen = mobileMenu.classList.toggle('open');
       mobileMenuBtn.setAttribute('aria-expanded', isOpen);
-      mobileMenuBtn.textContent = isOpen ? '✕' : '☰';
+      mobileMenuBtn.innerHTML = window.LFIcons?.get(isOpen ? 'close' : 'menu') || (isOpen ? '✕' : '☰');
     });
     document.addEventListener('click', (e) => {
       if (!mobileMenu.contains(e.target) && e.target !== mobileMenuBtn) {
         mobileMenu.classList.remove('open');
         mobileMenuBtn.setAttribute('aria-expanded', 'false');
-        mobileMenuBtn.textContent = '☰';
+        mobileMenuBtn.innerHTML = window.LFIcons?.get('menu') || '☰';
       }
     });
     mobileMenu.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
         mobileMenu.classList.remove('open');
         mobileMenuBtn.setAttribute('aria-expanded', 'false');
-        mobileMenuBtn.textContent = '☰';
+        mobileMenuBtn.innerHTML = window.LFIcons?.get('menu') || '☰';
       });
     });
   }
@@ -113,17 +113,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
       if (bgMusic.paused) {
         bgMusic.play().then(() => {
-          musicBtn.textContent = '🎵';
+          musicBtn.innerHTML = window.LFIcons?.get('music') || '🎵';
           musicBtn.classList.add('playing');
         }).catch(() => {
-          musicBtn.textContent = '🔇';
+          musicBtn.innerHTML = window.LFIcons?.get('musicOff') || '🔇';
           musicBtn.classList.remove('playing');
           bgMusic = null;
-          Notify?.info('No music yet — add a track in Admin → Settings → 🎵 Music');
+          Notify?.info('No music yet — add a track in Admin → Settings → Music');
         });
       } else {
         bgMusic.pause();
-        musicBtn.textContent = '🔇';
+        musicBtn.innerHTML = window.LFIcons?.get('musicOff') || '🔇';
         musicBtn.classList.remove('playing');
       }
     });
@@ -260,6 +260,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (heroMedia && data.backgroundUrl) {
       if (data.mediaType === 'video') {
+        // YouTube-style: banner becomes a full-width 16:9 stage
+        document.getElementById('hero-banner')?.classList.add('hero-video');
         heroMedia.outerHTML = `<video class="hero-media" id="hero-media" autoplay muted loop playsinline src="${esc(data.backgroundUrl)}"></video>`;
         addHeroMutePill();
       } else {
@@ -278,11 +280,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const pill = document.createElement('button');
     pill.className = 'hero-mute-pill';
     pill.setAttribute('aria-label', 'Toggle hero sound');
-    pill.textContent = '🔇';
+    pill.innerHTML = window.LFIcons?.get('volumeMute') || '🔇';
     pill.addEventListener('click', (e) => {
       e.stopPropagation();
       video.muted = !video.muted;
-      pill.textContent = video.muted ? '🔇' : '🔊';
+      pill.innerHTML = window.LFIcons?.get(video.muted ? 'volumeMute' : 'volume') || (video.muted ? '🔇' : '🔊');
     });
     banner.appendChild(pill);
   }
@@ -354,8 +356,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       card.innerHTML = `
         <img class="media-card-img" data-src="${esc(thumbUrl)}" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='180'%3E%3Crect fill='%23222'/%3E%3C/svg%3E" alt="${esc(item.title || '')}" loading="lazy">
         <div class="media-card-gradient"></div>
-        <div class="media-card-play">▶</div>
-        ${item.type ? `<span class="media-card-type">${item.type === 'video' ? '🎬 Video' : '📸 Photo'}</span>` : ''}
+        <div class="media-card-play">${window.LFIcons?.get("play") || "▶"}</div>
+        ${item.type ? `<span class="media-card-type"><span class="lf-icon">${window.LFIcons?.get(item.type === 'video' ? 'film' : 'image') || ''}</span> ${item.type === 'video' ? 'Video' : 'Photo'}</span>` : ''}
         <div class="media-card-info">
           <div class="media-card-title">${esc(item.title || '')}</div>
           <div class="media-card-meta">${esc(item.description || '')}</div>
@@ -422,8 +424,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         </div>
         <div class="detail-body">
           <div class="detail-actions">
-            <button class="hero-btn hero-btn-play lf-btn-shine detail-play">▶ Play</button>
-            <button class="hero-btn hero-btn-list detail-like">${isFav ? '❤️ Liked' : '♡ Like'}</button>
+            <button class="hero-btn hero-btn-play lf-btn-shine detail-play"><span class="lf-icon">${window.LFIcons?.get('play') || '▶'}</span> Play</button>
+            <button class="hero-btn hero-btn-list detail-like"><span class="lf-icon">${window.LFIcons?.get(isFav ? 'heartFill' : 'heart') || '♡'}</span> ${isFav ? 'Liked' : 'Like'}</button>
           </div>
           <div class="detail-meta">
             ${item.category ? `<span class="caption-chip">${esc(item.category)}</span>` : ''}
@@ -462,10 +464,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       const idx = favs.indexOf(item.id);
       if (idx >= 0) {
         favs.splice(idx, 1);
-        e.currentTarget.textContent = '♡ Like';
+        e.currentTarget.innerHTML = `<span class="lf-icon">${window.LFIcons?.get('heart') || '♡'}</span> Like`;
       } else {
         favs.push(item.id);
-        e.currentTarget.textContent = '❤️ Liked';
+        e.currentTarget.innerHTML = `<span class="lf-icon">${window.LFIcons?.get('heartFill') || '❤️'}</span> Liked`;
         heartBurst?.(e.clientX, e.clientY);
       }
       store?.('favorites', favs);

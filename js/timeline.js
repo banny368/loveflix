@@ -101,6 +101,63 @@ document.addEventListener('DOMContentLoaded', async () => {
     return Math.max(0, months) + 1;
   }
 
+  // ---- Stats strip + season chips + filters (above the track) ----
+  const photos = dated.filter(d => d.item.type !== 'video').length;
+  const videos = dated.filter(d => d.item.type === 'video').length;
+  const seasons = [...new Set(dated.map(d => seasonOf(d.date)).filter(s => s !== null))];
+
+  const header = document.querySelector('.timeline-header');
+  if (header) {
+    const stats = document.createElement('div');
+    stats.className = 'timeline-stats';
+    stats.innerHTML = `
+      <span><strong>${dated.length}</strong> episodes</span>
+      <span><strong>${photos}</strong> photos</span>
+      <span><strong>${videos}</strong> videos</span>
+      <span><strong>${seasons.length}</strong> seasons</span>
+    `;
+    header.appendChild(stats);
+
+    const toolbar = document.createElement('div');
+    toolbar.className = 'timeline-toolbar';
+    toolbar.innerHTML = `
+      <div class="timeline-filters" role="group" aria-label="Filter memories">
+        <button class="tl-chip active" data-filter="all">All</button>
+        <button class="tl-chip" data-filter="image"><span class="lf-icon">${window.LFIcons?.get('image') || ''}</span> Photos</button>
+        <button class="tl-chip" data-filter="video"><span class="lf-icon">${window.LFIcons?.get('film') || ''}</span> Videos</button>
+      </div>
+      ${seasons.length > 1 ? `
+      <div class="timeline-seasons-nav" role="group" aria-label="Jump to season">
+        ${seasons.map(s => `<button class="tl-chip tl-season-chip" data-season="${s}">S${s}</button>`).join('')}
+      </div>` : ''}
+    `;
+    header.appendChild(toolbar);
+
+    toolbar.querySelectorAll('[data-filter]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        toolbar.querySelectorAll('[data-filter]').forEach(b => b.classList.toggle('active', b === btn));
+        const f = btn.dataset.filter;
+        track.querySelectorAll('.timeline-entry').forEach(en => {
+          en.style.display = (f === 'all' || en.dataset.type === f) ? '' : 'none';
+        });
+      });
+    });
+    toolbar.querySelectorAll('[data-season]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById(`season-${btn.dataset.season}`)
+          ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    });
+  }
+
+  // ---- Episode 0: The Beginning ----
+  if (!isNaN(startDate)) {
+    const zero = document.createElement('div');
+    zero.className = 'timeline-season timeline-episode-zero';
+    zero.innerHTML = `<span>Episode 0</span><em>The Beginning — ${esc(Utils?.formatDate(startDate.toISOString()) || '')}</em>`;
+    track.appendChild(zero);
+  }
+
   let lastSeason = null;
   dated.forEach(({ item, date }, i) => {
     const season = seasonOf(date);
@@ -108,6 +165,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       lastSeason = season;
       const marker = document.createElement('div');
       marker.className = 'timeline-season';
+      marker.id = `season-${season}`;
       marker.innerHTML = `<span>Season ${season}</span><em>${season === 1 ? 'Where it all began' : `Month ${season} of us`}</em>`;
       track.appendChild(marker);
     }
@@ -115,12 +173,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const side = i % 2 === 0 ? 'left' : 'right';
     const entry = document.createElement('article');
     entry.className = `timeline-entry timeline-${side}`;
+    entry.dataset.type = item.type === 'video' ? 'video' : 'image';
     entry.innerHTML = `
       <div class="timeline-dot" aria-hidden="true">❤</div>
       <button class="timeline-card lf-glass" aria-label="${esc(item.title || 'Memory')}">
         <div class="timeline-thumb">
           <img src="${esc(item.thumbnail || item.url)}" alt="" loading="lazy">
-          ${item.type === 'video' ? '<span class="timeline-badge">▶ Video</span>' : ''}
+          ${item.type === 'video' ? `<span class="timeline-badge"><span class="lf-icon">${window.LFIcons?.get('play') || '▶'}</span> Video</span>` : ''}
         </div>
         <div class="timeline-info">
           ${date ? `<time class="timeline-date">${esc(Utils?.formatDate(date.toISOString()) || '')}</time>` : ''}

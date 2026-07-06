@@ -48,8 +48,8 @@ const LoveFlixPlayer = (() => {
       <video class="lf-player-video" playsinline preload="metadata" ${poster ? `poster="${esc(poster)}"` : ''}></video>
       <div class="lf-player-spinner" aria-hidden="true"><span>❤</span></div>
       <div class="lf-player-flash" aria-hidden="true">▶</div>
-      <div class="lf-seek-ind lf-seek-back" aria-hidden="true">⟲ 10s</div>
-      <div class="lf-seek-ind lf-seek-fwd" aria-hidden="true">10s ⟳</div>
+      <div class="lf-seek-ind lf-seek-back" aria-hidden="true">${window.LFIcons?.get('rewind10') || '⟲'}</div>
+      <div class="lf-seek-ind lf-seek-fwd" aria-hidden="true">${window.LFIcons?.get('forward10') || '⟳'}</div>
 
       <div class="lf-player-controls">
         <div class="lf-progress-wrap" role="slider" aria-label="Seek" tabindex="0">
@@ -60,7 +60,7 @@ const LoveFlixPlayer = (() => {
           <div class="lf-progress-tooltip">0:00</div>
         </div>
         <div class="lf-controls-row">
-          <button class="lf-ctrl lf-play" aria-label="Play or pause">▶</button>
+          <button class="lf-ctrl lf-play" aria-label="Play or pause">${window.LFIcons?.get('play') || '▶'}</button>
           <div class="lf-volume-wrap">
             <button class="lf-ctrl lf-mute" aria-label="Mute or unmute">🔊</button>
             <input type="range" class="lf-volume" min="0" max="1" step="0.05" value="1" aria-label="Volume">
@@ -73,8 +73,8 @@ const LoveFlixPlayer = (() => {
               ${SPEEDS.map(s => `<button role="menuitem" data-speed="${s}" class="${s === 1 ? 'active' : ''}">${s}x</button>`).join('')}
             </div>
           </div>
-          <button class="lf-ctrl lf-pip" aria-label="Picture in picture" style="display:none;">⧉</button>
-          <button class="lf-ctrl lf-fs" aria-label="Fullscreen">⛶</button>
+          <button class="lf-ctrl lf-pip" aria-label="Picture in picture" style="display:none;">${window.LFIcons?.get('pip') || '⧉'}</button>
+          <button class="lf-ctrl lf-fs" aria-label="Fullscreen">${window.LFIcons?.get('fullscreen') || '⛶'}</button>
         </div>
       </div>
 
@@ -84,7 +84,7 @@ const LoveFlixPlayer = (() => {
           <img class="lf-upnext-thumb" alt="">
           <div class="lf-upnext-title"></div>
           <div class="lf-upnext-actions">
-            <button class="lf-upnext-play">▶ Play now <span class="lf-upnext-count">(5)</span></button>
+            <button class="lf-upnext-play"><span class="lf-icon">${window.LFIcons?.get('play') || '▶'}</span> Play now <span class="lf-upnext-count">(5)</span></button>
             <button class="lf-upnext-cancel">Cancel</button>
           </div>
         </div>
@@ -116,7 +116,7 @@ const LoveFlixPlayer = (() => {
 
     /* ---- Core transport ---- */
     function flashIcon(symbol) {
-      flash.textContent = symbol;
+      flash.innerHTML = symbol;
       flash.classList.remove('show');
       void flash.offsetHeight;
       flash.classList.add('show');
@@ -125,10 +125,10 @@ const LoveFlixPlayer = (() => {
     function togglePlay() {
       if (video.paused) {
         video.play().catch(() => {});
-        flashIcon('▶');
+        flashIcon(window.LFIcons?.get('play') || '▶');
       } else {
         video.pause();
-        flashIcon('⏸');
+        flashIcon(window.LFIcons?.get('pause') || '⏸');
       }
     }
 
@@ -153,8 +153,8 @@ const LoveFlixPlayer = (() => {
     on(root, 'touchstart', showControls, { passive: true });
 
     /* ---- Video events ---- */
-    on(video, 'play', () => { playBtn.textContent = '⏸'; showControls(); hideUpNext(); });
-    on(video, 'pause', () => { playBtn.textContent = '▶'; showControls(); });
+    on(video, 'play', () => { playBtn.innerHTML = window.LFIcons?.get('pause') || '⏸'; showControls(); hideUpNext(); });
+    on(video, 'pause', () => { playBtn.innerHTML = window.LFIcons?.get('play') || '▶'; showControls(); });
     on(video, 'waiting', () => spinner.classList.add('show'));
     on(video, 'playing', () => spinner.classList.remove('show'));
     on(video, 'canplay', () => spinner.classList.remove('show'));
@@ -174,7 +174,7 @@ const LoveFlixPlayer = (() => {
       } catch {}
     });
     on(video, 'ended', () => {
-      playBtn.textContent = '▶';
+      playBtn.innerHTML = window.LFIcons?.get('play') || '▶';
       root.classList.remove('controls-hidden');
       showUpNext();
       if (typeof opts.onEnded === 'function') opts.onEnded();
@@ -214,13 +214,13 @@ const LoveFlixPlayer = (() => {
     on(muteBtn, 'click', (e) => {
       e.stopPropagation();
       video.muted = !video.muted;
-      muteBtn.textContent = video.muted ? '🔇' : '🔊';
+      muteBtn.innerHTML = window.LFIcons?.get(video.muted ? 'volumeMute' : 'volume') || (video.muted ? '🔇' : '🔊');
       volSlider.value = video.muted ? 0 : video.volume;
     });
     on(volSlider, 'input', () => {
       video.volume = Number(volSlider.value);
       video.muted = video.volume === 0;
-      muteBtn.textContent = video.muted ? '🔇' : '🔊';
+      muteBtn.innerHTML = window.LFIcons?.get(video.muted ? 'volumeMute' : 'volume') || (video.muted ? '🔇' : '🔊');
     });
     on(speedBtn, 'click', (e) => { e.stopPropagation(); speedMenu.classList.toggle('open'); });
     speedMenu.querySelectorAll('[data-speed]').forEach(btn => {
@@ -285,7 +285,7 @@ const LoveFlixPlayer = (() => {
           break;
         case 'm':
           video.muted = !video.muted;
-          muteBtn.textContent = video.muted ? '🔇' : '🔊';
+          muteBtn.innerHTML = window.LFIcons?.get(video.muted ? 'volumeMute' : 'volume') || (video.muted ? '🔇' : '🔊');
           break;
         case 'f':
           toggleFullscreen();

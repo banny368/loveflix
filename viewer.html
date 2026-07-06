@@ -11,13 +11,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/variables.css?v=10">
-  <link rel="stylesheet" href="css/reset.css?v=10">
-  <link rel="stylesheet" href="css/animations.css?v=10">
-  <link rel="stylesheet" href="css/effects.css?v=10">
-  <link rel="stylesheet" href="css/viewer.css?v=10">
-  <link rel="stylesheet" href="css/player.css?v=10">
-  <link rel="stylesheet" href="css/responsive.css?v=10">
+  <link rel="stylesheet" href="css/variables.css?v=11">
+  <link rel="stylesheet" href="css/reset.css?v=11">
+  <link rel="stylesheet" href="css/animations.css?v=11">
+  <link rel="stylesheet" href="css/effects.css?v=11">
+  <link rel="stylesheet" href="css/viewer.css?v=11">
+  <link rel="stylesheet" href="css/player.css?v=11">
+  <link rel="stylesheet" href="css/responsive.css?v=11">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>">
 </head>
@@ -28,7 +28,7 @@
 
     <!-- Top Bar -->
     <div class="viewer-topbar">
-      <button class="viewer-back" id="back-btn" aria-label="Go back">← Back</button>
+      <button class="viewer-back" id="back-btn" aria-label="Go back"><span class="lf-icon" data-icon="back"></span> Back</button>
       <span class="viewer-title" id="viewer-title"></span>
       <span class="viewer-counter" id="viewer-counter"></span>
     </div>
@@ -52,19 +52,19 @@
     <!-- Bottom Actions -->
     <div class="viewer-bottombar">
       <button class="viewer-action" id="like-btn" aria-label="Like">
-        <span class="viewer-action-icon">♡</span>
+        <span class="viewer-action-icon" data-icon="heart"></span>
         <span class="viewer-action-label">Like</span>
       </button>
       <button class="viewer-action" id="slideshow-btn" aria-label="Slideshow">
-        <span class="viewer-action-icon">▶</span>
+        <span class="viewer-action-icon" data-icon="slideshow"></span>
         <span class="viewer-action-label">Slideshow</span>
       </button>
       <button class="viewer-action" id="download-btn" aria-label="Download">
-        <span class="viewer-action-icon">⬇</span>
+        <span class="viewer-action-icon" data-icon="download"></span>
         <span class="viewer-action-label">Download</span>
       </button>
       <button class="viewer-action" id="share-btn" aria-label="Share">
-        <span class="viewer-action-icon">↗</span>
+        <span class="viewer-action-icon" data-icon="share"></span>
         <span class="viewer-action-label">Share</span>
       </button>
     </div>
@@ -75,13 +75,14 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-  <script src="js/config.js?v=10"></script>
-  <script src="js/firebase-config.js?v=10"></script>
-  <script src="js/utils.js?v=10"></script>
-  <script src="js/notifications.js?v=10"></script>
-  <script src="js/storage.js?v=10"></script>
-  <script src="js/cloudinary.js?v=10"></script>
-  <script src="js/player.js?v=10"></script>
-  <script src="js/viewer.js?v=10"></script>
+  <script src="js/icons.js?v=11"></script>
+  <script src="js/config.js?v=11"></script>
+  <script src="js/firebase-config.js?v=11"></script>
+  <script src="js/utils.js?v=11"></script>
+  <script src="js/notifications.js?v=11"></script>
+  <script src="js/storage.js?v=11"></script>
+  <script src="js/cloudinary.js?v=11"></script>
+  <script src="js/player.js?v=11"></script>
+  <script src="js/viewer.js?v=11"></script>
 </body>
 </html>

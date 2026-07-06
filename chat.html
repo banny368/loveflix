@@ -3,30 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="LoveFlix Timeline — Our story, episode by episode.">
+  <meta name="description" content="LoveFlix Chat — a private space for just the two of you.">
   <meta name="theme-color" content="#141414">
-  <title>Timeline — LoveFlix</title>
+  <title>Chat — LoveFlix</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Great+Vibes&family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Great+Vibes&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/variables.css?v=11">
   <link rel="stylesheet" href="css/reset.css?v=11">
   <link rel="stylesheet" href="css/animations.css?v=11">
   <link rel="stylesheet" href="css/effects.css?v=11">
   <link rel="stylesheet" href="css/home.css?v=11">
-  <link rel="stylesheet" href="css/timeline.css?v=11">
+  <link rel="stylesheet" href="css/chat.css?v=11">
   <link rel="stylesheet" href="css/lovecode.css?v=11">
   <link rel="stylesheet" href="css/responsive.css?v=11">
 
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
 </head>
 <body class="page-enter has-bottom-nav">
   <!-- Ambient Layers -->
   <div class="lf-aurora" aria-hidden="true"></div>
   <div class="lf-grain" aria-hidden="true"></div>
-  <div class="lf-scroll-progress" id="scroll-progress" aria-hidden="true"></div>
 
   <!-- Navbar -->
   <nav class="lf-navbar" id="navbar" role="navigation" aria-label="Main navigation">
@@ -34,8 +33,8 @@
       <a href="profiles.html" class="navbar-logo" aria-label="LoveFlix Home">LOVEFLIX</a>
       <div class="navbar-links desktop-only">
         <a href="home.html">Home</a>
-        <a href="timeline.html" class="active">Timeline</a>
-        <a href="chat.html">Chat</a>
+        <a href="timeline.html">Timeline</a>
+        <a href="chat.html" class="active">Chat</a>
         <a href="credits.html">Credits</a>
       </div>
     </div>
@@ -51,44 +50,57 @@
     <a href="chat.html"><span class="lf-icon" data-icon="chat"></span> Chat</a>
     <a href="credits.html"><span class="lf-icon" data-icon="credits"></span> Credits</a>
     <a href="profiles.html"><span class="lf-icon" data-icon="profiles"></span> Profiles</a>
-    <a href="admin-login.html"><span class="lf-icon" data-icon="settings"></span> Admin</a>
   </div>
 
-  <!-- Timeline -->
-  <main class="timeline-page" role="main">
-    <header class="timeline-header">
-      <h1 class="timeline-title">Our Story</h1>
-      <p class="timeline-subtitle">Episode by episode, memory by memory 💕</p>
-    </header>
+  <!-- Chat -->
+  <main class="chat-page" role="main">
+    <div class="chat-card lf-glass">
+      <header class="chat-header">
+        <div class="chat-header-heart" aria-hidden="true">💞</div>
+        <div>
+          <h1 class="chat-title">Just Us</h1>
+          <p class="chat-subtitle">Private couple chat — behind your Love Code 💕</p>
+        </div>
+        <button class="chat-identity-btn" id="chat-identity-btn" title="Change who you are">
+          <span class="lf-icon" data-icon="profiles"></span>
+          <span id="chat-identity-name">…</span>
+        </button>
+      </header>
 
-    <div class="timeline-track" id="timeline-track">
-      <!-- Populated by JS -->
-    </div>
+      <div class="chat-messages" id="chat-messages" aria-live="polite">
+        <div class="chat-loading" id="chat-loading">Loading your conversation… 💕</div>
+      </div>
 
-    <div class="timeline-end" id="timeline-end" style="display:none;">
-      <div class="timeline-end-heart">❤️</div>
-      <p>To be continued… forever.</p>
+      <form class="chat-composer" id="chat-composer">
+        <input class="chat-input" id="chat-input" type="text" maxlength="500"
+          placeholder="Say something sweet…" autocomplete="off" aria-label="Message">
+        <button class="chat-send" id="chat-send" type="submit" aria-label="Send" data-icon="send"></button>
+      </form>
     </div>
   </main>
 
-  <!-- Footer -->
-  <footer class="lf-footer">
-    <div class="lf-footer-links">
-      <a href="home.html">Home</a>
-      <a href="profiles.html">Profiles</a>
-      <a href="credits.html">Credits</a>
-      <a href="admin-login.html">Admin</a>
+  <!-- Identity picker -->
+  <div class="detail-overlay" id="identity-overlay" style="display:none;" role="dialog" aria-modal="true">
+    <div class="note-modal lf-glass" style="max-width:380px;">
+      <div class="note-envelope" aria-hidden="true">💞</div>
+      <h2 class="stats-title">Who's texting?</h2>
+      <div class="identity-options" id="identity-options">
+        <!-- Populated by JS -->
+      </div>
+      <input class="chat-input" id="identity-custom" type="text" maxlength="30"
+        placeholder="…or type your name" style="margin-top:12px;" aria-label="Custom name">
+      <button class="hero-btn hero-btn-play lf-btn-shine" id="identity-save" style="margin-top:14px;width:100%;justify-content:center;">
+        <span class="lf-icon" data-icon="check"></span> That's me
+      </button>
     </div>
-    <p class="lf-footer-copy">Made with ❤️ — LoveFlix © 2024</p>
-  </footer>
+  </div>
 
   <!-- Mobile Bottom Nav -->
   <nav class="lf-bottom-nav" aria-label="Bottom navigation">
     <a href="home.html"><span class="bn-icon" data-icon="home"></span>Home</a>
-    <a href="timeline.html" class="active"><span class="bn-icon" data-icon="timeline"></span>Timeline</a>
-    <a href="chat.html"><span class="bn-icon" data-icon="chat"></span>Chat</a>
+    <a href="timeline.html"><span class="bn-icon" data-icon="timeline"></span>Timeline</a>
+    <a href="chat.html" class="active"><span class="bn-icon" data-icon="chat"></span>Chat</a>
     <a href="credits.html"><span class="bn-icon" data-icon="credits"></span>Credits</a>
-    <a href="profiles.html"><span class="bn-icon" data-icon="profiles"></span>Profiles</a>
   </nav>
 
   <!-- Firebase SDK -->
@@ -103,7 +115,7 @@
   <script src="js/notifications.js?v=11"></script>
   <script src="js/storage.js?v=11"></script>
   <script src="js/lovecode.js?v=11"></script>
-  <script src="js/timeline.js?v=11"></script>
+  <script src="js/chat.js?v=11"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       window.LoveCodeLock?.check(() => window.LoveCodeLock?.recordActivity());

@@ -12,6 +12,31 @@ document.addEventListener('DOMContentLoaded', () => {
   let redirected = false;
   let startTime = Date.now();
 
+  // Cinematic letter-by-letter logo reveal
+  if (logo && !prefersReducedMotion()) {
+    const text = logo.textContent;
+    logo.textContent = '';
+    logo.classList.add('split');
+    [...text].forEach((ch, i) => {
+      const span = document.createElement('span');
+      span.className = 'intro-letter';
+      span.textContent = ch;
+      span.style.animationDelay = (0.15 + i * 0.09) + 's';
+      logo.appendChild(span);
+    });
+    // Particle burst at the reveal peak
+    setTimeout(() => {
+      if (window.LoveFlixUtils?.heartBurst) {
+        const r = logo.getBoundingClientRect();
+        window.LoveFlixUtils.heartBurst(r.left + r.width / 2, r.top + r.height / 2, 12);
+      }
+    }, 150 + text.length * 90 + 300);
+  }
+
+  function prefersReducedMotion() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
   // Create floating particles
   createSparkles();
 
@@ -50,19 +75,19 @@ document.addEventListener('DOMContentLoaded', () => {
         introAudio = new Audio('assets/sounds/intro.mp3');
         introAudio.volume = 0.5;
         introAudio.play().then(() => {
-          soundBtn.textContent = '🔊';
+          soundBtn.innerHTML = window.LFIcons?.get('volume') || '🔊';
         }).catch(() => {
           // No file? Synthesize a cinematic "ta-dum" instead — zero assets needed.
           introAudio = null;
           playTaDum();
-          soundBtn.textContent = '🔊';
+          soundBtn.innerHTML = window.LFIcons?.get('volume') || '🔊';
         });
       } else if (introAudio) {
         introAudio.muted = !soundOn;
-        soundBtn.textContent = soundOn ? '🔊' : '🔇';
+        soundBtn.innerHTML = window.LFIcons?.get(soundOn ? 'volume' : 'volumeMute') || (soundOn ? '🔊' : '🔇');
       } else {
         if (soundOn) playTaDum();
-        soundBtn.textContent = soundOn ? '🔊' : '🔇';
+        soundBtn.innerHTML = window.LFIcons?.get(soundOn ? 'volume' : 'volumeMute') || (soundOn ? '🔊' : '🔇');
       }
     });
   }

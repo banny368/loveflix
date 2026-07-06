@@ -9,11 +9,13 @@
   inset: 0;
   z-index: 99999;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 1rem;
-  overflow: hidden;
+  padding: 20px 12px;
+  overflow-y: auto;
+  overflow-x: hidden;
   font-family: var(--lf-font-body);
+  -webkit-overflow-scrolling: touch;
 }
 
 .lovecode-overlay.lc-hidden { display: none !important; }
@@ -109,14 +111,14 @@
 }
 
 .lc-bokeh-1 {
-  width: 500px; height: 500px;
+  width: min(500px, 80vw); height: min(500px, 80vw);
   top: -100px; left: -100px;
   background: radial-gradient(circle, rgba(200,0,60,0.2), transparent 70%);
   animation-duration: 7s;
 }
 
 .lc-bokeh-2 {
-  width: 400px; height: 400px;
+  width: min(400px, 70vw); height: min(400px, 70vw);
   bottom: -80px; right: -80px;
   background: radial-gradient(circle, rgba(180,0,100,0.18), transparent 70%);
   animation-duration: 9s;
@@ -140,6 +142,7 @@
   z-index: 10;
   width: 100%;
   max-width: 420px;
+  margin: auto; /* centers when there's room, scrolls when there isn't */
   background: rgba(15, 5, 20, 0.72);
   border: 1px solid rgba(255, 100, 150, 0.25);
   border-radius: 32px;
@@ -644,12 +647,17 @@
   }
 }
 
-@media (max-width: 360px) {
+@media (max-width: 400px) {
   .lc-card {
-    padding: 28px 16px 24px;
+    padding: 26px 14px 22px;
     max-width: calc(100vw - 20px);
+    border-radius: 20px;
   }
-  .lc-slot  { width: 42px; height: 42px; }
+  .lc-slot  { width: 40px; height: 40px; }
   .lc-slots { gap: 8px; }
-  .lc-numpad { gap: 8px; }
+  .lc-numpad { gap: 8px; max-width: 260px; margin-left: auto; margin-right: auto; }
+  .lc-key-label { font-size: 1.05rem; }
+  .lc-title { font-size: 1.3rem; }
+  .lc-subtitle { font-size: 12px; }
+  .lc-logo { font-size: 1.1rem; }
 }

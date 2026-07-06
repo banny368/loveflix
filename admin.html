@@ -11,13 +11,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/variables.css?v=10">
-  <link rel="stylesheet" href="css/reset.css?v=10">
-  <link rel="stylesheet" href="css/animations.css?v=10">
-  <link rel="stylesheet" href="css/effects.css?v=10">
-  <link rel="stylesheet" href="css/admin.css?v=10">
-  <link rel="stylesheet" href="css/lovecode.css?v=10">
-  <link rel="stylesheet" href="css/responsive.css?v=10">
+  <link rel="stylesheet" href="css/variables.css?v=11">
+  <link rel="stylesheet" href="css/reset.css?v=11">
+  <link rel="stylesheet" href="css/animations.css?v=11">
+  <link rel="stylesheet" href="css/effects.css?v=11">
+  <link rel="stylesheet" href="css/admin.css?v=11">
+  <link rel="stylesheet" href="css/lovecode.css?v=11">
+  <link rel="stylesheet" href="css/responsive.css?v=11">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
 </head>
@@ -35,46 +35,49 @@
 
       <nav class="sidebar-nav">
         <a class="sidebar-link active" data-section="section-dashboard" href="#section-dashboard">
-          <span class="sidebar-link-icon">📊</span> Dashboard
+          <span class="sidebar-link-icon" data-icon="dashboard"></span> Dashboard
         </a>
         <a class="sidebar-link" data-section="section-upload" href="#section-upload">
-          <span class="sidebar-link-icon">📤</span> Upload Media
+          <span class="sidebar-link-icon" data-icon="upload"></span> Upload Media
         </a>
         <a class="sidebar-link" data-section="section-media" href="#section-media">
-          <span class="sidebar-link-icon">🖼️</span> Manage Media
+          <span class="sidebar-link-icon" data-icon="image"></span> Manage Media
         </a>
         <a class="sidebar-link" data-section="section-profiles" href="#section-profiles">
-          <span class="sidebar-link-icon">👤</span> Profiles
+          <span class="sidebar-link-icon" data-icon="profiles"></span> Profiles
         </a>
         <a class="sidebar-link" data-section="section-hero" href="#section-hero">
-          <span class="sidebar-link-icon">🎬</span> Hero Banner
+          <span class="sidebar-link-icon" data-icon="film"></span> Hero Banner
         </a>
         <a class="sidebar-link" data-section="section-credits" href="#section-credits">
-          <span class="sidebar-link-icon">🎭</span> Credits
+          <span class="sidebar-link-icon" data-icon="credits"></span> Credits
         </a>
         <a class="sidebar-link" data-section="section-notes" href="#section-notes">
-          <span class="sidebar-link-icon">💌</span> Love Notes
+          <span class="sidebar-link-icon" data-icon="envelope"></span> Love Notes
+        </a>
+        <a class="sidebar-link" data-section="section-chat" href="#section-chat">
+          <span class="sidebar-link-icon" data-icon="chat"></span> Chat
         </a>
         <a class="sidebar-link" data-section="section-settings" href="#section-settings">
-          <span class="sidebar-link-icon">⚙️</span> Settings
+          <span class="sidebar-link-icon" data-icon="settings"></span> Settings
         </a>
         <a class="sidebar-link" data-section="section-backup" href="#section-backup">
-          <span class="sidebar-link-icon">💾</span> Backup
+          <span class="sidebar-link-icon" data-icon="save"></span> Backup
         </a>
         <a class="sidebar-link" data-section="section-lovecode" href="#section-lovecode">
-          <span class="sidebar-link-icon">🔐</span> Love Code
+          <span class="sidebar-link-icon" data-icon="lock"></span> Love Code
         </a>
         <a class="sidebar-link" data-section="section-connections" href="#section-connections">
-          <span class="sidebar-link-icon">🔌</span> Connections
+          <span class="sidebar-link-icon" data-icon="plug"></span> Connections
         </a>
       </nav>
 
       <div class="sidebar-footer">
         <a href="home.html" class="sidebar-link" style="border:none;padding:8px 0;">
-          <span class="sidebar-link-icon">🏠</span> View Site
+          <span class="sidebar-link-icon" data-icon="home"></span> View Site
         </a>
         <button class="sidebar-logout" id="logout-btn">
-          <span>🚪</span> Sign Out
+          <span class="lf-icon" data-icon="logout"></span> Sign Out
         </button>
       </div>
     </aside>
@@ -83,7 +86,7 @@
     <main class="admin-main" role="main">
       <!-- Top Bar -->
       <div class="admin-topbar">
-        <button class="admin-mobile-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">☰</button>
+        <button class="admin-mobile-toggle" id="sidebar-toggle" aria-label="Toggle sidebar" data-icon="menu"></button>
         <h1 class="admin-topbar-title" id="admin-topbar-title">Dashboard</h1>
         <div></div>
       </div>
@@ -260,7 +263,7 @@
             <option value="video">Video</option>
           </select>
         </div>
-        <button class="admin-btn admin-btn-primary" id="hero-save">💾 Save Hero Banner</button>
+        <button class="admin-btn admin-btn-primary" id="hero-save"><span class="lf-icon" data-icon="save"></span> Save Hero Banner</button>
       </section>
 
       <!-- ===== CREDITS ===== -->
@@ -271,7 +274,7 @@
         </div>
         <div style="display:flex;gap:12px;margin-top:16px;">
           <button class="admin-btn admin-btn-secondary" id="credit-add">+ Add Credit</button>
-          <button class="admin-btn admin-btn-primary" id="credits-save">💾 Save All</button>
+          <button class="admin-btn admin-btn-primary" id="credits-save"><span class="lf-icon" data-icon="save"></span> Save All</button>
         </div>
       </section>
 
@@ -289,8 +292,21 @@
           <label class="admin-form-label" for="note-from">From (optional)</label>
           <input class="admin-form-input" id="note-from" placeholder="e.g. Forever yours" style="max-width:280px;">
         </div>
-        <button class="admin-btn admin-btn-primary" id="note-add-btn">💌 Add Note</button>
+        <button class="admin-btn admin-btn-primary" id="note-add-btn"><span class="lf-icon" data-icon="envelope"></span> Add Note</button>
         <div id="notes-list" style="margin-top:24px;">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- ===== CHAT MODERATION ===== -->
+      <section class="admin-section" id="section-chat">
+        <h2 class="admin-section-title">💬 Couple Chat</h2>
+        <p style="color:var(--lf-text-secondary);font-size:13px;margin-bottom:16px;">
+          Your private chat lives at <a href="chat.html" style="color:var(--lf-rose);">chat.html</a>. Here you can review and delete messages.
+          Chat needs the updated Database Rules (Connections → Database Rules → publish again).
+        </p>
+        <button class="admin-btn admin-btn-secondary" id="chat-refresh-btn"><span class="lf-icon" data-icon="refresh"></span> Refresh</button>
+        <div id="chat-mod-list" style="margin-top:18px;">
           <!-- Populated by JS -->
         </div>
       </section>
@@ -336,7 +352,7 @@
 
         <p style="font-size:12px;color:var(--lf-text-dim);margin-top:4px;">🔐 Looking for the LoveCode PIN? It moved to the dedicated <strong>Love Code</strong> section in the sidebar.</p>
 
-        <button class="admin-btn admin-btn-primary" id="settings-save">💾 Save Settings</button>
+        <button class="admin-btn admin-btn-primary" id="settings-save"><span class="lf-icon" data-icon="save"></span> Save Settings</button>
       </section>
 
       <!-- ===== BACKUP ===== -->
@@ -344,8 +360,8 @@
         <h2 class="admin-section-title">Backup & Restore</h2>
         <p style="color:var(--lf-text-secondary);margin-bottom:24px;font-size:14px;">Export all your data as a JSON file or import a previous backup.</p>
         <div style="display:flex;gap:16px;flex-wrap:wrap;">
-          <button class="admin-btn admin-btn-primary" id="export-btn">📥 Export Backup</button>
-          <button class="admin-btn admin-btn-secondary" id="import-btn">📤 Import Backup</button>
+          <button class="admin-btn admin-btn-primary" id="export-btn"><span class="lf-icon" data-icon="download"></span> Export Backup</button>
+          <button class="admin-btn admin-btn-secondary" id="import-btn"><span class="lf-icon" data-icon="upload"></span> Import Backup</button>
           <input type="file" id="import-file" accept=".json" style="display:none;">
         </div>
       </section>
@@ -365,7 +381,7 @@
             <label class="admin-form-label" for="lc-code">🔑 Love Code (4 digits)</label>
             <div style="display:flex;gap:10px;align-items:center;">
               <input class="admin-form-input" id="lc-code" type="password" inputmode="numeric" maxlength="4" placeholder="e.g. 1437" autocomplete="off" style="letter-spacing:0.5em;font-size:1.4rem;text-align:center;max-width:140px;">
-              <button type="button" id="lc-code-vis" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 14px;color:var(--lf-text-secondary);cursor:pointer;">👁️</button>
+              <button type="button" id="lc-code-vis" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 14px;color:var(--lf-text-secondary);cursor:pointer;" data-icon="eye"></button>
             </div>
           </div>
           <div class="admin-form-group">
@@ -411,9 +427,9 @@
         </div>
 
         <div class="lc-action-btns">
-          <button class="admin-btn admin-btn-primary" id="lc-save-btn">💾 Save Love Code Settings</button>
-          <button class="admin-btn admin-btn-secondary" id="lc-lock-now-btn">🔒 Lock Now</button>
-          <button class="admin-btn admin-btn-secondary" id="lc-test-btn">🧪 Test Lock Screen</button>
+          <button class="admin-btn admin-btn-primary" id="lc-save-btn"><span class="lf-icon" data-icon="save"></span> Save Love Code Settings</button>
+          <button class="admin-btn admin-btn-secondary" id="lc-lock-now-btn"><span class="lf-icon" data-icon="lock"></span> Lock Now</button>
+          <button class="admin-btn admin-btn-secondary" id="lc-test-btn"><span class="lf-icon" data-icon="test"></span> Test Lock Screen</button>
         </div>
       </section>
 
@@ -476,7 +492,7 @@ service cloud.firestore {
   projectId: "your-project-id",
   ...
 };'></textarea>
-            <button class="admin-btn admin-btn-secondary" id="fb-parse-btn" style="margin-top:8px;">✨ Parse &amp; Fill Fields</button>
+            <button class="admin-btn admin-btn-secondary" id="fb-parse-btn" style="margin-top:8px;"><span class="lf-icon" data-icon="sparkle"></span> Parse &amp; Fill Fields</button>
           </div>
 
           <div class="connection-fields-grid">
@@ -507,8 +523,8 @@ service cloud.firestore {
           </div>
 
           <div class="lc-action-btns" style="margin-top:14px;">
-            <button class="admin-btn admin-btn-primary" id="fb-save-btn">💾 Save Firebase Config</button>
-            <button class="admin-btn admin-btn-secondary" id="fb-reset-btn">↩️ Reset to File Defaults</button>
+            <button class="admin-btn admin-btn-primary" id="fb-save-btn"><span class="lf-icon" data-icon="save"></span> Save Firebase Config</button>
+            <button class="admin-btn admin-btn-secondary" id="fb-reset-btn"><span class="lf-icon" data-icon="refresh"></span> Reset to File Defaults</button>
           </div>
         </div>
 
@@ -544,9 +560,9 @@ service cloud.firestore {
           </div>
 
           <div class="lc-action-btns" style="margin-top:14px;">
-            <button class="admin-btn admin-btn-primary" id="cld-save-btn">💾 Save Cloudinary Config</button>
-            <button class="admin-btn admin-btn-secondary" id="cld-test-btn">🧪 Test Connection</button>
-            <button class="admin-btn admin-btn-secondary" id="cld-reset-btn">↩️ Reset to File Defaults</button>
+            <button class="admin-btn admin-btn-primary" id="cld-save-btn"><span class="lf-icon" data-icon="save"></span> Save Cloudinary Config</button>
+            <button class="admin-btn admin-btn-secondary" id="cld-test-btn"><span class="lf-icon" data-icon="test"></span> Test Connection</button>
+            <button class="admin-btn admin-btn-secondary" id="cld-reset-btn"><span class="lf-icon" data-icon="refresh"></span> Reset to File Defaults</button>
           </div>
         </div>
 
@@ -586,19 +602,25 @@ service cloud.firestore {
             <pre id="rules-snippet">rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Couple chat: both partners can read & send (no login needed);
+    // only the signed-in admin can edit or delete messages.
+    match /chat/{message} {
+      allow read, create: if true;
+      allow update, delete: if request.auth != null;
+    }
     match /{collection}/{document} {
       allow read: if true;
       allow write: if request.auth != null;
     }
   }
 }</pre>
-            <p class="guide-note">These rules let anyone <strong>view</strong> your LoveFlix (needed for your partner to see it) but only <strong>you</strong> (signed-in admin) can change anything.</p>
+            <p class="guide-note">These rules let anyone <strong>view</strong> your LoveFlix (needed for your partner to see it) but only <strong>you</strong> (signed-in admin) can change anything. The chat block lets both of you send messages — if you published rules before the Chat update, publish this version again.</p>
           </details>
 
           <div class="lc-action-btns" style="margin-top:14px;">
-            <button class="admin-btn admin-btn-primary" id="rules-copy-btn">📋 Copy Rules</button>
-            <button class="admin-btn admin-btn-secondary" id="rules-open-btn">🚀 Open Rules Editor</button>
-            <button class="admin-btn admin-btn-secondary" id="rules-test-btn">🧪 Test Permissions</button>
+            <button class="admin-btn admin-btn-primary" id="rules-copy-btn"><span class="lf-icon" data-icon="copy"></span> Copy Rules</button>
+            <button class="admin-btn admin-btn-secondary" id="rules-open-btn"><span class="lf-icon" data-icon="external"></span> Open Rules Editor</button>
+            <button class="admin-btn admin-btn-secondary" id="rules-test-btn"><span class="lf-icon" data-icon="test"></span> Test Permissions</button>
           </div>
         </div>
       </section>
@@ -610,14 +632,15 @@ service cloud.firestore {
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-  <script src="js/config.js?v=10"></script>
-  <script src="js/firebase-config.js?v=10"></script>
-  <script src="js/cloudinary.js?v=10"></script>
-  <script src="js/utils.js?v=10"></script>
-  <script src="js/notifications.js?v=10"></script>
-  <script src="js/storage.js?v=10"></script>
-  <script src="js/lovecode.js?v=10"></script>
-  <script src="js/auth.js?v=10"></script>
-  <script src="js/admin.js?v=10"></script>
+  <script src="js/icons.js?v=11"></script>
+  <script src="js/config.js?v=11"></script>
+  <script src="js/firebase-config.js?v=11"></script>
+  <script src="js/cloudinary.js?v=11"></script>
+  <script src="js/utils.js?v=11"></script>
+  <script src="js/notifications.js?v=11"></script>
+  <script src="js/storage.js?v=11"></script>
+  <script src="js/lovecode.js?v=11"></script>
+  <script src="js/auth.js?v=11"></script>
+  <script src="js/admin.js?v=11"></script>
 </body>
 </html>

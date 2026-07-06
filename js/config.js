@@ -57,7 +57,8 @@ const LoveFlixConfig = {
     credits: "credits",
     settings: "settings",
     favorites: "favorites",
-    notes: "notes"
+    notes: "notes",
+    chat: "chat"
   },
 
   // ---- Feature Flags ----

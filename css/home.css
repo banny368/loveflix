@@ -582,18 +582,27 @@
   /* Show mobile nav menu button */
   .navbar-menu-btn { display: block; }
 
-  /* Navbar */
+  /* Navbar — mobile keeps it minimal: logo, music, menu */
   .lf-navbar { padding: 0 1rem; }
   .navbar-right { gap: 8px !important; }
   .navbar-logo { font-size: 1.5rem; }
+  .navbar-search { display: none !important; }
 
-  /* Hero */
-  .hero-banner { height: 60vh; min-height: 360px; }
+  /* Hero — no negative pull on mobile (rows overlapped the buttons) */
+  .hero-banner { height: 60vh; height: 60svh; min-height: 360px; margin-bottom: 0; }
   .hero-content {
-    bottom: 14%;
+    bottom: 10%;
     left: 1rem;
     right: 1rem;
     max-width: 100%;
+  }
+  .home-content { padding-top: 16px; }
+
+  /* Video mute pill — keep it clear of hero text on all mobiles */
+  .hero-mute-pill {
+    bottom: auto;
+    top: calc(var(--lf-navbar-height) + 12px);
+    right: 1rem;
   }
   .hero-title { font-size: clamp(1.6rem, 7vw, 2.4rem) !important; }
   .hero-subtitle { font-size: clamp(0.9rem, 3vw, 1.2rem) !important; }
@@ -631,12 +640,46 @@
   }
 }
 
+@media (max-width: 600px) {
+  .days-counter { display: none !important; }
+}
+
 @media (max-width: 480px) {
   .hero-banner { height: 55vh; height: 55svh; min-height: 320px; }
   .hero-title { font-size: clamp(1.5rem, 8vw, 2rem) !important; }
   .hero-subtitle { font-size: 0.9rem !important; margin-bottom: 0.75rem; }
-  .days-counter { display: none !important; }
-  .navbar-search { display: none !important; }
+}
+
+/* ============================================
+   Video hero — YouTube-style full-width 16:9
+   (wide videos are no longer cropped square)
+   ============================================ */
+.hero-banner.hero-video {
+  height: auto;
+  aspect-ratio: 16 / 9;
+  min-height: 0;
+  max-height: 82svh;
+  margin-bottom: 0;
+}
+
+.hero-banner.hero-video .hero-media {
+  animation: none; /* no Ken Burns on video */
+}
+
+.hero-banner.hero-video .hero-content {
+  bottom: 8%;
+}
+
+@media (max-width: 768px) {
+  .hero-banner.hero-video { min-height: 0; margin-top: var(--lf-navbar-height); }
+  .hero-banner.hero-video .hero-content { bottom: 6%; }
+  .hero-banner.hero-video .hero-title { font-size: clamp(1.2rem, 5vw, 1.8rem) !important; }
+  .hero-banner.hero-video .hero-subtitle { display: none; }
+  .hero-banner.hero-video .hero-mute-pill {
+    top: auto;
+    bottom: 10px;
+    right: 10px;
+  }
 }
 
 /* ============================================

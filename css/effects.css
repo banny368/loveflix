@@ -3,25 +3,36 @@
    Aurora, glass, shine, transitions, bottom nav
    ============================================ */
 
-/* ---- Aurora ambient background ---- */
+/* ---- Aurora ambient background ----
+   inset stays 0 (never beyond the viewport — that caused horizontal
+   scroll); the ellipses themselves are oversized instead. */
 .lf-aurora {
   position: fixed;
-  inset: -20%;
+  inset: 0;
   z-index: 0;
   pointer-events: none;
+  overflow: hidden;
   background:
-    radial-gradient(ellipse 40% 35% at 20% 25%, var(--lf-aurora-1), transparent 70%),
-    radial-gradient(ellipse 35% 40% at 80% 20%, var(--lf-aurora-2), transparent 70%),
-    radial-gradient(ellipse 45% 35% at 55% 85%, var(--lf-aurora-3), transparent 70%);
+    radial-gradient(ellipse 55% 45% at 15% 20%, var(--lf-aurora-1), transparent 70%),
+    radial-gradient(ellipse 50% 55% at 85% 15%, var(--lf-aurora-2), transparent 70%),
+    radial-gradient(ellipse 60% 45% at 55% 90%, var(--lf-aurora-3), transparent 70%);
   filter: blur(40px);
-  animation: lfAuroraDrift 26s ease-in-out infinite alternate;
-  will-change: transform;
+  animation: lfAuroraShift 26s ease-in-out infinite alternate;
 }
 
-@keyframes lfAuroraDrift {
-  0%   { transform: translate3d(-2%, -1%, 0) scale(1); }
-  50%  { transform: translate3d(2%, 2%, 0) scale(1.06); }
-  100% { transform: translate3d(-1%, 1%, 0) scale(1.02); }
+@keyframes lfAuroraShift {
+  0%   { background-position: 0% 0%, 0% 0%, 0% 0%; opacity: 0.9; }
+  50%  { background-position: 3% 2%, -2% 3%, 2% -2%; opacity: 1; }
+  100% { background-position: -2% 1%, 2% -1%, -1% 2%; opacity: 0.85; }
+}
+
+@media (max-width: 768px) {
+  .lf-aurora { filter: blur(28px); }
+}
+
+@media (max-width: 560px) {
+  /* Perf: heavy blurred layer off on small phones */
+  .lf-aurora { display: none; }
 }
 
 /* ---- Film grain (subtle) ---- */
@@ -78,18 +89,21 @@ textarea:focus-visible {
   border-radius: 6px;
 }
 
-/* ---- Page transitions ---- */
-body.page-enter { animation: lfPageEnter 0.35s var(--lf-ease-out-expo) both; }
+/* ---- Page transitions ----
+   OPACITY ONLY. Never animate transform on <body>: a retained transform
+   makes body the containing block for position:fixed descendants, which
+   un-pins the navbar/bottom-nav/FABs and creates sideways scroll. */
+body.page-enter { animation: lfPageEnter 0.35s var(--lf-ease-out-expo); }
 body.page-leave { animation: lfPageLeave 0.25s ease both; }
 
 @keyframes lfPageEnter {
-  from { opacity: 0; transform: scale(1.012); }
-  to   { opacity: 1; transform: scale(1); }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 @keyframes lfPageLeave {
-  from { opacity: 1; transform: scale(1); }
-  to   { opacity: 0; transform: scale(0.99); }
+  from { opacity: 1; }
+  to   { opacity: 0; }
 }
 
 /* ---- Heart burst (generalized like-animation) ---- */
@@ -215,6 +229,26 @@ body.page-leave { animation: lfPageLeave 0.25s ease both; }
     bottom: calc(var(--lf-bottom-nav-height) + 18px + env(safe-area-inset-bottom, 0px));
   }
 }
+
+/* ---- SVG icon sizing (LFIcons) ---- */
+[data-icon] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+[data-icon] svg,
+.lf-icon svg {
+  width: 1em;
+  height: 1em;
+  display: block;
+}
+
+.lf-bottom-nav .bn-icon svg { width: 21px; height: 21px; }
+.lf-fab [data-icon] svg { width: 23px; height: 23px; }
+.navbar-search-btn svg, .music-toggle svg, .navbar-menu-btn svg { width: 19px; height: 19px; }
+.hero-btn [data-icon] svg { width: 17px; height: 17px; }
 
 /* ---- Reduced motion: kill decorative animation ---- */
 @media (prefers-reduced-motion: reduce) {

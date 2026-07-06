@@ -50,8 +50,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       thumb.setAttribute('aria-label', m.title || `Memory ${i + 1}`);
       const src = m.thumbnail || m.url;
       thumb.innerHTML = src
-        ? `<img src="${escf(src)}" alt="" loading="lazy">${m.type === 'video' ? '<span class="filmstrip-badge">▶</span>' : ''}`
-        : '📸';
+        ? `<img src="${escf(src)}" alt="" loading="lazy">${m.type === 'video' ? `<span class="filmstrip-badge">${window.LFIcons?.get('play') || '▶'}</span>` : ''}`
+        : (window.LFIcons?.get('image') || '📸');
       thumb.addEventListener('click', (e) => {
         e.stopPropagation();
         currentIndex = i;
@@ -145,11 +145,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     btn.classList.toggle('liked');
     const icon = btn.querySelector('.viewer-action-icon');
     if (btn.classList.contains('liked')) {
-      icon.textContent = '❤️';
+      icon.innerHTML = window.LFIcons?.get('heartFill') || '❤️';
       LoveFlixNotify?.love('Added to favorites! 💕');
       Utils?.heartBurst(e.clientX || window.innerWidth / 2, e.clientY || window.innerHeight - 80);
     } else {
-      icon.textContent = '♡';
+      icon.innerHTML = window.LFIcons?.get('heart') || '♡';
     }
     // Save to localStorage
     const favorites = Utils?.retrieve('favorites') || [];
@@ -260,7 +260,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const isFav = favorites.includes(item.id);
       likeBtn.classList.toggle('liked', isFav);
       const icon = likeBtn.querySelector('.viewer-action-icon');
-      if (icon) icon.textContent = isFav ? '❤️' : '♡';
+      if (icon) icon.innerHTML = window.LFIcons?.get(isFav ? 'heartFill' : 'heart') || (isFav ? '❤️' : '♡');
     }
   }
 
@@ -290,7 +290,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     slideshowActive = true;
     const interval = window.LoveFlixConfig?.app?.slideshowInterval || 5000;
     const btn = document.getElementById('slideshow-btn');
-    if (btn) btn.querySelector('.viewer-action-icon').textContent = '⏸';
+    if (btn) btn.querySelector('.viewer-action-icon').innerHTML = window.LFIcons?.get('pause') || '⏸';
     runSlideshowTick(interval);
     LoveFlixNotify?.info('Slideshow started');
   }
@@ -316,7 +316,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     cancelAnimationFrame(slideshowTimer);
     if (slideshowBar) slideshowBar.style.width = '0';
     const btn = document.getElementById('slideshow-btn');
-    if (btn) btn.querySelector('.viewer-action-icon').textContent = '▶';
+    if (btn) btn.querySelector('.viewer-action-icon').innerHTML = window.LFIcons?.get('slideshow') || '▶';
   }
 
   function resetSlideshow() {

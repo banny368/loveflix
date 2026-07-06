@@ -11,13 +11,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Great+Vibes&family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/variables.css?v=10">
-  <link rel="stylesheet" href="css/reset.css?v=10">
-  <link rel="stylesheet" href="css/animations.css?v=10">
-  <link rel="stylesheet" href="css/effects.css?v=10">
-  <link rel="stylesheet" href="css/home.css?v=10">
-  <link rel="stylesheet" href="css/lovecode.css?v=10">
-  <link rel="stylesheet" href="css/responsive.css?v=10">
+  <link rel="stylesheet" href="css/variables.css?v=11">
+  <link rel="stylesheet" href="css/reset.css?v=11">
+  <link rel="stylesheet" href="css/animations.css?v=11">
+  <link rel="stylesheet" href="css/effects.css?v=11">
+  <link rel="stylesheet" href="css/home.css?v=11">
+  <link rel="stylesheet" href="css/lovecode.css?v=11">
+  <link rel="stylesheet" href="css/responsive.css?v=11">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>">
 </head>
@@ -37,30 +37,32 @@
       <div class="navbar-links desktop-only">
         <a href="home.html" class="active">Home</a>
         <a href="timeline.html">Timeline</a>
+        <a href="chat.html">Chat</a>
         <a href="credits.html">Credits</a>
       </div>
     </div>
     <div class="navbar-right">
       <div class="navbar-search" id="search-wrap">
-        <button class="navbar-search-btn" aria-label="Search">🔍</button>
+        <button class="navbar-search-btn" aria-label="Search" data-icon="search"></button>
         <input type="text" class="navbar-search-input" id="search-input" placeholder="Search memories..." aria-label="Search memories">
       </div>
       <div class="days-counter" id="days-counter" aria-label="Days together">
         <span class="days-counter-heart">❤️</span>
         <span><strong id="days-count">0</strong> days</span>
       </div>
-      <button class="music-toggle" id="music-toggle" aria-label="Toggle background music">🔇</button>
-      <button class="navbar-menu-btn" id="navbar-menu-btn" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+      <button class="music-toggle" id="music-toggle" aria-label="Toggle background music" data-icon="musicOff"></button>
+      <button class="navbar-menu-btn" id="navbar-menu-btn" aria-label="Open navigation menu" aria-expanded="false" data-icon="menu"></button>
     </div>
   </nav>
 
   <!-- Mobile Navigation Dropdown -->
   <div class="navbar-mobile-menu" id="navbar-mobile-menu" role="navigation" aria-label="Mobile navigation">
-    <a href="home.html">🏠 Home</a>
-    <a href="timeline.html">📖 Timeline</a>
-    <a href="credits.html">🎭 Credits</a>
-    <a href="profiles.html">👤 Profiles</a>
-    <a href="admin-login.html">⚙️ Admin</a>
+    <a href="home.html"><span class="lf-icon" data-icon="home"></span> Home</a>
+    <a href="timeline.html"><span class="lf-icon" data-icon="timeline"></span> Timeline</a>
+    <a href="chat.html"><span class="lf-icon" data-icon="chat"></span> Chat</a>
+    <a href="credits.html"><span class="lf-icon" data-icon="credits"></span> Credits</a>
+    <a href="profiles.html"><span class="lf-icon" data-icon="profiles"></span> Profiles</a>
+    <a href="admin-login.html"><span class="lf-icon" data-icon="settings"></span> Admin</a>
   </div>
 
   <!-- Hero Banner -->
@@ -72,8 +74,8 @@
       <h1 class="hero-title" id="hero-title">Our Love Story</h1>
       <p class="hero-subtitle" id="hero-subtitle">Every moment with you is a memory I treasure forever</p>
       <div class="hero-buttons">
-        <button class="hero-btn hero-btn-play lf-btn-shine" id="hero-play" aria-label="Play">▶ Play</button>
-        <button class="hero-btn hero-btn-list" id="hero-list" aria-label="My list">♡ My List</button>
+        <button class="hero-btn hero-btn-play lf-btn-shine" id="hero-play" aria-label="Play"><span data-icon="play"></span> Play</button>
+        <button class="hero-btn hero-btn-list" id="hero-list" aria-label="My list"><span data-icon="heart"></span> My List</button>
       </div>
     </div>
   </section>
@@ -85,8 +87,8 @@
 
   <!-- Floating Actions -->
   <div class="lf-fab-stack" aria-label="Quick actions">
-    <button class="lf-fab" id="fab-note" aria-label="Open a love note" title="A note for you 💌">💌</button>
-    <button class="lf-fab" id="fab-surprise" aria-label="Surprise me" title="Surprise me 🎲">🎲</button>
+    <button class="lf-fab" id="fab-note" aria-label="Open a love note" title="A note for you" data-icon="envelope"></button>
+    <button class="lf-fab" id="fab-surprise" aria-label="Surprise me" title="Surprise me" data-icon="dice"></button>
   </div>
 
   <!-- Footer -->
@@ -102,10 +104,11 @@
 
   <!-- Mobile Bottom Nav -->
   <nav class="lf-bottom-nav" aria-label="Bottom navigation">
-    <a href="home.html" class="active"><span class="bn-icon">🏠</span>Home</a>
-    <a href="timeline.html"><span class="bn-icon">📖</span>Timeline</a>
-    <button id="bn-surprise" aria-label="Surprise me"><span class="bn-icon">🎲</span>Surprise</button>
-    <a href="credits.html"><span class="bn-icon">🎭</span>Credits</a>
+    <a href="home.html" class="active"><span class="bn-icon" data-icon="home"></span>Home</a>
+    <a href="timeline.html"><span class="bn-icon" data-icon="timeline"></span>Timeline</a>
+    <a href="chat.html"><span class="bn-icon" data-icon="chat"></span>Chat</a>
+    <button id="bn-surprise" aria-label="Surprise me"><span class="bn-icon" data-icon="dice"></span>Surprise</button>
+    <a href="credits.html"><span class="bn-icon" data-icon="credits"></span>Credits</a>
   </nav>
 
   <!-- Firebase SDK -->
@@ -113,14 +116,15 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-  <script src="js/config.js?v=10"></script>
-  <script src="js/firebase-config.js?v=10"></script>
-  <script src="js/utils.js?v=10"></script>
-  <script src="js/notifications.js?v=10"></script>
-  <script src="js/loader.js?v=10"></script>
-  <script src="js/storage.js?v=10"></script>
-  <script src="js/lovecode.js?v=10"></script>
-  <script src="js/home.js?v=10"></script>
+  <script src="js/icons.js?v=11"></script>
+  <script src="js/config.js?v=11"></script>
+  <script src="js/firebase-config.js?v=11"></script>
+  <script src="js/utils.js?v=11"></script>
+  <script src="js/notifications.js?v=11"></script>
+  <script src="js/loader.js?v=11"></script>
+  <script src="js/storage.js?v=11"></script>
+  <script src="js/lovecode.js?v=11"></script>
+  <script src="js/home.js?v=11"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       window.LoveCodeLock?.check(() => window.LoveCodeLock?.recordActivity());

@@ -1,0 +1,258 @@
+/* ============================================
+   LOVEFLIX — Couple Chat Styles (v4)
+   ============================================ */
+
+.chat-page {
+  position: relative;
+  z-index: 2;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: calc(var(--lf-navbar-height) + 24px) var(--lf-page-padding) 24px;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  flex-shrink: 0;
+}
+
+.chat-header-heart {
+  font-size: 1.8rem;
+  animation: heartbeat 1.6s ease-in-out infinite;
+}
+
+.chat-title {
+  font-family: var(--lf-font-display);
+  font-size: 1.4rem;
+  letter-spacing: 0.06em;
+  color: var(--lf-text-primary);
+  line-height: 1.1;
+}
+
+.chat-subtitle {
+  font-family: var(--lf-font-body);
+  font-size: 11px;
+  color: var(--lf-text-muted);
+}
+
+.chat-identity-btn {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--lf-radius-full);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--lf-text-secondary);
+  font-family: var(--lf-font-body);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all var(--lf-transition-fast);
+  white-space: nowrap;
+}
+
+.chat-identity-btn:hover {
+  color: #fff;
+  border-color: rgba(255, 77, 109, 0.5);
+  box-shadow: var(--lf-glow-pink);
+}
+
+/* ---- Messages ---- */
+.chat-messages {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+.chat-loading,
+.chat-empty {
+  margin: auto;
+  text-align: center;
+  font-family: var(--lf-font-body);
+  color: var(--lf-text-secondary);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.chat-empty-heart { font-size: 2.4rem; margin-bottom: 8px; animation: heartbeat 1.8s ease-in-out infinite; }
+.chat-empty-hint { font-size: 12px; color: var(--lf-text-muted); }
+
+.chat-day {
+  text-align: center;
+  margin: 10px 0 4px;
+}
+
+.chat-day span {
+  display: inline-block;
+  padding: 3px 14px;
+  border-radius: var(--lf-radius-full);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  font-family: var(--lf-font-body);
+  font-size: 11px;
+  color: var(--lf-text-muted);
+}
+
+.chat-row {
+  display: flex;
+  animation: fadeInUp 0.25s ease;
+}
+
+.chat-row.mine { justify-content: flex-end; }
+.chat-row.theirs { justify-content: flex-start; }
+
+.chat-bubble {
+  max-width: 78%;
+  padding: 9px 14px 6px;
+  border-radius: 16px;
+  font-family: var(--lf-font-body);
+}
+
+.chat-row.mine .chat-bubble {
+  background: var(--lf-gradient-romantic);
+  border-bottom-right-radius: 5px;
+  box-shadow: 0 4px 18px rgba(229, 9, 20, 0.3);
+}
+
+.chat-row.theirs .chat-bubble {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom-left-radius: 5px;
+}
+
+.chat-sender {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--lf-blush);
+  margin-bottom: 2px;
+}
+
+.chat-text {
+  font-size: 14px;
+  color: #fff;
+  line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.chat-time {
+  font-size: 9.5px;
+  color: rgba(255, 255, 255, 0.55);
+  text-align: right;
+  margin-top: 3px;
+}
+
+/* ---- Composer ---- */
+.chat-composer {
+  display: flex;
+  gap: 10px;
+  padding: 12px 14px calc(12px + env(safe-area-inset-bottom, 0px) * 0);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  flex-shrink: 0;
+}
+
+.chat-composer.disabled { opacity: 0.5; pointer-events: none; }
+
+.chat-input {
+  flex: 1;
+  padding: 12px 18px;
+  border-radius: var(--lf-radius-full);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font-family: var(--lf-font-body);
+  font-size: 16px; /* prevents iOS zoom */
+  transition: border-color var(--lf-transition-fast), box-shadow var(--lf-transition-fast);
+}
+
+.chat-input:focus {
+  outline: none;
+  border-color: rgba(255, 77, 109, 0.5);
+  box-shadow: 0 0 0 3px rgba(255, 77, 109, 0.12);
+}
+
+.chat-input::placeholder { color: var(--lf-text-dim); }
+
+.chat-send {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: none;
+  background: var(--lf-gradient-red);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s var(--lf-ease-spring), box-shadow 0.2s ease;
+}
+
+.chat-send svg { width: 19px; height: 19px; }
+.chat-send:hover { transform: scale(1.08); box-shadow: var(--lf-glow-red); }
+.chat-send:active { transform: scale(0.92); }
+
+/* ---- Identity picker ---- */
+.identity-options {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.identity-option {
+  padding: 10px 22px;
+  border-radius: var(--lf-radius-full);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--lf-text-secondary);
+  font-family: var(--lf-font-body);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--lf-transition-fast);
+}
+
+.identity-option:hover,
+.identity-option.selected {
+  color: #fff;
+  border-color: var(--lf-rose);
+  background: rgba(255, 77, 109, 0.12);
+  box-shadow: var(--lf-glow-pink);
+}
+
+/* ---- Mobile ---- */
+@media (max-width: 768px) {
+  /* body already reserves bottom-nav space (has-bottom-nav padding),
+     so the card fills exactly the space above the bar — no page scroll */
+  .chat-page {
+    padding: calc(var(--lf-navbar-height) + 10px) 10px 10px;
+    height: calc(100dvh - var(--lf-bottom-nav-height) - env(safe-area-inset-bottom, 0px));
+  }
+  .chat-header { padding: 12px 14px; }
+  .chat-title { font-size: 1.15rem; }
+  .chat-bubble { max-width: 86%; }
+}

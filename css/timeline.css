@@ -30,6 +30,75 @@
   margin-top: 6px;
 }
 
+/* ---- Stats strip ---- */
+.timeline-stats {
+  display: flex;
+  justify-content: center;
+  gap: 22px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+  font-family: var(--lf-font-body);
+  font-size: 12px;
+  color: var(--lf-text-muted);
+}
+
+.timeline-stats strong {
+  color: var(--lf-rose);
+  font-family: var(--lf-font-display);
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+  margin-right: 3px;
+}
+
+/* ---- Toolbar: filters + season chips ---- */
+.timeline-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.timeline-filters { display: flex; gap: 8px; }
+
+.timeline-seasons-nav {
+  display: flex;
+  gap: 6px;
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 4px 2px;
+  scrollbar-width: none;
+}
+
+.timeline-seasons-nav::-webkit-scrollbar { display: none; }
+
+.tl-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 16px;
+  border-radius: var(--lf-radius-full);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--lf-text-secondary);
+  font-family: var(--lf-font-body);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--lf-transition-fast);
+}
+
+.tl-chip:hover { color: #fff; border-color: rgba(255, 77, 109, 0.4); }
+
+.tl-chip.active {
+  color: #fff;
+  background: var(--lf-gradient-red);
+  border-color: transparent;
+  box-shadow: var(--lf-glow-red);
+}
+
+.tl-season-chip { padding: 6px 12px; }
+
 /* ---- Central line ---- */
 .timeline-track {
   position: relative;
@@ -79,6 +148,12 @@
   font-style: normal;
   font-size: 1rem;
   color: var(--lf-text-muted);
+}
+
+.timeline-episode-zero span {
+  background: var(--lf-gradient-gold);
+  color: #2a1a00;
+  box-shadow: var(--lf-glow-gold);
 }
 
 /* ---- Entries ---- */
